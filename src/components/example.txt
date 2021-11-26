@@ -1,0 +1,3 @@
+Here goes component folders which represent elements like forms or buttons
+
+Remember to capitalize component files

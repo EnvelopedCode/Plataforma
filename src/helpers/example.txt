@@ -1,0 +1,1 @@
+Here goes any JS function that can be recycled by components
