@@ -1,3 +1,0 @@
-Here goes any stylesheet for components
-
-Self-note: This folder remains under considerations since we still have to figure out how bootstrap will work like

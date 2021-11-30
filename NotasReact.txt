@@ -1,0 +1,20 @@
+11/27/2021
+Observaciones:
+    - Los componentes deben ir siempre con una inicial en mayuscula
+    - Los "/" van siempre al inicio de la siguiente forma: </div>
+    - Si React no detecta un componente al importarse al App probar reiniciando el proyecto desde npm start
+
+11/28/2021
+Observaciones:
+    - JSX requiere para etiquetas Label usar htmlFor y no for para no confundirse con sintaxis de Javascript (for para bucles), ademas, este htmlFor cumple la funcion de enfocar el cursor en el campo cuando detecta un click sobre el label
+    - Realmente los comentarios no necesitan estar encerrados por "{}", solo necesitan las llaves al momento de hacer el return, ahi es donde especificamos a JSX que lo que hay adentro es sintaxis de Javascript, sintaxis para comentarios, cabe recalcar que de igual forma seguiran apareciendo alertas
+    - Ninung input debe ir con un texto adentro
+    - Si se va a realizar algun proceso inmediatamente despues de actualizar el estado del componente, siempre realizar el proceso a modo de efecto secundario, osea; por medio de useEffect, el cual esperara a que se aplique el cambio correspondiente para realizar el efecto
+
+11/29/2021
+Observaciones:
+    - Todos los input requieren de un atributo name para poder enviar su contenido
+    - Todo formulario antes de su validacion debe tener en cuenta su estado inicial (campos llenos o campos vacios)
+    - Scripts y Links van en Index.js
+    - Las etiquetas Style deben formatearse a JSX de la siguiente forma: style={{atributo: "valor"}}
+    
