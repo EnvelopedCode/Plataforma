@@ -17,4 +17,5 @@ Observaciones:
     - Todo formulario antes de su validacion debe tener en cuenta su estado inicial (campos llenos o campos vacios)
     - Scripts y Links van en Index.js
     - Las etiquetas Style deben formatearse a JSX de la siguiente forma: style={{atributo: "valor"}}
+    - Todas las renderizaciones de vista deben incluir una etiqueta container, ya adentro van los div
     
