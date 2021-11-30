@@ -18,4 +18,20 @@ Observaciones:
     - Scripts y Links van en Index.js
     - Las etiquetas Style deben formatearse a JSX de la siguiente forma: style={{atributo: "valor"}}
     - Todas las renderizaciones de vista deben incluir una etiqueta container, ya adentro van los div
+    - El body del index debe especificar el estilizado del cuerpo de la pagina
+    - Index.js debe contener referencias al estilizado de las paginas (links e imports)
+    - Para pasar datos a un componente el Padre debe enviar los datos como parametro:
+    
+    <Padre>
+        <Hijo variable=datos>
+    </Padre>
+    
+    Y el hijo debe recibir los datos como parametro:
+
+    function Hijo(parametro){
+        <React.Fragment>
+            {parametro.datos}
+        </React.Fragment>
+    }
+    
     
