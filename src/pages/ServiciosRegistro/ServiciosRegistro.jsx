@@ -172,8 +172,8 @@ export default function ServiciosRegistro() {
         <div classNameName="container" style={{ color: "#424B5A;" }}>
           <Titulo
             titulo="REGISTRO DE SERVICIO"
-            subTitulo1="A continuación, podrás registrar tanto de forma manual"
-            subTitulo2="como masiva los nuevos servicios de clientes"
+            subTitulo1="A continuación, podrás registrar tanto de forma manual como masiva los nuevos servicios de clientes"
+            // subTitulo2="como masiva los nuevos servicios de clientes"
           />
           <RegistroMasivo mensaje="Adjunta el archivo .xlsx con la información de los nuevos servicios a registrar" />
           {/*CONTENIDO*/}
@@ -246,7 +246,7 @@ export default function ServiciosRegistro() {
                     </form>
                 </div>
             </div>
-        </div>
+          </div>
         </div>
       </React.Fragment>
     );

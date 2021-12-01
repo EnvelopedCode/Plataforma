@@ -34,4 +34,10 @@ Observaciones:
         </React.Fragment>
     }
     
-    
+12/1/2021
+
+    - Objetos y metodos de document siguen siendo utilizables
+    - Inputs requieren de un ID y un Value para poder capturar y setear datos, Value representa lo que muestra, ID referencia para la capturar
+    - Mensajes de error necesitan ID y un Value para poder setearse, ID captura el parrafo y value lo setea (ya sea contenido o un string vacio)
+    - onEnter debe de ser onKeyDown y capturarse por medio de un EventHandler, ahi se accede a los metodos del evento y comparar el atributo "key" con el nombre de la tecla que busquemos en ese evento, por ejemplo "Enter", de esta manera simulamos un onEnter
+    - Organizar HTML desde su documento antes de copiarse a React, <br> no dejaran que React corra asi que tendran que cambiarse a <br /> con anterioridad
