@@ -2,3 +2,11 @@
     - Crear linkeos con <Link>
     - Revisar https://www.cluemediator.com/read-csv-file-in-react o https://heynode.com/blog/2020-02/reading-and-writing-csv-files-nodejs/ para manipulacion de archivos
     - Validar Fechas
+
+    Realizadas:
+    Validaciones basicas:
+    - Registro de Anomalias
+    - Gestion de Medidas (En proceso)
+    - Parametrizacion
+    - Gestion Servicios
+    - Registro Servicios

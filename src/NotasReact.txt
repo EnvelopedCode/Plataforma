@@ -41,3 +41,7 @@ Observaciones:
     - Mensajes de error necesitan ID y un Value para poder setearse, ID captura el parrafo y value lo setea (ya sea contenido o un string vacio)
     - onEnter debe de ser onKeyDown y capturarse por medio de un EventHandler, ahi se accede a los metodos del evento y comparar el atributo "key" con el nombre de la tecla que busquemos en ese evento, por ejemplo "Enter", de esta manera simulamos un onEnter
     - Organizar HTML desde su documento antes de copiarse a React, <br> no dejaran que React corra asi que tendran que cambiarse a <br /> con anterioridad
+
+12/2/2021
+    
+    - Parrafos de error no contienen Value, se setea o accede atraves de innerHTML

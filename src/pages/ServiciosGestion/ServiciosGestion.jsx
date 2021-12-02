@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react';
 export default function ServiciosGestion() {
 
     const [registros, setRegistros] = useState([])
+    const [informacion, setInformacion] = useState(false)
     const [titulo, setTitulo] = useState("")
     const [cedula, setCedula] = useState("")
 
@@ -16,50 +17,92 @@ export default function ServiciosGestion() {
     const cedula_2 = ["1234567890-1", "1234567890-2", "1234567890-3", "1234567890-4"]
     
     
-
     let cedulaActual = cedula;
 
     const buscarCedula = (event) => {
+
         if (event.key === 'Enter') {
 
             event.preventDefault();
             console.warn("ENTRO A GUARDAR")
             let ced = document.getElementById("Cedula").value;
-            setCedula(ced)
 
-            function cedulaEncontrar(ced){
-                for(let cedula in cedulas){
+            {/*VALIDAR CEDULA*/}
 
-                    if(ced === cedulas[cedula]){
-                 
-                        return cedulas[cedula]
-                        break;
+            function validarCedula(parametro) {
+                var patron = /^[a-zA-Z\s]*$/;
+                if (parametro.search(patron)) {
+                  return false;
+                } else {
+                  return true;
+                }
+              }
+
+            let flag = false;
+            let cedulaError = document.getElementById("errorCedula");
+            let errorC = "";
+
+            console.warn("EVALUAR")
+            
+            console.log(cedulaError)
+            console.log(errorC)
+            console.warn("EVALUAR")
+
+            if (ced.length < 10 || ced.lenght > 10){
+                errorC = "Ingrese una cedula de longitud adecuada";
+                flag = true;
+            } else if(validarCedula(ced) === true){
+                errorC = "No Ingrese caracteres en su cedula"
+                flag = true;
+            }
+
+            if(flag === false){
+
+                setCedula(ced)
+                errorC = "";
+                cedulaError.innerHTML = errorC;
+
+                function cedulaEncontrar(ced){
+                    for(let cedula in cedulas){
+    
+                        if(ced === cedulas[cedula]){
+                     
+                            return cedulas[cedula]
+                            break;
+                        }
                     }
                 }
+                
+                let resultado = cedulaEncontrar(ced)
+    
+                console.log("EVALUAR")
+                console.warn(resultado)
+                console.log("EVALUAR")
+    
+                if(resultado === "1000403193"){
+                    console.log("Entro a condicional")
+                    setRegistros(cedula_1)
+                } else if (resultado === "1234567890"){
+                    setRegistros(cedula_2)
+                } else{
+                    setRegistros([])
+                }
+
+            } else {
+                console.warn("HUBIERON ERRORES")
+                cedulaError.innerHTML = errorC;
             }
             
-            let resultado = cedulaEncontrar(ced)
-
-            console.log("EVALUAR")
-            console.warn(resultado)
-            console.log("EVALUAR")
-
-            if(resultado === "1000403193"){
-                console.log("Entro a condicional")
-                setRegistros(cedula_1)
-            } else if (resultado === "1234567890"){
-                setRegistros(cedula_2)
-            }
-
-            }
-        
-      }
+        }
+    }
     
     const buscarRegistro = (event) => {
         event.preventDefault();
         console.warn("RECIBIO CLICK DE UN REGISTRO");
         setTitulo(event.target.value);
         setCedula(cedulaActual);
+        setInformacion(true);
+
     }
     
     const actualizar = (event) => {
@@ -129,116 +172,158 @@ export default function ServiciosGestion() {
     
 
     return (
-      <React.Fragment>
-        <NavbarAdmin />
-        <div classNameName="container" style={{ color: "#424B5A;" }}>
-            <Titulo
-            titulo="GESTION DE SERVICIOS"
-            subTitulo1="A continuación, podrás gestionar tanto de forma manual como masiva los servicios de clientes existentes."
-            />
-            <RegistroMasivo mensaje="Adjunta el archivo .xlsx con la información básica de los servicios a actualizar."/>
-            {/*GESTION INDIVIDUAL*/}
-            <div className="d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-center justify-content-sm-center justify-content-md-center justify-content-lg-center justify-content-xl-center" style={{marginBottom: "36px"}}>
-                <div style={{background: "#FFFFFF",width: "386px",borderTopLeftRadius: "8px",borderTopRightRadius: "8px",borderBottomRightRadius: "8px",borderBottomLeftRadius: "8px"}}>
-                    <h2 className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{fontSize: "20px",textAlign: "center",fontWeight: "bold",marginBottom: "12px",marginTop: "32px"}}>Gestión individual</h2>
-                    <p className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{textAlign: "center",fontSize: "12px",color: "#A1AEB7",marginBottom: "0px",paddingRight: "32px",paddingLeft: "32px"}}>Ingresa la información básica del cliente responsable del servicio.<br /></p>
-                    <div className="d-flex d-xl-flex justify-content-center justify-content-xl-center" style={{marginTop: "24px",marginBottom: "24px"}}>
-                        <form style={{width: "260px"}}>
-                            <div className="mb-3" style={{fontSize: "12px"}}>
-                                <input onKeyDown={buscarCedula} className="form-control form-control-sm" type="text" id="Cedula" name="Cedula" placeholder="Cédula" style={{fontSize: "14px",marginBottom: "4px"}} />
-                                <p id="cedulaError" name="cedulaError" value="" style={{color: 'var(--bs-red)'}}></p>
-                            </div>
-                            <p className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{textAlign: "center",fontSize: "12px",color: "#A1AEB7",marginBottom: "24px",paddingRight: "32px",paddingLeft: "32px",borderColor: "#A1AEB7"}}>Lista de los servicio asociados al cliente buscado.<br /></p>
-                            {registros.map((registro) =>
-                                 <div className="d-xl-flex justify-content-xl-center mb-3" style={{width: "55%",marginLeft: "22%"}}>
-                                 <button onClick={buscarRegistro} value={registro} className="btn btn-primary d-block w-100" type="button" style={{background: "#424B5A",borderColor: "#424B5A",fontSize: "12px"}}>{registro}</button>
-                             </div>
-                            )}
-                        </form>
+        <React.Fragment>
+            <NavbarAdmin />
+            <div classNameName="container" style={{ color: "#424B5A;" }}>
+                <Titulo
+                titulo="GESTION DE SERVICIOS"
+                subTitulo1="A continuación, podrás gestionar tanto de forma manual como masiva los servicios de clientes existentes."
+                />
+                <RegistroMasivo subtitulo="Adjunta el archivo .xlsx con la información básica de los servicios a actualizar." subtitulo2="Consulta masivamente todos los servicios históricos de un año." descarga={true}/>
+                {/*GESTION INDIVIDUAL*/}
+                <div className="d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-center justify-content-sm-center justify-content-md-center justify-content-lg-center justify-content-xl-center" style={{marginBottom: "36px"}}>
+                    <div style={{background: "#FFFFFF",width: "386px",borderTopLeftRadius: "8px",borderTopRightRadius: "8px",borderBottomRightRadius: "8px",borderBottomLeftRadius: "8px"}}>
+                        <h2 className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{fontSize: "20px",textAlign: "center",fontWeight: "bold",marginBottom: "12px",marginTop: "32px"}}>Gestión individual</h2>
+                        <p className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{textAlign: "center",fontSize: "12px",color: "#A1AEB7",marginBottom: "0px",paddingRight: "32px",paddingLeft: "32px"}}>Ingresa la información básica del cliente responsable del servicio.<br /></p>
+                        <div className="d-flex d-xl-flex justify-content-center justify-content-xl-center" style={{marginTop: "24px",marginBottom: "24px"}}>
+                            <form method="post" style={{width: "260px"}}>
+                                <div className="mb-3" style={{fontSize: "12px"}}>
+                                    <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Cédula</p>
+                                    <input onKeyDown={buscarCedula} className="form-control form-control-sm" type="text" id="Cedula" name="Cedula" placeholder="Cédula" style={{fontSize: "14px",marginBottom: "4px"}} required="" />
+                                    <p id="errorCedula" name="errorCedula" value="" style={{color: "var(--bs-red)"}}></p>
+                                </div>
+                                <p className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{textAlign: "center",fontSize: "12px",color: "#A1AEB7",marginBottom: "24px",paddingRight: "32px",paddingLeft: "32px",borderColor: "#A1AEB7"}}>Lista de los servicio asociados al cliente buscado.<br /></p>
+                                {registros.map((registro) =>
+                                <div className="d-xl-flex justify-content-xl-center mb-3" style={{width: "55%",marginLeft: "22%"}}>
+                                    <button className="btn btn-primary d-block w-100" onClick={buscarRegistro} value={registro} type="button" style={{background: "#424B5A",borderColor: "#424B5A",fontSize: "12px"}}>{registro}</button>
+                                </div>
+                                )}
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
-            {/*GESTION INDIVIDUAL*/}
-            {/*INFORMACION DEL REGISTRO*/}
-    
-            <div className="d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-center justify-content-sm-center justify-content-md-center justify-content-lg-center justify-content-xl-center" style={{marginBottom: "36px"}}>
-                <div style={{background: "#FFFFFF",width: "386px",borderTopLeftRadius: "8px",borderTopRightRadius: "8px",borderBottomRightRadius: "8px",borderBottomLeftRadius: "8px"}}>
-                    <h2 className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{fontSize: "20px",textAlign: "center",fontWeight: "bold",marginBottom: "12px",marginTop: "32px"}}>{titulo}</h2>
-                    <p className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{textAlign: "center",fontSize: "12px",color: "#A1AEB7",marginBottom: "0px",paddingRight: "32px",paddingLeft: "32px"}}>Información básica del cliente asociado al servicio número {titulo}.<br /></p>
-                    <div className="d-flex d-xl-flex justify-content-center justify-content-xl-center" style={{marginTop: "24px",marginBottom: "24px"}}>
-                        {/*FORMULARIO*/}
+                {/*GESTION INDIVIDUAL*/}
+                {/*INFORMACION REGISTRO*/}
+                {informacion && <div className="d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-center justify-content-sm-center justify-content-md-center justify-content-lg-center justify-content-xl-center" style={{marginBottom: "36px"}}>
+                    <div style={{background: "#FFFFFF",width: "386px",borderTopLeftRadius: "8px",borderTopRightRadius: "8px",borderBottomRightRadius: "8px",borderBottomLeftRadius: "8px"}}>
+                        <h2 className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{fontSize: "20px",textAlign: "center",fontWeight: "bold",marginBottom: "12px",marginTop: "32px"}}>{titulo}</h2>
+                        <p className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{textAlign: "center",fontSize: "12px",color: "#A1AEB7",marginBottom: "0px",paddingRight: "32px",paddingLeft: "32px"}}>Información básica del cliente asociado al servicio número 1140123567-2.<br /></p>
+                        <div className="d-flex d-xl-flex justify-content-center justify-content-xl-center" style={{marginTop: "24px",marginBottom: "24px"}}>
                         <form method="post" style={{width: "260px"}}>
-                            <div className="mb-3">
-                                <input className="form-control form-control-sm" type="text" name="Cedula" placeholder="Cédula" value={cedulaActual} style={{fontSize: "14px",marginBottom: "4px"}} readonly="" />
-                            </div>
-                            <div className="mb-3" style={{fontSize: "14px"}}>
-                                <input className="form-control form-control-sm" type="text" name="Nombre" placeholder="Nombre" style={{marginBottom: "4px"}} readonly="" />
-                            </div>
-                            <div className="mb-3" style={{fontSize: "14px"}}>
-                                <input className="form-control form-control-sm" type="text" name="Apellido" placeholder="Apellido" style={{marginBottom: "4px"}} readonly="" />
-                            </div>
-                            
-                            <div className="d-xl-flex justify-content-xl-center mb-3" style={{width: "50%",marginLeft: "25%",fontSize: "14px"}}>
-                                <button className="btn btn-primary d-block w-100" type="button" style={{background: "#424B5A",borderColor: "#424B5A",fontSize: "14px"}}>Ver facturación</button>
-                            </div>
-                            {/*FORMULARIO A EVALUAR*/}
-                            <p className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{textAlign: "center",fontSize: "12px",color: "#A1AEB7",marginBottom: "24px",paddingRight: "32px",paddingLeft: "32pxb",orderColor: "#A1AEB7"}}>Información básica del servicio asociado al cliente.<br /></p>
-                            <div className="mb-3" style={{fontSize: "12px"}}>
-                                <select id="departamento" className="form-select form-select-sm" style={{fontSize: "14px",color: 'rgba(33,37,41,0.7)'}}>
-                                    <optgroup label="Departamento">
-                                        <option value="Atlantico" selected="">Atlántico</option>
-                                        <option value="Bolivar">Bolívar</option>
-                                        <option value="Magdalena">Magdalena</option>
-                                    </optgroup>
-                                </select>
-                                <p id="departamentoError" value="" style={{color: 'var(--bs-red)'}}></p>
-                            </div>
-                            <div className="mb-3" style={{fontSize: "12px"}}>
-                                <select className="form-select form-select-sm" style={{fontSize: "14px",color: 'rgba(33,37,41,0.7)'}}>
-                                    <optgroup label="Municipio">
-                                        <option value="Barranquilla" selected="">Barranquilla</option>
-                                        <option value="Colombia">Puerto Colombia</option>
-                                        <option value="Soledad">Soledad</option>
-                                    </optgroup>
-                                </select>
-                                <p id="municipioError" value="" style={{color: 'var(--bs-red)'}}></p>
-                            </div>
-                            <div className="mb-3" style={{fontSize: "12px"}}>
-                                <input id="direccion" className="form-control form-control-sm" type="text" name="Dirección" placeholder="Carrera 52 # 98 - 120" style={{fontSize: "14px",marginBottom: "4px"}} />
-                                <p id="direccionError" value="" style={{color: 'var(--bs-red)'}}></p>
-                            </div>
-                            <div className="mb-3" style={{fontSize: "12px"}}>
-                                <input id="barrio" className="form-control form-control-sm" type="text" name="Barrio" placeholder="Buenavista" style={{fontSize: "14px",marginBottom: "4px"}} />
-                                <p id="barrioError" value="" style={{color: 'var(--bs-red)'}}></p>
-                            </div>
-                            <div className="mb-3" style={{fontSize: "12px"}}>
-                                <select  id="estrato" className="form-select form-select-sm" style={{fontSize: "14px",color: 'rgba(33,37,41,0.7)'}}>
-                                    <optgroup label="Estrato">
-                                        <option value="1" selected="">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5" selected="">5</option>
-                                    </optgroup>
-                                </select>
-                                <p id="estratoError" value="" style={{color: 'var(--bs-red)'}}></p>
-                            </div>
-                            <div className="mb-3" style={{fontSize: "12px"}}>
-                                <p id="fechaIngreso" style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Próxima de facturación</p>
-                                <input id="fechaIngreso" className="form-control form-control-sm" name="Fecha inicio" placeholder="Fecha inicio" style={{fontSize: "14px",marginBottom: "4px",color: 'rgba(33,37,41,0.7)'}} type="date" />
-                                <p id="fechaIngresoError" value="" style={{color: "var(--bs-red)"}}></p>
-                            </div>
-                            <div className="d-xl-flex justify-content-xl-center mb-3" style={{width: "40%",marginLeft: "30%",fontSize: "14px"}}>
-                                <button onClick={actualizar} className="btn btn-primary d-block w-100" type="button" style={{background: "#424B5A",borderColor: "#424B5A",fontSize: "14px"}}>Actualizar</button></div>
-                            <div className="d-xl-flex justify-content-xl-center mb-3" style={{width: "40%",marginLeft: "30%",fontSize: "14px"}}>
-                                <button className="btn btn-primary d-block w-100" type="button" style={{background: "#F2F5F7",fontSize: "14px",borderColor: "#F2F5F7",color: "#505D68"}}>Suspender</button></div>
-                        </form>
-                        {/*FORMULARIO*/}
+                                <div className="mb-3" style={{fontSize: "12px"}}>
+                                    <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Cedula</p>
+                                    <input className="form-control form-control-sm" type="text" name="Cedula" placeholder="Cédula" value={cedulaActual} style={{fontSize: "14px",marginBottom: "4px"}} readonly="" />
+                                </div>
+                                <div className="mb-3" style={{fontSize: "12px"}}>
+                                    <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Nombre</p>
+                                    <input className="form-control form-control-sm" type="text" name="Nombre" placeholder="Nombre" style={{marginBottom: "4px"}} readonly="" />
+                                </div>
+                                <div className="mb-3" style={{fontSize: "12px"}}>
+                                    <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Apellido</p>
+                                    <input className="form-control form-control-sm" type="text" name="Apellido" placeholder="Apellido" style={{marginBottom: "4px"}} readonly="" />
+                                </div>
+                                <div className="d-xl-flex justify-content-xl-center mb-3" style={{width: "50%",marginLeft: "25%",fontSize: "14px"}}>
+                                    <button className="btn btn-primary d-block w-100" type="button" style={{background: "#424B5A",borderColor: "#424B5A",fontSize: "14px"}} data-bs-target="#modal-1" data-bs-toggle="modal">Ver facturación</button>
+                                </div>
+                                <p className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{textAlign: "center",fontSize: "12px",color: "#A1AEB7",marginBottom: "24px",paddingRight: "32px",paddingLeft: "32px",borderColor: "#A1AEB7"}}>Información básica del servicio asociado al cliente.<br /></p>
+                                <div className="mb-3" style={{fontSize: "12px"}}>
+                                    <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Departamento</p>
+                                    <select className="form-select form-select-sm" style={{fontSize: "14px",color: "rgba(33,37,41,0.7)",marginBottom: "4px"}} required="" name="Departamento">
+                                        <optgroup label="Departamento">
+                                            <option value="12" selected="">Atlántico</option>
+                                            <option value="13">Bolívar</option>
+                                            <option value="14">Magdalena</option>
+                                        </optgroup>
+                                    </select>
+                                    <p id="errorDepartamento" value="" style={{color: "var(--bs-red)"}}></p>
+                                </div>
+                                <div className="mb-3" style={{fontSize: "12px"}}>
+                                    <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Municipio</p>
+                                    <select className="form-select form-select-sm" style={{fontSize: "14px",color: "rgba(33,37,41,0.7)",marginBottom: "4px"}} required="" name="Municipio">
+                                        <optgroup label="Municipio">
+                                            <option value="12" selected="">Barranquilla</option>
+                                            <option value="13">Puerto Colombia</option>
+                                            <option value="14">Soledad</option>
+                                        </optgroup>
+                                    </select>
+                                    <p id="errorMunicipio" value="" style={{color: "var(--bs-red)"}}></p>
+                                </div>
+                                <div className="mb-3" style={{fontSize: "12px"}}>
+                                    <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Dirección</p>
+                                    <input className="form-control form-control-sm" type="text" id="direccion" name="Direccion" placeholder="Carrera 52 # 98 - 120" style={{fontSize: "14px",marginBottom: "4px"}} required="" />
+                                    <p id="direccionError" value="" style={{color: "var(--bs-red)"}}></p>
+                                </div>
+                                <div className="mb-3" style={{fontSize: "12px"}}>
+                                    <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Barrio</p>
+                                    <input className="form-control form-control-sm" type="text" id="barrio" name="Barrio" placeholder="Buenavista" style={{fontSize: "14px",marginBottom: "4px"}} required />
+                                    <p id="barrioError" value="" style={{color: "var(--bs-red)"}}></p>
+                                </div>
+                                <div className="mb-3" style={{fontSize: "12px"}}>
+                                    <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Estrato</p>
+                                    <select className="form-select form-select-sm" style={{fontSize: "14px",color: "rgba(33,37,41,0.7)",marginBottom: "4px"}}required="" name="Estrato">
+                                        <optgroup label="Estrato">
+                                            <option value="1" selected="">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5" selected="">5</option>
+                                        </optgroup>
+                                    </select>
+                                    <p id="errorEstrato" value="" style={{color: "var(--bs-red)"}}></p>
+                                </div>
+                                <div className="mb-3" style={{fontSize: "12px"}}>
+                                    <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Próxima de facturación</p>
+                                    <input className="form-control form-control-sm" id="fechaIngreso" name="Fecha" placeholder="Fecha inicio" style={{fontSize: "14px",marginBottom: "4px",color: "rgba(33,37,41,0.7)"}} type="date" required="" />
+                                    <p id="fechaIngresoError" value="" style={{color: "var(--bs-red)"}}></p>
+                                </div>
+                                <div className="d-xl-flex justify-content-xl-center mb-3" style={{width: "40%",marginLeft: "30%",fontSize: "14px"}}>
+                                    <button onClick={actualizar} className="btn btn-primary d-block w-100" type="button" style={{background: "#424B5A",borderColor: "#424B5A",fontSize: "14px"}}>Actualizar</button>
+                                </div>
+                                <div className="d-xl-flex justify-content-xl-center mb-3" style={{width: "40%",marginLeft: "30%",fontSize: "14px"}}>
+                                    <button className="btn btn-primary d-block w-100" type="button" style={{background: "#F2F5F7",fontSize: "14px",borderColor: "#F2F5F7",color: "#505D68"}}>Suspender</button>
+                                </div>
+                            </form>
+                        </div>          
                     </div>
-                </div>
+                </div>}
+                {/*INFORMACION REGISTRO*/}
+                {/*MODULO*/}
+                <div className="modal fade" role="dialog" tabindex="-1" id="modal-1">
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h4 className="modal-title">Facturación</h4>
+                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div className="modal-body">
+                                <div className="table-responsive" style={{fontSize: "14px"}}>
+                                    <table className="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Fecha</th>
+                                                <th>Consumo</th>
+                                                <th>Lectura</th>
+                                                <th>Valor</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>23/11/2021</td>
+                                                <td>230</td>
+                                                <td>230</td>
+                                                <td>$45.000</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                {/*MODULO*/}   
             </div>
-            {/*INFORMACION DEL REGISTRO*/}
-        </div>
-      </React.Fragment>
+        </div>             
+        </React.Fragment>
     );
+
 }

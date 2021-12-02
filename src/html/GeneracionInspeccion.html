@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>App</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rubik&amp;display=swap">
+    <link rel="stylesheet" href="assets/css/Login-Form-Clean.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+
+<body style="background: #F2F5F7;font-family: Rubik, sans-serif;">
+    <nav class="navbar navbar-light navbar-expand-lg navigation-clean-button" style="color: #424B5A;background: #F2F5F7;margin-bottom: 36px;">
+        <div class="container"><a class="navbar-brand" href="#" style="color: #424B5A;">GASES DEL CARIBE</a>
+            <div>
+                <div class="collapse navbar-collapse" id="navcol-1">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item dropdown"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#" style="font-size: 12PX;">SERVICIOS</a>
+                            <div class="dropdown-menu shadow-none" style="font-size: 12PX;"><a class="dropdown-item" href="#" style="font-size: 12PX;">Registro</a><a class="dropdown-item" href="#" style="font-size: 12PX;">Gestión</a></div>
+                        </li>
+                        <li class="nav-item" style="font-size: 12PX;"><a class="nav-link" href="#" style="font-size: 12PX;">FACTURACIÓN</a></li>
+                        <li class="nav-item" style="font-size: 12PX;"><a class="nav-link" href="#" style="font-size: 12PX;">INSPECCIÓN</a></li>
+                        <li class="nav-item" style="font-size: 12PX;"><a class="nav-link" href="#" style="font-size: 12PX;">MEDICIÓN</a></li>
+                        <li class="nav-item" style="font-size: 12PX;"><a class="nav-link" href="#" style="font-size: 12PX;">ANOMALÍAS</a></li>
+                        <li class="nav-item" style="font-size: 12PX;"><a class="nav-link" href="#" style="font-size: 12PX;">PARAMETRIZACIÓN</a></li>
+                        <li class="nav-item" style="font-size: 12PX;"><a class="nav-link" href="#" style="font-size: 12PX;">USUARIOS</a></li>
+                        <li class="nav-item dropdown"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#" style="font-size: 12PX;">PERFIL</a>
+                            <div class="dropdown-menu shadow-none" style="font-size: 12PX;"><a class="dropdown-item" href="#" style="font-size: 12PX;">Administración</a><a class="dropdown-item" href="#" style="font-size: 12PX;">Cerrar sesión</a></div>
+                        </li>
+                    </ul>
+                </div>
+            </div><button data-bs-target="#navcol-1" data-bs-toggle="collapse" class="navbar-toggler"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+        </div>
+    </nav>
+    <div class="container" style="color: #424B5A;">
+        <div style="margin-bottom: 36px;">
+            <h1 style="text-align: center;font-size: 54px;margin-bottom: 0px;">GESTIÓN DE INSPECCIONES</h1>
+            <p style="text-align: center;font-size: 12px;color: #A1AEB7;margin-bottom: 0px;padding-right: 30%;padding-left: 30%;">A continuación, podrás consultar y generar las órdenes de servicio de inspección asociadas a los servicios.<br></p>
+        </div>
+        <div class="d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-center justify-content-sm-center justify-content-lg-center justify-content-xl-center" style="margin-bottom: 36px;">
+            <div style="background: #FFFFFF;width: 386px;border-top-left-radius: 8px;border-top-right-radius: 8px;border-bottom-right-radius: 8px;border-bottom-left-radius: 8px;">
+                <h2 class="d-xl-flex justify-content-xl-center align-items-xl-center" style="font-size: 20px;text-align: center;font-weight: bold;margin-bottom: 12px;margin-top: 32px;">Inspección</h2>
+                <p class="d-xl-flex justify-content-xl-center align-items-xl-center" style="text-align: center;font-size: 12px;color: #A1AEB7;margin-bottom: 0px;padding-right: 32px;padding-left: 32px;">Ingresa el servicio base al cual deseas consultar las inspecciones históricas o bien generar inspecciones.<br></p>
+                <div class="d-flex d-xl-flex justify-content-center justify-content-xl-center" style="margin-top: 24px;margin-bottom: 24px;">
+                    <form method="post" style="width: 260px;">
+                        <div class="mb-3" style="font-size: 12px;">
+                            <p style="color: #A1AEB7;margin-bottom: 0px;padding-bottom: 4px;">Número del servicio</p><input class="form-control form-control-sm" type="text" name="Servicio" placeholder="No. Servicio" style="font-size: 14px;margin-bottom: 4px;" required="">
+                            <p id="errorServicio" style="color: var(--bs-red);">Error</p>
+                            <div class="d-xl-flex justify-content-xl-center mb-3" style="width: 40%;margin-left: 30%;font-size: 14px;"><button class="btn btn-primary d-block w-100" type="button" style="background: #424B5A;border-color: #424B5A;font-size: 14px;" data-bs-target="#modal-1" data-bs-toggle="modal">Consultar</button></div>
+                            <div class="d-xl-flex justify-content-xl-center mb-3" style="width: 40%;margin-left: 30%;font-size: 14px;"><button class="btn btn-primary d-block w-100" type="button" style="background: #424B5A;border-color: #424B5A;font-size: 14px;">Generar</button></div>
+                            <p class="d-xl-flex justify-content-xl-center align-items-xl-center" style="text-align: center;font-size: 12px;color: #A1AEB7;margin-bottom: 24px;padding-right: 32px;padding-left: 32px;border-color: #A1AEB7;">Descarga histórico anual de inspección de servicios.<br></p>
+                            <div class="d-xl-flex justify-content-xl-center mb-3" style="width: 40%;margin-left: 30%;font-size: 14px;"><button class="btn btn-primary d-block w-100" type="button" style="background: #F2F5F7;font-size: 14px;border-color: #F2F5F7;color: #505D68;">Descagar</button></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-center justify-content-sm-center justify-content-lg-center justify-content-xl-center" style="margin-bottom: 36px;">
+            <div style="background: #FFFFFF;width: 386px;border-top-left-radius: 8px;border-top-right-radius: 8px;border-bottom-right-radius: 8px;border-bottom-left-radius: 8px;">
+                <h2 class="d-xl-flex justify-content-xl-center align-items-xl-center" style="font-size: 20px;text-align: center;font-weight: bold;margin-bottom: 12px;margin-top: 32px;">Generar inspección</h2>
+                <p class="d-xl-flex justify-content-xl-center align-items-xl-center" style="text-align: center;font-size: 12px;color: #A1AEB7;margin-bottom: 0px;padding-right: 32px;padding-left: 32px;">Ingresa la información básica requerida para generar inspección.<br></p>
+                <div class="d-flex d-xl-flex justify-content-center justify-content-xl-center" style="margin-top: 24px;margin-bottom: 24px;">
+                    <form method="post" style="width: 260px;">
+                        <div class="mb-3" style="font-size: 12px;">
+                            <p style="color: #A1AEB7;margin-bottom: 0px;padding-bottom: 4px;">Número del servicio</p><input class="form-control form-control-sm" type="text" name="Servicio" placeholder="No. Servicio" style="font-size: 14px;margin-bottom: 4px;" required="" readonly="">
+                        </div>
+                        <div class="mb-3" style="font-size: 12px;">
+                            <p style="color: #A1AEB7;margin-bottom: 0px;padding-bottom: 4px;">ID Técnico</p><input class="form-control form-control-sm" type="text" name="Tecnico" placeholder="ID Técnico" style="font-size: 14px;margin-bottom: 4px;" required="">
+                            <p id="errorTecnico-1" style="color: var(--bs-red);">Error</p>
+                        </div>
+                        <div class="mb-3" style="font-size: 12px;">
+                            <p style="color: #A1AEB7;margin-bottom: 0px;padding-bottom: 4px;">Fecha de inspección</p><input class="form-control form-control-sm" name="Fecha" placeholder="Fecha inicio" style="font-size: 14px;margin-bottom: 4px;color: rgba(33,37,41,0.7);" type="date" required="">
+                            <p id="errorFecha-1" style="color: var(--bs-red);">Error</p>
+                        </div>
+                        <div class="mb-3" style="font-size: 12px;">
+                            <p style="color: #A1AEB7;margin-bottom: 0px;padding-bottom: 4px;">Hora de inspección</p><input class="form-control form-control-sm" name="Hora" placeholder="Fecha inicio" style="font-size: 14px;margin-bottom: 4px;color: rgba(33,37,41,0.7);" type="time" required="">
+                            <p id="errorHora-1" style="color: var(--bs-red);">Error</p>
+                        </div>
+                        <div class="d-xl-flex justify-content-xl-center mb-3" style="width: 40%;margin-left: 30%;font-size: 14px;"><button class="btn btn-primary d-block w-100" type="button" style="background: #424B5A;border-color: #424B5A;font-size: 14px;">Generar</button></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" role="dialog" tabindex="-1" id="modal-1">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" style="font-size: 16px;">Inspecciones históricas</h4><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive" style="font-size: 14px;">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Técnico</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>01/11/2021 08:00 a.m.</td>
+                                        <td>Juan Pérez</td>
+                                    </tr>
+                                    <tr>
+                                        <td>17/10/2021 10:00 a.m.</td>
+                                        <td>Jorge López</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+
+</html>
