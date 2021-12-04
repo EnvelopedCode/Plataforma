@@ -45,3 +45,8 @@ Observaciones:
 12/2/2021
     
     - Parrafos de error no contienen Value, se setea o accede atraves de innerHTML
+
+12/3/2021
+    
+    - Por convencion es recomendable reemplazar los document.getElementById() por useRef(), para useRef basta con asignar la funcion useRef() a una variable, puede obtener un parametro por defecto, pero el input nunca debe tener value, solo debe tener el atributo ref={} y entre los corchetes la variable a la que se desea enganchar
+    - readonly puede tirar alerta pero si se deja como readOnly no funcionara

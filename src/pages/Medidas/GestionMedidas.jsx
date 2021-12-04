@@ -52,7 +52,6 @@ export default function GestionMedidas() {
         console.log("EVALUAR")
 
         if(servicio === "" || servicio === null){
-            console.log("SERVICIO ENTRO AL IF, ESTÁ VACIO");
             errorS = "Digite un servicio";
             flag = true;
         } else if(validarServicio(servicio)===true){
@@ -64,32 +63,37 @@ export default function GestionMedidas() {
         }
 
         if(medicion === ""){
-            console.log("MEDICION ENTRO AL IF, ESTÁ VACIO");
             errorM= "Digite una medición";
             flag = true;
         } else if(validarTexto(medicion)===false){
-            console.log("validarTexto...")
             errorM="digite solo numeros"
             flag=true;
         } else if (!medicion === 11) {
             errorM = "Ingrese una medición de longitud adecuada";
             flag = true;
         }
+
+        if(fechaMedicion === ""){
+            errorF = "Ingrese una fecha";
+            flag = true;
+        }
+
         if (flag === true) {
             errorServicio.innerHTML = errorS;
             errorMedicion.innerHTML = errorM;
+            errorFecha.innerHTML = errorF;
         }else{
             console.warn("FLAG === FALSE");
             errorS = "";
             errorM = "";
+            errorF = "";
             errorServicio.innerHTML = errorS;
             errorMedicion.innerHTML = errorM;
+            errorFecha.inner = errorF;
         }
 
     }
     
-
-
     return (
       <React.Fragment>
         <NavbarAdmin />

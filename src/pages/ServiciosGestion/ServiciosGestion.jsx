@@ -4,9 +4,11 @@ import Titulo from '../../components/Titulo'
 import RegistroMasivo from '../../components/RegistroMasivo';
 import { useRef } from 'react';
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function ServiciosGestion() {
 
+    {/*PROVICIONAL*/}
     const [registros, setRegistros] = useState([])
     const [informacion, setInformacion] = useState(false)
     const [titulo, setTitulo] = useState("")
@@ -16,19 +18,23 @@ export default function ServiciosGestion() {
     const cedula_1 = ["1000403193-1", "1000403193-2", "1000403193-3"]
     const cedula_2 = ["1234567890-1", "1234567890-2", "1234567890-3", "1234567890-4"]
     
-    
     let cedulaActual = cedula;
 
-    const buscarCedula = (event) => {
+    {/*PROVICIONAL*/}
+
+    const buscarCedula = (event) => { //Valida la cedula y realiza la busqueda de servicios asociados
 
         if (event.key === 'Enter') {
 
             event.preventDefault();
             console.warn("ENTRO A GUARDAR")
+
             let ced = document.getElementById("Cedula").value;
+            let cedulaError = document.getElementById("errorCedula");
+            let errorC = "";
+            let flag = false;
 
             {/*VALIDAR CEDULA*/}
-
             function validarCedula(parametro) {
                 var patron = /^[a-zA-Z\s]*$/;
                 if (parametro.search(patron)) {
@@ -38,18 +44,9 @@ export default function ServiciosGestion() {
                 }
               }
 
-            let flag = false;
-            let cedulaError = document.getElementById("errorCedula");
-            let errorC = "";
-
-            console.warn("EVALUAR")
-            
-            console.log(cedulaError)
-            console.log(errorC)
-            console.warn("EVALUAR")
-
             if (ced.length < 10 || ced.lenght > 10){
                 errorC = "Ingrese una cedula de longitud adecuada";
+                setInformacion(false);
                 flag = true;
             } else if(validarCedula(ced) === true){
                 errorC = "No Ingrese caracteres en su cedula"
@@ -73,39 +70,43 @@ export default function ServiciosGestion() {
                     }
                 }
                 
-                let resultado = cedulaEncontrar(ced)
+                let resultado = cedulaEncontrar(ced) //Resultado de la busqueda de la cedula en base de datos
     
                 console.log("EVALUAR")
                 console.warn(resultado)
                 console.log("EVALUAR")
     
                 if(resultado === "1000403193"){
-                    console.log("Entro a condicional")
                     setRegistros(cedula_1)
+
                 } else if (resultado === "1234567890"){
                     setRegistros(cedula_2)
-                } else{
+
+                } else{ //No se encontro la cedula
                     setRegistros([])
+                    setInformacion(false)
+                    errorC = "No se encontro la cedula"
+                    cedulaError.innerHTML = errorC;
+
                 }
 
-            } else {
-                console.warn("HUBIERON ERRORES")
+            } else { //Hubieron errores al ingresar la cedula
                 cedulaError.innerHTML = errorC;
+                setRegistros([]);
             }
             
         }
     }
     
-    const buscarRegistro = (event) => {
+    const buscarRegistro = (event) => { //Despliega la informacion individual de un servicio
         event.preventDefault();
-        console.warn("RECIBIO CLICK DE UN REGISTRO");
         setTitulo(event.target.value);
         setCedula(cedulaActual);
         setInformacion(true);
 
     }
     
-    const actualizar = (event) => {
+    const actualizar = (event) => { //Valida la actualizacion de la informacion de un servicio
 
         console.warn("ENTRO A ACTUALIZAR")
         let flag = false;
@@ -161,14 +162,50 @@ export default function ServiciosGestion() {
     }
 
     useEffect(()=>{
-        console.log("USEFFECT")
-        console.log(registros)
+        
+        if(registros.length > 0){
+
+            let focusme = document.getElementById("focusCampo");
+            focusme.scrollIntoView();
+
+        }
+
     }, [registros])
 
     useEffect(()=>{
+        
         console.log("USEFFECT")
         console.log(titulo)
+
+        if(informacion === true){
+
+            let focusme = document.getElementById("focusInformacion");
+            console.warn(focusme)
+            focusme.scrollIntoView();
+
+            const direccionError = document.getElementById("direccionError");
+            const barrioError = document.getElementById("barrioError");
+    
+            let errorDir = "";
+            let errorB = "";
+    
+            direccionError.innerHTML = errorDir;
+            barrioError.innerHTML = errorB;
+
+        }
+
     }, [titulo])
+
+    useEffect(() => {
+
+        if(informacion === true){
+            
+            let focusme = document.getElementById("focusInformacion");
+            focusme.scrollIntoView();
+
+        } 
+
+    }, [informacion])
     
 
     return (
@@ -194,7 +231,7 @@ export default function ServiciosGestion() {
                                 </div>
                                 <p className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{textAlign: "center",fontSize: "12px",color: "#A1AEB7",marginBottom: "24px",paddingRight: "32px",paddingLeft: "32px",borderColor: "#A1AEB7"}}>Lista de los servicio asociados al cliente buscado.<br /></p>
                                 {registros.map((registro) =>
-                                <div className="d-xl-flex justify-content-xl-center mb-3" style={{width: "55%",marginLeft: "22%"}}>
+                                <div id="focusCampo" className="d-xl-flex justify-content-xl-center mb-3" style={{width: "55%",marginLeft: "22%"}}>
                                     <button className="btn btn-primary d-block w-100" onClick={buscarRegistro} value={registro} type="button" style={{background: "#424B5A",borderColor: "#424B5A",fontSize: "12px"}}>{registro}</button>
                                 </div>
                                 )}
@@ -204,7 +241,7 @@ export default function ServiciosGestion() {
                 </div>
                 {/*GESTION INDIVIDUAL*/}
                 {/*INFORMACION REGISTRO*/}
-                {informacion && <div className="d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-center justify-content-sm-center justify-content-md-center justify-content-lg-center justify-content-xl-center" style={{marginBottom: "36px"}}>
+                {informacion && <div id="focusInformacion" className="d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-center justify-content-sm-center justify-content-md-center justify-content-lg-center justify-content-xl-center" style={{marginBottom: "36px"}}>
                     <div style={{background: "#FFFFFF",width: "386px",borderTopLeftRadius: "8px",borderTopRightRadius: "8px",borderBottomRightRadius: "8px",borderBottomLeftRadius: "8px"}}>
                         <h2 className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{fontSize: "20px",textAlign: "center",fontWeight: "bold",marginBottom: "12px",marginTop: "32px"}}>{titulo}</h2>
                         <p className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{textAlign: "center",fontSize: "12px",color: "#A1AEB7",marginBottom: "0px",paddingRight: "32px",paddingLeft: "32px"}}>Información básica del cliente asociado al servicio número 1140123567-2.<br /></p>
@@ -287,7 +324,7 @@ export default function ServiciosGestion() {
                     </div>
                 </div>}
                 {/*INFORMACION REGISTRO*/}
-                {/*MODULO*/}
+                {/*MODULO FACTURAS*/}
                 <div className="modal fade" role="dialog" tabindex="-1" id="modal-1">
                     <div className="modal-dialog" role="document">
                         <div className="modal-content">
@@ -319,8 +356,7 @@ export default function ServiciosGestion() {
                             </div>
                         </div>
                     </div>
-
-                {/*MODULO*/}   
+                {/*MODULO FACTURAS*/}   
             </div>
         </div>             
         </React.Fragment>

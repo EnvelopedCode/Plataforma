@@ -1,12 +1,11 @@
 21/1/2021
     - Crear linkeos con <Link>
-    - Revisar https://www.cluemediator.com/read-csv-file-in-react o https://heynode.com/blog/2020-02/reading-and-writing-csv-files-nodejs/ para manipulacion de archivos
-    - Validar Fechas
-
+    - Revisar https://www.cluemediator.com/read-csv-file-in-react o https://heynode.com/blog/2020-02/reading-and-writing-csv-files-nodejs/ para manipulacion de archivos (Revisar libreria FS)
+    - Cambiar inputs de las primeras vistas por useRef();
+    - Enviar JSON con datos de formulario (UsuariosGestion)
+    - Validaciones basicas: (Gestion de Medidas, Parametrizacion, Gestion Servicios, Registro Servicios, Inspeccion, Gestion Usuarios, Gestion Perfil) // Falta Anomalias
+    
     Realizadas:
-    Validaciones basicas:
-    - Registro de Anomalias
-    - Gestion de Medidas (En proceso)
-    - Parametrizacion
-    - Gestion Servicios
-    - Registro Servicios
+    - Añadir focus
+    - Capturar fechas (ServiciosGestion, ServiciosRegistro, GestionMedidas)
+    - Retificar que los readOnly sean readonly=""

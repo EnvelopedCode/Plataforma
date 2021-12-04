@@ -14,7 +14,7 @@ export default function ServiciosRegistro() {
     const direccionRef = useRef();
     const barrioRef = useRef();
     const estratoRef = useRef();
-    const fechaInicioRef = useRef();
+    const fechaInicioRef = useRef("");
 
     let flag = false;
 
@@ -97,7 +97,6 @@ export default function ServiciosRegistro() {
 
       /*DIRECCION*/
       if (direccion.length === 0 || direccion.length === null) {
-        console.log("valida la direccion");
         errorDir = "Ingrese una direccion";
         flag = true;
       } else if (direccion.lenght < 5) {
@@ -107,7 +106,6 @@ export default function ServiciosRegistro() {
 
       //BARRIO
       if (barrio.length === 0 || barrio.length === null) {
-        console.log("valida el barrio");
         errorB = "Ingrese un barrio";
         flag = true;
       } else if (barrio.lenght < 5) {
@@ -115,8 +113,14 @@ export default function ServiciosRegistro() {
         flag = true;
       }
 
+      //FECHA
+      if (fecha === ""){
+        errorF = "Ingrese una fecha de ingreso";
+        flag = true;
+      }
+
       if (flag === true) {
-        console.log("entró al true");
+        console.warn("FLAG === TRUE");
         cedulaError.innerHTML = errorC;
         nombreError.innerHTML = errorN;
         apellidoError.innerHTML = errorA;

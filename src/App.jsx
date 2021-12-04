@@ -6,19 +6,28 @@ import ServiciosGestion from './pages/ServiciosGestion/ServiciosGestion';
 import RegistroAnomalias from './pages/Anomalias/RegistroAnomalias';
 import GestionMedidas from './pages/Medidas/GestionMedidas'; 
 import Parametrizacion from './pages/Parametrizacion/Parametrizacion';
+import GestionInspeccion from './pages/Inspeccion/GestionInspeccion';
+import UsuariosGestion from './pages/UsuariosGestion/UsuariosGestion';
+import PerfilGestion from './pages/PerfilGestion/PerfilGestion';
 import { Routes, Route } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
+
+
+
 
 function App() {
   return (
     <React.Fragment>
       <BrowserRouter>
         <Routes>
-          <Route path="/RegistroServicios" element={<ServiciosRegistro />}/>
-          <Route path="/GestionServicios" element={<ServiciosGestion />}/>
+          <Route path="/ServiciosRegistro" element={<ServiciosRegistro />}/>
+          <Route path="/ServiciosGestion" element={<ServiciosGestion />}/>
           <Route path="/RegistroAnomalias" element={<RegistroAnomalias />}/>
           <Route path="/GestionMedidas" element={<GestionMedidas />}/>
           <Route path="/Parametrizacion" element={<Parametrizacion />} />
+          <Route path="/GestionInspeccion" element={<GestionInspeccion />}/>
+          <Route path="/UsuariosGestion" element={<UsuariosGestion />}/>
+          <Route path="/PerfilGestion" element={<PerfilGestion />} />
         </Routes>
       </BrowserRouter>
     </React.Fragment>  
