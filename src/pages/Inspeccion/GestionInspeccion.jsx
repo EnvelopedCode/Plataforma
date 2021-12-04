@@ -11,7 +11,6 @@ export default function GestionInspeccion() {
     const [noServicio, setNoServicio] = useState("");
     
     let servicio = useRef("");
-    let servicioInput = useRef("");
     let tecnicoInput = useRef("");
     let fechaInput = useRef("");
     let horaInput = useRef("");
@@ -111,6 +110,23 @@ export default function GestionInspeccion() {
             errorTecnico.innerHTML = errorT;
             errorFecha.innerHTML = errorF;
             errorHora.innerHTML = errorH;
+
+            servicio.current.value = "";
+            tecnicoInput.current.value = "";
+            fechaInput.current.value = "";
+            horaInput.current.value = "";
+
+            let inspeccionG = {
+                "servicio": noServicio,
+                "tecnico": tec,
+                "fecha": fec,
+                "hora": hor
+            }
+
+            inspeccionG = JSON.stringify(inspeccionG)
+            console.log(inspeccionG)
+            //HACER POST A LA RUTA
+
         }
 
     }

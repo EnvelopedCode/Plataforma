@@ -6,14 +6,14 @@ import { useRef } from 'react';
 
 export default function ServiciosRegistro() {
 
-    const cedulaRef = useRef();
-    const nombreRef = useRef();
-    const apellidoRef = useRef();
-    const departamentoRef = useRef();
-    const municipioRef = useRef();
-    const direccionRef = useRef();
-    const barrioRef = useRef();
-    const estratoRef = useRef();
+    const cedulaRef = useRef("");
+    const nombreRef = useRef("");
+    const apellidoRef = useRef("");
+    const departamentoRef = useRef("");
+    const municipioRef = useRef("");
+    const direccionRef = useRef("");
+    const barrioRef = useRef("");
+    const estratoRef = useRef("");
     const fechaInicioRef = useRef("");
 
     let flag = false;
@@ -62,7 +62,7 @@ export default function ServiciosRegistro() {
       }
     
       /*CEDULA*/
-      if (cedula.length === 0 || cedula.length === null) {
+      if (cedula === "") {
         console.log("valida la cedula en 0");
         errorC = "Ingrese una cedula valida";
         flag = true;
@@ -72,7 +72,7 @@ export default function ServiciosRegistro() {
       }
 
       /*NOMBRE*/
-      if (nombre.length === 0 || nombre.length === null) {
+      if (nombre === "") {
         errorN = "Ingrese un nombre";
         flag = true;
       } else if (validarTexto(apellido) === false) {
@@ -84,7 +84,7 @@ export default function ServiciosRegistro() {
       }
 
       //APELLIDO
-      if (apellido.length === 0 || apellido.length === null) {
+      if (apellido === "") {
         errorA = "Ingrese un apellido";
         flag = true;
       } else if (validarTexto(apellido) === false) {
@@ -96,7 +96,7 @@ export default function ServiciosRegistro() {
       }
 
       /*DIRECCION*/
-      if (direccion.length === 0 || direccion.length === null) {
+      if (direccion === "") {
         errorDir = "Ingrese una direccion";
         flag = true;
       } else if (direccion.lenght < 5) {
@@ -105,7 +105,7 @@ export default function ServiciosRegistro() {
       }
 
       //BARRIO
-      if (barrio.length === 0 || barrio.length === null) {
+      if (barrio === "") {
         errorB = "Ingrese un barrio";
         flag = true;
       } else if (barrio.lenght < 5) {
@@ -118,6 +118,9 @@ export default function ServiciosRegistro() {
         errorF = "Ingrese una fecha de ingreso";
         flag = true;
       }
+
+      console.warn(errorB);
+      console.warn(errorDir);
 
       if (flag === true) {
         console.warn("FLAG === TRUE");
@@ -155,12 +158,25 @@ export default function ServiciosRegistro() {
         cedulaRef.current.value = "";
         nombreRef.current.value = "";
         apellidoRef.current.value = "";
-        departamentoRef.current.value = "";
-        municipioRef.current.value = "";
         direccionRef.current.value="";
         barrioRef.current.value="";
-        estratoRef.current.value="";
         fechaInicioRef.current.value="";
+
+        let servicio = {
+          "cedula": cedula,
+          "nombre": nombre,
+          "apellido": apellido,
+          "departamento": departamento,
+          "municipio": municipio,
+          "direccion": direccion,
+          "barrio": barrio,
+          "estrato": estrato,
+          "fecha": fecha
+        }
+        servicio = JSON.stringify(servicio)
+        console.log(typeof servicio)
+        console.log(servicio)
+        //HACER POST A LA RUTA
         
       }
     }
@@ -228,11 +244,13 @@ export default function ServiciosRegistro() {
                             <p id="direccionError" value="" style={{color: 'var(--bs-red)'}}></p>
                         </div>
                         <div className="mb-3" style={{fontSize: "12px"}}>
-                            <p style={{color: "#A1AEB7",marginBotton: "0px",paddingBottom: "4px"}}>Barrio</p><input ref={barrioRef} className="form-control form-control-sm" type="text" name="Barrio" placeholder="Barrio" style={{fontSize: "14px",marginBotton: "4px"}} required="" />
+                            <p style={{color: "#A1AEB7",marginBotton: "0px",paddingBottom: "4px"}}>Barrio</p>
+                            <input ref={barrioRef} className="form-control form-control-sm" type="text" name="Barrio" placeholder="Barrio" style={{fontSize: "14px",marginBotton: "4px"}} required="" />
                             <p id="barrioError" value="" style={{color: 'var(--bs-red)'}}></p>
                         </div>
                         <div className="mb-3" style={{fontSize: '12px'}}>
-                            <p style={{color: "#A1AEB7",marginBotton: "0px",paddingBottom: "4px"}}>Estrato</p><select ref={estratoRef} className="form-select form-select-sm" style={{fontSize: "14px",color: 'rgba(33,37,41,0.7)',marginBotton: "4px"}} required="" name="Estrato">
+                            <p style={{color: "#A1AEB7",marginBotton: "0px",paddingBottom: "4px"}}>Estrato</p>
+                            <select ref={estratoRef} className="form-select form-select-sm" style={{fontSize: "14px",color: 'rgba(33,37,41,0.7)',marginBotton: "4px"}} required="" name="Estrato">
                                 <optgroup label="Estrato">
                                     <option value="1" selected="">1</option>
                                     <option value="2">2</option>

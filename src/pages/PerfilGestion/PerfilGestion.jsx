@@ -70,6 +70,17 @@ export default function PerfilGestion() {
             errorA = "";
             errorNombre.innerHTML = errorN;
             errorApellido.innerHTML = errorA;
+
+            let perfil = {
+                "nombre": nombre,
+                "apellido": apellido
+            }
+
+            perfil = JSON.stringify(perfil)
+            console.log(typeof perfil)
+            console.log(perfil)
+            //HACER POST A LA RUTA
+
         }
 
     }
@@ -109,8 +120,8 @@ export default function PerfilGestion() {
         if(confirmar === ""){
             errorPnc = "Confirma tu contraseña antes de hacer los cambios";
             flag = true;
-        } else if(confirmar !== actual){
-            errorPnc = "Contraseña incorrecta";
+        } else if(confirmar !== nueva){
+            errorPnc = "Contraseñas no coinciden";
             flag = true;
         }
         
@@ -125,6 +136,23 @@ export default function PerfilGestion() {
             errorPass.innerHTML = errorP;
             errorPassnew.innerHTML = errorPn;
             errorPassnewconf.innerHTML = errorPnc;
+
+            cActualRef.current.value = "";
+            cNuevaRef.current.value = "";
+            cConfirmarRef.current.value = "";
+
+            let contraseña = {
+                //Añadir usuario de la sesion activa, de esta forma sabemos a quien pertenece esta contraseña
+                "actual": actual,
+                "nueva": nueva,
+                "confirmar": confirmar
+              }
+
+              contraseña = JSON.stringify(contraseña)
+              console.log(typeof contraseña)
+              console.log(contraseña)
+              //HACER POST A LA RUTA
+
         }
     }
 
@@ -167,17 +195,17 @@ export default function PerfilGestion() {
                                 <p className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{ textAlign: "center", fontSize: "12px", color: "#A1AEB7", marginBottom: "24px", paddingRight: "32px", paddingLeft: "32px", borderColor: "#A1AEB7" }}>Acá puedes hacer el cambio de tu contraseña para inicio de sesión en la plataforma.<br /></p>
                                 <div className="mb-3" style={{ fontSize: "12px" }}>
                                     <p style={{ color: "#A1AEB7", marginBottom: "0px", paddingBottom: "4px" }}>Contraseña actual</p>
-                                    <input ref={cActualRef} className="form-control form-control-sm" type="text" name="pass" style={{ fontSize: "14px", marginBottom: "4px" }} required="" />
+                                    <input ref={cActualRef} className="form-control form-control-sm" type="password" name="pass" style={{ fontSize: "14px", marginBottom: "4px" }} required="" />
                                     <p id="errorPass" style={{ color: 'var(--bs-red)' }}></p>
                                 </div>
                                 <div className="mb-3" style={{ fontSize: "12px" }}>
                                     <p style={{ color: "#A1AEB7", marginBottom: "0pX", paddingBottom: "4px" }}>Contraseña nueva</p>
-                                    <input  ref={cNuevaRef} className="form-control form-control-sm" type="text" name="passnew" style={{ fontSize: "14px", marginBottom: "4px" }} required="" />
+                                    <input  ref={cNuevaRef} className="form-control form-control-sm" type="password" name="passnew" style={{ fontSize: "14px", marginBottom: "4px" }} required="" />
                                     <p id="errorPassnew" style={{ color: 'var(--bs-red)' }}></p>
                                 </div>
                                 <div className="mb-3" style={{ fontSize: '12px' }}>
                                     <p style={{ color: "#A1AEB7", marginBottom: "0px", paddingBottom: "4px" }}>Confirmar contraseña nueva</p>
-                                    <input ref={cConfirmarRef} className="form-control form-control-sm" type="text" name="passnewconf" style={{ fontSize: "14px", marginBottom: "4px" }} required="" />
+                                    <input ref={cConfirmarRef} className="form-control form-control-sm" type="password" name="passnewconf" style={{ fontSize: "14px", marginBottom: "4px" }} required="" />
                                     <p id="errorPassnewconf" style={{ color: 'var(--bs-red)' }}></p>
                                 </div>
                                 <div className="d-xl-flex justify-content-xl-center mb-3" style={{ width: "40%", marginLeft: "30%", fontSize: "14px" }}>

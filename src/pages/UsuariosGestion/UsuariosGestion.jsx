@@ -115,6 +115,7 @@ export default function UsuariosGestion() {
                 "cedula": cedula,
                 "nombre": nombre,
                 "apellido": apellido,
+                "perfil": perfil,
                 "contraseña": contraseña 
             }
             JSON.stringify(usuario)

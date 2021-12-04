@@ -2,8 +2,89 @@ import React from 'react'
 import NavbarAdmin from '../../components/NavbarAdmin';
 import Titulo from '../../components/Titulo';
 import RegistroMasivo from '../../components/RegistroMasivo';
+import { useRef } from 'react';
 
 export default function RegistroAnomalias() {
+
+    const servicioRef = useRef("");
+    const fechaRef = useRef("");
+    const anomaliaRef = useRef("");
+    
+    const registrar = (event) =>{
+
+        event.preventDefault();
+
+        let servicio = servicioRef.current.value;
+        let fecha = fechaRef.current.value;
+        let anomalia = anomaliaRef.current.value;
+
+        let errorServicio = document.getElementById("errorServicio");
+        let errorFecha = document.getElementById("errorFecha");
+        let errorAnomalia = document.getElementById("errorAnomalia");
+
+        let errorS = "";
+        let errorF = "";
+        let errorA = "";
+
+        function validarTexto(parametro) {
+
+            const reg = new RegExp('^[0-9]+$');
+            if (parametro.search(reg)) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        let flag = false;
+
+        console.warn("EVALUAR")
+        console.log(validarTexto("TEST"));
+        console.warn("EVALUAR")
+
+        if(servicio === ""){
+            errorS = "Ingrese un servicio";
+            flag = true;
+        } else if(validarTexto(servicio) === false){
+            errorS = "Ingrese caracteres numericos unicamente";
+            flag = true;
+        }
+
+        if(fecha === ""){
+            errorF = "Ingrese una fecha";
+            flag = true;
+        }
+
+        if(flag === true){
+            errorServicio.innerHTML = errorS;
+            errorFecha.innerHTML = errorF;
+            errorAnomalia.innerHTML = errorA;
+        } else {
+            errorS = "";
+            errorF = "";
+            errorA = "";
+            errorServicio.innerHTML = errorS;
+            errorFecha.innerHTML = errorF;
+            errorAnomalia.innerHTML = errorA;
+
+            servicioRef.current.value = "";
+            fechaRef.current.value = "";
+            anomaliaRef.current.value = "";
+
+            let anomaliaR = {
+                "servicio": servicio,
+                "fecha": fecha,
+                "anomalia": anomalia
+            }
+
+            anomaliaR = JSON.stringify(anomaliaR)
+            console.log(typeof anomaliaR)
+            console.log(anomaliaR)
+            //HACER POST A LA RUTA
+        }
+
+    }
+
     return (
       <React.Fragment>
         <NavbarAdmin />
@@ -26,24 +107,29 @@ export default function RegistroAnomalias() {
                         <div className="d-flex d-xl-flex justify-content-center justify-content-xl-center" style={{marginTop: "24px",marginBottom: "24px"}}>
                             <form method="post" style={{width: "260px"}}>
                                 <div className="mb-3" style={{fontSize: "12px"}}>
-                                    <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Número del servicio</p><input className="form-control form-control-sm" type="text" name="Servicio" placeholder="No. Servicio" style={{fontSize: "14px",marginBottom: "4px"}} required="" />
-                                    <p id="errorServicio" style={{color: 'var(--bs-red)'}}>Error</p>
+                                    <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Número del servicio</p>
+                                    <input ref={servicioRef} className="form-control form-control-sm" type="text" name="Servicio" placeholder="No. Servicio" style={{fontSize: "14px",marginBottom: "4px"}} required="" />
+                                    <p id="errorServicio" style={{color: 'var(--bs-red)'}}></p>
                                 </div>
                                 <div className="mb-3" style={{fontSize: "12px"}}>
-                                    <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Fecha de la anomalía</p><input className="form-control form-control-sm" name="Fecha" placeholder="Fecha inicio" style={{fontSize: "14px",marginBottom: "4px",color: 'rgba(33,37,41,0.7)'}} type="date" required="" />
-                                    <p id="errorFecha" style={{color: 'var(--bs-red)'}}>Error</p>
+                                    <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Fecha de la anomalía</p>
+                                    <input ref={fechaRef} className="form-control form-control-sm" name="Fecha" placeholder="Fecha inicio" style={{fontSize: "14px",marginBottom: "4px",color: 'rgba(33,37,41,0.7)'}} type="date" required="" />
+                                    <p id="errorFecha" style={{color: 'var(--bs-red)'}}></p>
                                 </div>
                                 <div className="mb-3" style={{fontSize: "12px"}}>
-                                    <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Anomalía</p><select className="form-select form-select-sm" style={{fontSize: "14px",color: 'rgba(33,37,41,0.7)',marginBottom: "4px"}} required="" name="Anomalia">
+                                    <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Anomalía</p>
+                                    <select ref={anomaliaRef} className="form-select form-select-sm" style={{fontSize: "14px",color: 'rgba(33,37,41,0.7)',marginBottom: "4px"}} required="" name="Anomalia">
                                         <optgroup label="Anomalías">
                                             <option value="Medidor dañado" selected="">Medidor dañado</option>
                                             <option value="Medidor directo">Medidor directo</option>
                                             <option value="Medidor desprogramado">Medidor desprogramado</option>
                                         </optgroup>
                                     </select>
-                                    <p id="errorAnomalia" style={{color: 'var(--bs-red)'}}>Error</p>
+                                    <p id="errorAnomalia" style={{color: 'var(--bs-red)'}}></p>
                                 </div>
-                                <div className="d-xl-flex justify-content-xl-center mb-3" style={{width: "40%",marginLeft: "30%",fontSize: "14px"}}><button className="btn btn-primary d-block w-100" type="button" style={{background: "#424B5A",borderColor: "#424B5A",fontSize: "14px"}}>Registrar</button></div>
+                                <div className="d-xl-flex justify-content-xl-center mb-3" style={{width: "40%",marginLeft: "30%",fontSize: "14px"}}>
+                                    <button onClick={registrar} className="btn btn-primary d-block w-100" type="button" style={{background: "#424B5A",borderColor: "#424B5A",fontSize: "14px"}}>Registrar</button>
+                                </div>
                             </form>
                         </div>
                     </div>

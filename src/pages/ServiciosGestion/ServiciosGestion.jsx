@@ -20,6 +20,13 @@ export default function ServiciosGestion() {
     
     let cedulaActual = cedula;
 
+    const departamentoRef = useRef("");
+    const municipioRef = useRef("");
+    const direccionRef = useRef("");
+    const barrioRef = useRef("");
+    const estratoRef = useRef("");
+    const fechaIngresoRef = useRef("");
+
     {/*PROVICIONAL*/}
 
     const buscarCedula = (event) => { //Valida la cedula y realiza la busqueda de servicios asociados
@@ -65,7 +72,7 @@ export default function ServiciosGestion() {
                         if(ced === cedulas[cedula]){
                      
                             return cedulas[cedula]
-                            break;
+                            //break;
                         }
                     }
                 }
@@ -108,12 +115,18 @@ export default function ServiciosGestion() {
     
     const actualizar = (event) => { //Valida la actualizacion de la informacion de un servicio
 
-        console.warn("ENTRO A ACTUALIZAR")
         let flag = false;
 
-        let direccion = document.getElementById("direccion").value;
-        let barrio = document.getElementById("barrio").value;
-        let fechaIngreso = document.getElementById("fechaIngreso").value;
+        let departamento = departamentoRef.current.value;
+        let municipio = municipioRef.current.value;
+        let direccion = direccionRef.current.value;
+        let barrio = barrioRef.current.value;
+        let estrato = estratoRef.current.value;
+        let fecha = fechaIngresoRef.current.value;
+
+        console.log("EVALUAR")
+        console.log(direccion)
+        console.log("EVALUAR")
 
         const direccionError = document.getElementById("direccionError");
         const barrioError = document.getElementById("barrioError");
@@ -124,24 +137,28 @@ export default function ServiciosGestion() {
         let errorF = "";
 
         /*DIRECCION*/
-        if (direccion.length === 0 || direccion.length === null) {
-            console.log("valida la direccion");
+        if (direccion === "") {
             errorDir = "Ingrese una direccion";
             flag = true;
-          } else if (direccion.lenght < 5) {
+          } else if (direccion.length < 5) {
             errorDir = "Ingrese una direccion valida";
             flag = true;
         }
 
         /*BARRIO*/
-        if (barrio.length === 0 || barrio.length === null) {
-            console.log("valida el barrio");
+        if (barrio === "") {
             errorB = "Ingrese un barrio";
             flag = true;
-          } else if (barrio.lenght < 5) {
+          } else if (barrio.length < 5) {
             errorB = "Ingrese un barrio valido";
             flag = true;
           }
+
+        /*FECHA*/
+        if (fecha === ""){
+            errorF = "Ingrese una fecha";
+            flag = true;
+        }
 
         if(flag === true){
             direccionError.innerHTML = errorDir;
@@ -155,6 +172,27 @@ export default function ServiciosGestion() {
             direccionError.innerHTML = errorDir;
             barrioError.innerHTML = errorB;
             fechaIngresoError.innerHTML = errorF;
+
+            direccionRef.current.value = "";
+            barrioRef.current.value = "";
+            fechaIngresoRef.current.value = "";
+
+            let servicioG = {
+                "cedula": cedulaActual,
+                "nombre": "Nilzon", //Traer de Base de datos
+                "apellido": "Gomez", //Traer de Base de datos
+                "departamento": departamento,
+                "municipio": municipio,
+                "direccion": direccion,
+                "barrio": barrio,
+                "estrato": estrato,
+                "fecha": fecha
+            }
+
+            servicioG = JSON.stringify(servicioG)
+            console.log(typeof servicioG)
+            console.log(servicioG)
+            //HACER POST A LA RUTA
 
         }
 
@@ -194,7 +232,7 @@ export default function ServiciosGestion() {
 
         }
 
-    }, [titulo])
+    }, [titulo, informacion])
 
     useEffect(() => {
 
@@ -265,7 +303,7 @@ export default function ServiciosGestion() {
                                 <p className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{textAlign: "center",fontSize: "12px",color: "#A1AEB7",marginBottom: "24px",paddingRight: "32px",paddingLeft: "32px",borderColor: "#A1AEB7"}}>Información básica del servicio asociado al cliente.<br /></p>
                                 <div className="mb-3" style={{fontSize: "12px"}}>
                                     <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Departamento</p>
-                                    <select className="form-select form-select-sm" style={{fontSize: "14px",color: "rgba(33,37,41,0.7)",marginBottom: "4px"}} required="" name="Departamento">
+                                    <select ref={departamentoRef} className="form-select form-select-sm" style={{fontSize: "14px",color: "rgba(33,37,41,0.7)",marginBottom: "4px"}} required="" name="Departamento">
                                         <optgroup label="Departamento">
                                             <option value="12" selected="">Atlántico</option>
                                             <option value="13">Bolívar</option>
@@ -276,7 +314,7 @@ export default function ServiciosGestion() {
                                 </div>
                                 <div className="mb-3" style={{fontSize: "12px"}}>
                                     <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Municipio</p>
-                                    <select className="form-select form-select-sm" style={{fontSize: "14px",color: "rgba(33,37,41,0.7)",marginBottom: "4px"}} required="" name="Municipio">
+                                    <select ref={municipioRef} className="form-select form-select-sm" style={{fontSize: "14px",color: "rgba(33,37,41,0.7)",marginBottom: "4px"}} required="" name="Municipio">
                                         <optgroup label="Municipio">
                                             <option value="12" selected="">Barranquilla</option>
                                             <option value="13">Puerto Colombia</option>
@@ -287,17 +325,17 @@ export default function ServiciosGestion() {
                                 </div>
                                 <div className="mb-3" style={{fontSize: "12px"}}>
                                     <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Dirección</p>
-                                    <input className="form-control form-control-sm" type="text" id="direccion" name="Direccion" placeholder="Carrera 52 # 98 - 120" style={{fontSize: "14px",marginBottom: "4px"}} required="" />
+                                    <input ref={direccionRef} className="form-control form-control-sm" type="text" id="direccion" name="Direccion" placeholder="Carrera 52 # 98 - 120" style={{fontSize: "14px",marginBottom: "4px"}} required="" />
                                     <p id="direccionError" value="" style={{color: "var(--bs-red)"}}></p>
                                 </div>
                                 <div className="mb-3" style={{fontSize: "12px"}}>
                                     <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Barrio</p>
-                                    <input className="form-control form-control-sm" type="text" id="barrio" name="Barrio" placeholder="Buenavista" style={{fontSize: "14px",marginBottom: "4px"}} required />
+                                    <input ref={barrioRef} className="form-control form-control-sm" type="text" id="barrio" name="Barrio" placeholder="Buenavista" style={{fontSize: "14px",marginBottom: "4px"}} required />
                                     <p id="barrioError" value="" style={{color: "var(--bs-red)"}}></p>
                                 </div>
                                 <div className="mb-3" style={{fontSize: "12px"}}>
                                     <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Estrato</p>
-                                    <select className="form-select form-select-sm" style={{fontSize: "14px",color: "rgba(33,37,41,0.7)",marginBottom: "4px"}}required="" name="Estrato">
+                                    <select ref={estratoRef} className="form-select form-select-sm" style={{fontSize: "14px",color: "rgba(33,37,41,0.7)",marginBottom: "4px"}}required="" name="Estrato">
                                         <optgroup label="Estrato">
                                             <option value="1" selected="">1</option>
                                             <option value="2">2</option>
@@ -310,7 +348,7 @@ export default function ServiciosGestion() {
                                 </div>
                                 <div className="mb-3" style={{fontSize: "12px"}}>
                                     <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Próxima de facturación</p>
-                                    <input className="form-control form-control-sm" id="fechaIngreso" name="Fecha" placeholder="Fecha inicio" style={{fontSize: "14px",marginBottom: "4px",color: "rgba(33,37,41,0.7)"}} type="date" required="" />
+                                    <input ref={fechaIngresoRef} className="form-control form-control-sm" id="fechaIngreso" name="Fecha" placeholder="Fecha inicio" style={{fontSize: "14px",marginBottom: "4px",color: "rgba(33,37,41,0.7)"}} type="date" required="" />
                                     <p id="fechaIngresoError" value="" style={{color: "var(--bs-red)"}}></p>
                                 </div>
                                 <div className="d-xl-flex justify-content-xl-center mb-3" style={{width: "40%",marginLeft: "30%",fontSize: "14px"}}>

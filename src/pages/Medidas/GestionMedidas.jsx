@@ -2,17 +2,28 @@ import React from 'react'
 import NavbarAdmin from '../../components/NavbarAdmin';
 import Titulo from '../../components/Titulo';
 import RegistroMasivo from '../../components/RegistroMasivo';
+import { useRef } from 'react';
 
 export default function GestionMedidas() {
 
+    const servicioRef = useRef("");
+    const medicionRef = useRef("");
+    const fechaMedicionRef = useRef("");
+    const unidadesRef = useRef("");
+    const anomaliasRef = useRef("");
+
     let flag = false;
+
     const registrar = () => {
         
         flag = false;
 
-        const servicio = document.getElementById("servicio").value;
-        const medicion = document.getElementById("medicion").value;
-        const fechaMedicion = document.getElementById("fechaMedicion").value;
+        let servicio = servicioRef.current.value;
+        let medicion = medicionRef.current.value;
+        let fechaMedicion = fechaMedicionRef.current.value;
+        let unidades = unidadesRef.current.value;
+        let anomalia = anomaliasRef.current.value;
+
         const errorServicio = document.getElementById("errorServicio");
         const errorMedicion = document.getElementById("errorMedicion");
         const errorFecha = document.getElementById("errorFecha");
@@ -22,10 +33,8 @@ export default function GestionMedidas() {
         let errorF = "";
 
         function validarTexto(parametro) {
-            // var patron = /^[a-zA-Z\s]*$/;
-            // var patron = RegExp("^[a-zA-Z\\s]+$");
+
             const reg = new RegExp('^[0-9]+$');
-            // const reg2 = new RegExp('^[-]+$');
             if (parametro.search(reg)) {
                 return false;
             } else {
@@ -37,21 +46,12 @@ export default function GestionMedidas() {
             console.warn("VALIDAR SERVICIO")
             let partes = parametro.split("-")
             console.log(partes)
-            if(parseInt(partes[0]) == NaN){
+            if(parseInt(partes[0]) === NaN){
                 console.log("Nuemro es NaN")
             }
         }
-        
-        console.log("EVALUAR")
-        console.log(servicio)
-        console.log(typeof servicio)
-        console.log(`12345 ${validarTexto("12345")}`)
-        console.log(`abcdefg ${validarTexto("abcdefg")}`)
-        console.log(`a1f232ds ${validarTexto("a1f232ds")}`)
-        console.log(`1000403193-1 ${validarTexto("1000403193-1")}`)
-        console.log("EVALUAR")
 
-        if(servicio === "" || servicio === null){
+        if(servicio === ""){
             errorS = "Digite un servicio";
             flag = true;
         } else if(validarServicio(servicio)===true){
@@ -90,6 +90,23 @@ export default function GestionMedidas() {
             errorServicio.innerHTML = errorS;
             errorMedicion.innerHTML = errorM;
             errorFecha.inner = errorF;
+
+            servicioRef.current.value = "";
+            medicionRef.current.value = "";
+            fechaMedicionRef.current.value = "";
+
+            let medida = {
+                "servicio": servicio,
+                "medicion": medicion,
+                "unidad": unidades,
+                "fecha": fechaMedicion,
+                "anomalia": anomalia
+              }
+
+              medida = JSON.stringify(medida)
+              console.log(typeof medida)
+              console.log(medida)
+              //HACER POST A LA RUTA
         }
 
     }
@@ -123,19 +140,20 @@ export default function GestionMedidas() {
                         <form method="post" style={{width: "260px" }}>
                             <div className="mb-3" style={{fontSize: "12px" }}>
                                 <p style={{color: "#A1AEB7" ,marginBottom: "0px" ,paddingBottom: "4px" }}>Número del servicio
-                                </p><input id="servicio" className="form-control form-control-sm" type="text" name="Servicio"
+                                </p>
+                                <input ref={servicioRef} className="form-control form-control-sm" type="text" name="Servicio"
                                     placeholder="No. Servicio" style={{fontSize: "14px" ,marginBottom: "4px" }} required="" />
                                 <p id="errorServicio" value="" style={{color: 'var(--bs-red)' }}></p>
                             </div>
                             <div className="mb-3" style={{fontSize: "12px" }}>
-                                <p style={{color: "#A1AEB7" ,marginBottom: "0px" ,paddingBottom: "4px" }}>Medición</p><input
-                                    id="medicion" className="form-control form-control-sm" type="text" name="Medicion" placeholder="Medición"
-                                    style={{fontSize: "14px" ,marginBottom: "4px" }} required="" />
+                                <p style={{color: "#A1AEB7" ,marginBottom: "0px" ,paddingBottom: "4px" }}>Medición</p>
+                                <input ref={medicionRef} className="form-control form-control-sm" type="text" name="Medicion" placeholder="Medición" style={{fontSize: "14px" ,marginBottom: "4px" }} required="" />
                                 <p id="errorMedicion" value="" style={{color: 'var(--bs-red)'}}></p>
                             </div>
                             <div className="mb-3" style={{fontSize: "12px" }}>
-                                <p style={{color: "#A1AEB7" ,marginBottom: "0px" ,paddingBottom: "4px" }}>Unidades</p><select
-                                    id="unidades" className="form-select form-select-sm" style={{fontSize: "14px" ,color: 'rgba(33,37,41,0.7)'
+                                <p style={{color: "#A1AEB7" ,marginBottom: "0px" ,paddingBottom: "4px" }}>Unidades</p>
+                                <select
+                                    ref={unidadesRef} className="form-select form-select-sm" style={{fontSize: "14px" ,color: 'rgba(33,37,41,0.7)'
                                     ,marginBottom: "4px" }} required="" name="Unidad">
                                     <optgroup label="Unidad">
                                         <option value="mc" selected="">mc</option>
@@ -146,15 +164,13 @@ export default function GestionMedidas() {
                             </div>
                             <div className="mb-3" style={{fontSize: "12px" }}>
                                 <p style={{color: "#A1AEB7" ,marginBottom: "0px" ,paddingBottom: "4px" }}>Fecha de la medición
-                                </p><input id="fechaMedicion" className="form-control form-control-sm" name="Fecha" placeholder="Fecha inicio"
-                                    style={{fontSize: "14px" ,marginBottom: "4px" ,color: 'rgba(33,37,41,0.7)' }} type="date"
-                                    required="" />
+                                </p>
+                                <input ref={fechaMedicionRef} className="form-control form-control-sm" name="Fecha" placeholder="Fecha inicio" style={{fontSize: "14px" ,marginBottom: "4px" ,color: 'rgba(33,37,41,0.7)' }} type="date" required="" />
                                 <p id="errorFecha" value="" style={{color: 'var(--bs-red)' }}></p>
                             </div>
                             <div className="mb-3" style={{fontSize: "12px" }}>
-                                <p style={{color: "#A1AEB7" ,marginBottom: "0px" ,paddingBottom: "4px" }}>Anomalía</p><select
-                                    id="anomalias "className="form-select form-select-sm" style={{fontSize: "14px" ,color: 'rgba(33,37,41,0.7)'
-                                    ,marginBottom: "4px" }} required="" name="Anomalia">
+                                <p style={{color: "#A1AEB7" ,marginBottom: "0px" ,paddingBottom: "4px" }}>Anomalía</p>
+                                <select ref={anomaliasRef} className="form-select form-select-sm" style={{fontSize: "14px", color: 'rgba(33,37,41,0.7)',marginBottom: "4px" }} required="" name="Anomalia">
                                     <optgroup label="Anomalías">
                                         <option value="Medidor dañado" selected="">Medidor dañado</option>
                                         <option value="Medidor directo">Medidor directo</option>

@@ -1,18 +1,26 @@
 import React from 'react'
 import NavbarAdmin from "../../components/NavbarAdmin";
 import Titulo from "../../components/Titulo";
+import { useRef } from 'react';
 
 export default function Parametrizacion() {
 
     let flag = false;
 
+    const valorUnidadRef = useRef("");
+    const impuestoRef = useRef("");
+    const subsidioRef = useRef("");
+    const estratoRef = useRef("");
+
     const actualizar = () => {
 
         flag = false;
+
+        let estrato = estratoRef.current.value;
+        let valorUnidad = valorUnidadRef.current.value;
+        let impuesto = impuestoRef.current.value;
+        let subsidio = subsidioRef.current.value;
         
-        const valorUnidad = document.getElementById("valorUnidadMedida").value;
-        const impuesto = document.getElementById("impuesto").value;
-        const subsidio = document.getElementById("subsidio").value;
         const errorValor = document.getElementById("errorValor");
         const errorImpuesto = document.getElementById("errorImpuesto");
         const errorSubsidio = document.getElementById("errorSubsidio");
@@ -23,7 +31,8 @@ export default function Parametrizacion() {
 
         console.log(valorUnidad);
 
-        if (valorUnidad.length === 0 || valorUnidad === null) {
+        //VALOR UNIDAD
+        if (valorUnidad === "") {
             console.log("valor unidad medidad está vacio");
             errorV = "Ingrese un valor";
             flag = true;
@@ -32,7 +41,8 @@ export default function Parametrizacion() {
             flag = true;
         }
 
-        if (impuesto.length === 0 || impuesto === null) {
+        //IMPUESTO
+        if (impuesto === "") {
             console.log("valor impuesto está vacio");
             errorI = "Ingrese un valor";
             flag = true;
@@ -41,7 +51,8 @@ export default function Parametrizacion() {
             flag = true;
         }
 
-        if (subsidio.length === 0 || subsidio === null) {
+        //SUBSIDIO
+        if (subsidio === "") {
             console.log("valor subsidio está vacio");
             errorS = "Ingrese un valor";
             flag = true;
@@ -50,8 +61,6 @@ export default function Parametrizacion() {
             flag = true;
         }
 
-
-        console.log(flag)
         if (flag === true) {
             console.warn("FLAG === TRUE");
             errorValor.innerHTML = errorV;
@@ -65,6 +74,22 @@ export default function Parametrizacion() {
             errorValor.innerHTML = errorV;
             errorImpuesto.innerHTML = errorI;
             errorSubsidio.innerHTML = errorS;
+
+            valorUnidadRef.current.value = "";
+            impuestoRef.current.value = "";
+            subsidioRef.current.value = "";
+
+            let estratoP = {
+                "estrato": estrato,
+                "valorUnidad": valorUnidad,
+                "impuesto": impuesto,
+                "subsidio": subsidio
+            }
+
+            estratoP = JSON.stringify(estratoP)
+            console.log(typeof estratoP)
+            console.log(estratoP)
+            //HACER POST A LA RUTA
         }
 
     }
@@ -88,7 +113,8 @@ export default function Parametrizacion() {
                     <div className="d-flex d-xl-flex justify-content-center justify-content-xl-center" style={{marginTop: "24px",marginBotton: "24px"}}>
                         <form method="post" style={{width: "260px"}}>
                             <div className="mb-3" style={{fontSize: "12px"}}>
-                                <p style={{color: "#A1AEB7",marginBotton: "0px",paddingBottom: "4px"}}>Estrato</p><select className="form-select form-select-sm" style={{fontSize: "14px",color: 'rgba(33,37,41,0.7)',marginBotton: "4px"}} required="" name="Estrato">
+                                <p style={{color: "#A1AEB7",marginBotton: "0px",paddingBottom: "4px"}}>Estrato</p>
+                                <select ref={estratoRef} className="form-select form-select-sm" style={{fontSize: "14px",color: 'rgba(33,37,41,0.7)',marginBotton: "4px"}} required="" name="Estrato">
                                     <optgroup label="Estrato">
                                         <option value="1" selected="">1</option>
                                         <option value="2">2</option>
@@ -101,18 +127,22 @@ export default function Parametrizacion() {
                             </div>
                             <div className="mb-3" style={{fontSize: '12px'}}>
                                 <p style={{color: "#A1AEB7",marginBotton: "0px",paddingBottom: "4px"}}>Valor por unidad de medida en COP</p>
-                                <input id="valorUnidadMedida"  className="form-control form-control-sm" type="text" name="Valor" placeholder="500" style={{fontSize: "14px",marginBotton: "4px"}} required="" />
+                                <input ref={valorUnidadRef}  className="form-control form-control-sm" type="text" name="Valor" placeholder="500" style={{fontSize: "14px",marginBotton: "4px"}} required="" />
                                 <p id="errorValor" value="" style={{color: 'var(--bs-red)'}}></p>
                             </div>
                             <div className="mb-3" style={{fontSize: "12px"}}>
-                                <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Impuesto en %</p><input  id="impuesto" className="form-control form-control-sm"  type="text" name="Impuesto" placeholder="10" style={{fontSize: "14px",marginBottom: "4px"}} required="" />
+                                <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Impuesto en %</p>
+                                <input  ref={impuestoRef} className="form-control form-control-sm"  type="text" name="Impuesto" placeholder="10" style={{fontSize: "14px",marginBottom: "4px"}} required="" />
                                 <p id="errorImpuesto" value="" style={{color: 'var(--bs-red)'}}></p>
                             </div>
                             <div className="mb-3" style={{fontSize: "12px"}}>
-                                <p style={{color: "#A1AEB7",marginBotton: "0px",paddingBottom: "4px"}}>Subsidios en %</p><input id="subsidio" className="form-control form-control-sm" type="text" name="Subsidio" placeholder="15" style={{fontSize: "14px",marginBotton: "4px"}} required="" />
+                                <p style={{color: "#A1AEB7",marginBotton: "0px",paddingBottom: "4px"}}>Subsidios en %</p>
+                                <input ref={subsidioRef} className="form-control form-control-sm" type="text" name="Subsidio" placeholder="15" style={{fontSize: "14px",marginBotton: "4px"}} required="" />
                                 <p id="errorSubsidio" value="" style={{color: 'var(--bs-red)'}}></p>
                             </div>
-                            <div className="d-xl-flex justify-content-xl-center mb-3" style={{width: "40%",marginLeft: "30%",fontSize: "14px"}}><button onClick={actualizar} className="btn btn-primary d-block w-100" type="button" style={{background: "#424B5A",borderColor: "#424B5A",fontSize: "14px"}}>Actualizar</button></div>
+                            <div className="d-xl-flex justify-content-xl-center mb-3" style={{width: "40%",marginLeft: "30%",fontSize: "14px"}}>
+                                <button onClick={actualizar} className="btn btn-primary d-block w-100" type="button" style={{background: "#424B5A",borderColor: "#424B5A",fontSize: "14px"}}>Actualizar</button>
+                            </div>
                         </form>
                     </div>
                 </div>
