@@ -1,21 +1,122 @@
 import React from "react";
 import NavbarAdmin from "../../components/NavbarAdmin";
 import Titulo from "../../components/Titulo";
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Facturacion() {
-  let registros = ["1000403193-1", "1234567890-2", "1000403193-1"];
-  const [checkedState, setCheckedState] = useState(
-    new Array(registros.length).fill(false)
-  );
+  
+  //BASE DE DATOS CON FACTURAS, el estado representa las facturas que se veran
+  const [facturasItinerario, setFacturasItinerario] = useState([
+    ["1000403193-1", "1000403193", "Nilzon Gomez", "Cra. 52 # 84-120", "3/12/2021", "", ""], 
+    ["1234567890-3", "1234567890", "Jose Araujo", "Cra. 65 #81-7", "2/11/2019", "201 m3", "53.000"], 
+    ["0987654321-7", "0987654321", "Loui Ahumada", "Cra. 23 #43-82", "5/06/2020", "329 m3", "71.000"]
+  ])
 
-  const handleChange = () => {
-    setCheckedState(!checkedState);
-  };
+  const [sinFacturar, setSinFacturar] = useState([
+    ["1140123567-1", "1140123567", "Juan Ariza", "Cra. 52# 78-15", "3/11/2021", "", "", "Sin consumo para facturar."],
+    ["1140123567-2", "1140123567", "Juan Ariza", "Calle 68# 49-63", "3/11/2021", "398 m3", "$67.000", "Servicio no seleccionado."]
+  ])
+  
+  function getSelectedCheckboxValues(name) { //SE TRAE LAS REFERENCIAS DE TODOS LOS CHECKBOX QUE ESTEN SELECCIONADOS
+    console.log("ENTRO A LA FUNCION")
+    const checkboxes = document.querySelectorAll(`input[name="${name}"]:checked`); //crea arreglo con los input del nombre especificado que esten seleccionados
+    let values = [];
+    checkboxes.forEach((checkbox) => { //añade a una lista los value(referencia) de todos los input seleccionados
+
+      if(facturasItinerario[checkbox.value][5] === ""){
+        console.log("Entro al if")
+        alert(`No se pudo facturar el servicio ${facturasItinerario[checkbox.value][0]}`)
+      } else {      
+        console.log("Entro al false") 
+        values.push(checkbox.value);
+      }
+    });
+
+    console.log(values);
+    console.warn("INVALIDAR LO DE ABAJO")
+    return values;
+}
+
+  const facturarItinerario = (event) =>{ //BUSCA LAS REFERENCIAS Y LAS AÑADE A UN ARREGLO DE FACTURAS SELECCIONADAS
+
+    let facturarReferencias = []  //Aqui guardamos las facturas seleccionadas que se eliminaran del estado
+    let referencias = []
+
+    event.preventDefault()
+    referencias = getSelectedCheckboxValues('tab-1'); //trae las referencias(indices) de los input seleccionados
+
+    for(let referencia in referencias){
+      
+        facturarReferencias.push(facturasItinerario[referencias[parseInt(referencia)]]); //añade a una lista las facturas referenciadas
+    
+    }
+
+    console.log("EVALUAR:")
+
+    let facturasNuevas = facturasItinerario;
+
+    //EVALUAR ESTO
+    for (var i = referencias.length -1; i >= 0; i--)
+      facturasNuevas.splice(referencias[i], 1, "");
+
+    var filtered = facturasNuevas.filter(function (el) {
+      return el != '';
+    });
+  
+    console.log(facturarReferencias)
+    console.log(filtered)
+
+    setFacturasItinerario(filtered)
+
+  }
+
+  const facturarSinFacturar= (event) =>{ //BUSCA LAS REFERENCIAS Y LAS AÑADE A UN ARREGLO DE FACTURAS SELECCIONADAS
+
+    let facturarReferencias = []  //Aqui guardamos las facturas seleccionadas que se eliminaran del estado
+    let referencias = []
+
+    event.preventDefault()
+    referencias = getSelectedCheckboxValues('tab-2'); //trae las referencias(indices) de los input seleccionados
+
+    for(let referencia in referencias){
+      
+        facturarReferencias.push(sinFacturar[referencias[parseInt(referencia)]]); //añade a una lista las facturas referenciadas
+    
+    }
+
+    console.log("EVALUAR:")
+
+    let facturasNuevas = sinFacturar;
+
+    //EVALUAR ESTO
+    for (var i = referencias.length -1; i >= 0; i--)
+      facturasNuevas.splice(referencias[i], 1, "");
+
+    var filtered = facturasNuevas.filter(function (el) {
+      return el != '';
+    });
+  
+    console.log(facturarReferencias)
+    console.log(filtered)
+
+    setSinFacturar(filtered)
+
+  }
+
 
   useEffect(() => {
-    console.log(checkedState);
-  }, [checkedState]);
+    console.log("")
+    console.log("USEFFECT")
+    console.log(facturasItinerario)
+    console.log("USEFFECT")
+  }, [facturasItinerario])
+
+  useEffect(() => {
+    console.log("")
+    console.log("USEFFECT")
+    console.log(sinFacturar)
+    console.log("USEFFECT")
+  }, [sinFacturar])
 
   return (
     <React.Fragment>
@@ -123,22 +224,24 @@ export default function Facturacion() {
                             </tr>
                           </thead>
                           <tbody>
+                            {facturasItinerario.map((factura, index) =>
                             <tr className="text-nowrap">
-                              <td>1140123567-1</td>
-                              <td>1140123567</td>
-                              <td>Jorge Pérez</td>
-                              <td>Cra. 52 # 84-120</td>
-                              <td>3/12/2021</td>
-                              <td>310 m3</td>
-                              <td>$56.000</td>
+                              <td>{factura[0]}</td> {/*servicio*/}
+                              <td>{factura[1]}</td> {/*cedula*/}
+                              <td>{factura[2]}</td> {/*nombre*/}
+                              <td>{factura[3]}</td>{/*direccion*/}
+                              <td>{factura[4]}</td> {/*fecha*/}
+                              <td>{factura[5]}</td> {/*consumo*/}
+                              <td>{factura[6]}</td> {/*coste*/}
                               <td>
                                 <input
                                   type="checkbox"
-                                  checked={checkedState}
-                                  onChange={handleChange}
+                                  name="tab-1"
+                                  value={`${index}`} //Por cada iteracion se le asigna un indice unico
                                 />
                               </td>
                             </tr>
+                            )}
                           </tbody>
                         </table>
                       </div>
@@ -152,6 +255,7 @@ export default function Facturacion() {
                         style={{ width: "20%", fontSize: "14px" }}
                       >
                         <button
+                        onClick={facturarItinerario}
                           className="btn btn-primary d-block w-100"
                           type="button"
                           style={{
@@ -206,48 +310,25 @@ export default function Facturacion() {
                             </tr>
                           </thead>
                           <tbody>
+                            {sinFacturar.map((factura, index) =>
                             <tr className="text-nowrap">
-                              <td>1140123567-1</td>
-                              <td>1140123567</td>
-                              <td>Juan Ariza</td>
-                              <td>Cra. 52# 78-15</td>
-                              <td>3/11/2021</td>
-                              <td></td>
-                              <td></td>
-                              <td>Sin consumo para facturar.</td>
+                              <td>{factura[0]}</td> {/*servicio*/}
+                              <td>{factura[1]}</td> {/*cedula*/}
+                              <td>{factura[2]}</td> {/*nombre*/}
+                              <td>{factura[3]}</td>{/*direccion*/}
+                              <td>{factura[4]}</td> {/*fecha*/}
+                              <td>{factura[5]}</td> {/*consumo*/}
+                              <td>{factura[6]}</td> {/*coste*/}
+                              <td>{factura[7]}</td> {/*observacion*/}
                               <td>
-                                <input type="checkbox" />
+                                <input
+                                  type="checkbox"
+                                  name="tab-2"
+                                  value={`${index}`} //Por cada iteracion se le asigna un indice unico
+                                />
                               </td>
                             </tr>
-                            <tr className="text-nowrap">
-                              <td>1140123567-2</td>
-                              <td>1140123567</td>
-                              <td>Juan Ariza</td>
-                              <td>
-                                Calle 68# 49-63
-                                <br />
-                              </td>
-                              <td>
-                                3/11/2021
-                                <br />
-                              </td>
-                              <td>
-                                398 m3
-                                <br />
-                              </td>
-                              <td>
-                                $67.000
-                                <br />
-                              </td>
-                              <td>
-                                Servicio no seleccionado.
-                                <br />
-                              </td>
-                              <td>
-                                <input type="checkbox" />
-                                <br />
-                              </td>
-                            </tr>
+                            )}
                           </tbody>
                         </table>
                       </div>
@@ -259,6 +340,7 @@ export default function Facturacion() {
                         style={{ width: "20%", fontSize: "14px" }}
                       >
                         <button
+                          onClick={facturarSinFacturar}
                           className="btn btn-primary d-block w-100"
                           type="button"
                           style={{
@@ -603,45 +685,13 @@ export default function Facturacion() {
                           </tbody>
                         </table>
                       </div>
-                      <p style={{ fontSize: "14px" }}>
-                        Servicios pagados durante la fecha actual.
-                      </p>
-                      <div
-                        className="d-xl-flex justify-content-xl-center mb-3"
-                        style={{ width: "20%", fontSize: "14px" }}
-                      >
-                        <button
-                          className="btn btn-primary d-block w-100"
-                          type="button"
-                          style={{
-                            background: "#424B5A",
-                            borderColor: "#424B5A",
-                            fontSize: "12px",
-                          }}
-                        >
-                          Facturar
-                        </button>
+                      <p style={{"fontSize": "14px"}}>Servicios pagados durante la fecha actual.</p>
+                      <div className="d-xl-flex justify-content-xl-center mb-3" style={{width: "20%",fontSize: "14px"}}>
+                        <button className="btn btn-primary d-block w-100" type="button" style={{background: "#424B5A",borderColor: "#424B5A",fontSize: "12px"}}>Confirmar pago</button>
                       </div>
-                      <p style={{ fontSize: "14px" }}>
-                        Descarga el registro histórico de consumos y pagos de
-                        los servicios.
-                      </p>
-                      <div
-                        className="d-xl-flex justify-content-xl-center mb-3"
-                        style={{ width: "20%", fontSize: "14px" }}
-                      >
-                        <button
-                          className="btn btn-primary d-block w-100"
-                          type="button"
-                          style={{
-                            background: "#F2F5F7",
-                            fontSize: "14px",
-                            borderColor: "#F2F5F7",
-                            color: "#505D68",
-                          }}
-                        >
-                          Descagar
-                        </button>
+                      <p style={{fontSize: "14px"}}>Descarga el registro histórico de consumos y pagos de los servicios.</p>
+                      <div className="d-xl-flex justify-content-xl-center mb-3" style={{width: "20%",fontSize: "14px"}}>
+                        <button className="btn btn-primary d-block w-100" type="button" style={{background: "#F2F5F7",fontSize: "14px",borderColor: "#F2F5F7",color: "#505D68"}}>Descargar</button>
                       </div>
                     </form>
                   </div>

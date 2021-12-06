@@ -2,13 +2,14 @@
     - Crear linkeos con <Link>
     - Revisar https://www.cluemediator.com/read-csv-file-in-react o https://heynode.com/blog/2020-02/reading-and-writing-csv-files-nodejs/ para manipulacion de archivos (Revisar libreria FS)
     - Cambiar inputs de las primeras vistas por useRef();
-    - Enviar JSON con datos de formulario (Gestion Usuarios, ServiciosRegistro, ServiciosGestion, GestionMedidas, Parametrizacion, Anoamlias) // Gestion Servicios, Inspeccion
-    - Validaciones basicas: (Gestion de Medidas, Parametrizacion, Gestion Servicios, Registro Servicios, Inspeccion, Gestion Usuarios, Gestion Perfil, Registro de Anomalias) // Login, Validacion, Registro, Facturacion
+    - Enviar JSON con datos de formulario (Gestion Usuarios, ServiciosRegistro, ServiciosGestion, GestionMedidas, Parametrizacion, Anoamlias, Validacion, Inspeccion, Registro) // Login, Facturacion
+    - Validaciones basicas: (Gestion de Medidas, Parametrizacion, Gestion Servicios, Registro Servicios, Inspeccion, Gestion Usuarios, Gestion Perfil, Registro de Anomalias, Validacion, Registro) // Login, Facturacion
     - Validar que los municipios en Registro de Servicio correspondan a los departamentos (Sprint #5)
     - Añadir IDs para hijos de la lista de registros en ServiciosGestion (Sprint #5)
-    - Realizar Correcion de label "barrio" sobre campo "cedula"
+    - Realizar validaciones de Facturacion y generar JSONs
         
     Realizadas:
     - Añadir focus
     - Capturar fechas (ServiciosGestion, ServiciosRegistro, GestionMedidas)
     - Retificar que los readOnly sean readonly=""
+    - Realizar Correcion de label "barrio" sobre campo "cedula"

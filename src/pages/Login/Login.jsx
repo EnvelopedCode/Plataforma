@@ -16,10 +16,12 @@ export default function Login() {
                                         <p style={{ color: "#A1AEB7", marginBottom: "0px", paddingBottom: "4px" }}>Cédula</p><input className="form-control form-control-sm" type="text" name="Cedula" placeholder="Cédula" style={{ fontSize: "14px", marginBottom: "4px" }} required="" readonly="" />
                                     </div>
                                     <div className="mb-3" style={{ fontSize: "12px" }}>
-                                        <p style={{ color: "#A1AEB7", marginBottom: "0px", paddingBottom: "4px" }}>Contraseña</p><input className="form-control form-control-sm" type="text" name="pass" style={{ fontSize: "14px", marginBottom: "4px" }} required="" />
+                                        <p style={{ color: "#A1AEB7", marginBottom: "0px", paddingBottom: "4px" }}>Contraseña</p>
+                                        <input className="form-control form-control-sm" type="password" name="pass" style={{ fontSize: "14px", marginBottom: "4px" }} required="" />
                                         <p id="errorPass-1" style={{ color: 'var(--bs-red)' }}></p>
                                     </div>
-                                    <div className="d-xl-flex justify-content-xl-center mb-3" style={{ width: "40%", marginLeft: "30%", fontSize: "14px" }}><button className="btn btn-primary d-block w-100" type="button" style={{ background: "#424B5A", borderColor: "#424B5A", fontSize: "14px" }}>Iniciar</button></div>
+                                    <div className="d-xl-flex justify-content-xl-center mb-3" style={{ width: "40%", marginLeft: "30%", fontSize: "14px" }}>
+                                        <button className="btn btn-primary d-block w-100" type="button" style={{ background: "#424B5A", borderColor: "#424B5A", fontSize: "14px" }}>Iniciar</button></div>
                                 </form>
                             </div>
                         </div>

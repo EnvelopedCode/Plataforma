@@ -249,7 +249,7 @@ export default function ServiciosGestion() {
     return (
         <React.Fragment>
             <NavbarAdmin />
-            <div classNameName="container" style={{ color: "#424B5A;" }}>
+            <div className="container" style={{ color: "#424B5A;" }}>
                 <Titulo
                 titulo="GESTION DE SERVICIOS"
                 subTitulo1="A continuación, podrás gestionar tanto de forma manual como masiva los servicios de clientes existentes."
