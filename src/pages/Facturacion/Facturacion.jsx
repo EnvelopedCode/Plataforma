@@ -2,20 +2,45 @@ import React from "react";
 import NavbarAdmin from "../../components/NavbarAdmin";
 import Titulo from "../../components/Titulo";
 import { useEffect, useState } from "react";
+import itinerario from "../../mocks/Facturacion/itinerarios"; //SIMULACION DATOS API
+import sinFacturasJSON from "../../mocks/Facturacion/sinfactura";
 
 export default function Facturacion() {
   
-  //BASE DE DATOS CON FACTURAS, el estado representa las facturas que se veran
-  const [facturasItinerario, setFacturasItinerario] = useState([
-    ["1000403193-1", "1000403193", "Nilzon Gomez", "Cra. 52 # 84-120", "3/12/2021", "", ""], 
-    ["1234567890-3", "1234567890", "Jose Araujo", "Cra. 65 #81-7", "2/11/2019", "201 m3", "53.000"], 
-    ["0987654321-7", "0987654321", "Loui Ahumada", "Cra. 23 #43-82", "5/06/2020", "329 m3", "71.000"]
-  ])
+  const itinerarios = [];
+  const sinFacturas = [];
 
-  const [sinFacturar, setSinFacturar] = useState([
-    ["1140123567-1", "1140123567", "Juan Ariza", "Cra. 52# 78-15", "3/11/2021", "", "", "Sin consumo para facturar."],
-    ["1140123567-2", "1140123567", "Juan Ariza", "Calle 68# 49-63", "3/11/2021", "398 m3", "$67.000", "Servicio no seleccionado."]
-  ])
+  for(let indice in itinerario){
+    let servicio = []
+    servicio.push(itinerario[indice].servicio)
+    servicio.push(itinerario[indice].cedula)
+    servicio.push(itinerario[indice].nombre)
+    servicio.push(itinerario[indice].direccion)
+    servicio.push(itinerario[indice].fecha)
+    servicio.push(itinerario[indice].consumo)
+    servicio.push(itinerario[indice].valor)
+    itinerarios.push(servicio);
+    console.log(servicio)
+  }
+
+  for(let indice in sinFacturasJSON ){
+    let servicio = []
+    servicio.push(sinFacturasJSON[indice].servicio)
+    servicio.push(sinFacturasJSON[indice].cedula)
+    servicio.push(sinFacturasJSON[indice].nombre)
+    servicio.push(sinFacturasJSON[indice].direccion)
+    servicio.push(sinFacturasJSON[indice].fecha)
+    servicio.push(sinFacturasJSON[indice].consumo)
+    servicio.push(sinFacturasJSON[indice].valor)
+    servicio.push(sinFacturasJSON[indice].observaciones)
+    sinFacturas.push(servicio);
+    console.log(servicio)
+  }
+
+
+  const [facturasItinerario, setFacturasItinerario] = useState(itinerarios) //el estado representa las facturas que se veran
+
+  const [sinFacturar, setSinFacturar] = useState(sinFacturas)
   
   function getSelectedCheckboxValues(name) { //SE TRAE LAS REFERENCIAS DE TODOS LOS CHECKBOX QUE ESTEN SELECCIONADOS
     console.log("ENTRO A LA FUNCION")
@@ -55,7 +80,7 @@ export default function Facturacion() {
 
     let facturasNuevas = facturasItinerario;
 
-    //EVALUAR ESTO
+    //BORRAR FACTURAS SELECCIONADAS
     for (var i = referencias.length -1; i >= 0; i--)
       facturasNuevas.splice(referencias[i], 1, "");
 
@@ -67,6 +92,31 @@ export default function Facturacion() {
     console.log(filtered)
 
     setFacturasItinerario(filtered)
+
+    
+
+    //ENVIAR A BACKEND
+    console.log("");
+    console.log("BACKEND")
+    let serviciosFacturar = []
+
+    for(let indice in facturarReferencias){
+
+      let factura = {
+        "servicio": facturarReferencias[indice][0],
+        "cedula": facturarReferencias[indice][1],
+        "nombre": facturarReferencias[indice][2],
+        "direccion": facturarReferencias[indice][3],
+        "fecha": facturarReferencias[indice][4],
+        "consumo": facturarReferencias[indice][5],
+        "valor": facturarReferencias[indice][6],
+      }
+
+      serviciosFacturar.push(factura);
+      
+    }
+
+    console.log(serviciosFacturar);
 
   }
 
@@ -101,22 +151,30 @@ export default function Facturacion() {
 
     setSinFacturar(filtered)
 
+    //ENVIAR A BACKEND
+    console.log("");
+    console.log("BACKEND")
+    let noServiciosFacturar = []
+
+    for(let indice in facturarReferencias){
+
+      let factura = {
+        "servicio": facturarReferencias[indice][0],
+        "cedula": facturarReferencias[indice][1],
+        "nombre": facturarReferencias[indice][2],
+        "direccion": facturarReferencias[indice][3],
+        "fecha": facturarReferencias[indice][4],
+        "consumo": facturarReferencias[indice][5],
+        "valor": facturarReferencias[indice][6],
+      }
+
+      noServiciosFacturar.push(factura);
+      
+    }
+
+    console.log(noServiciosFacturar);
+
   }
-
-
-  useEffect(() => {
-    console.log("")
-    console.log("USEFFECT")
-    console.log(facturasItinerario)
-    console.log("USEFFECT")
-  }, [facturasItinerario])
-
-  useEffect(() => {
-    console.log("")
-    console.log("USEFFECT")
-    console.log(sinFacturar)
-    console.log("USEFFECT")
-  }, [sinFacturar])
 
   return (
     <React.Fragment>

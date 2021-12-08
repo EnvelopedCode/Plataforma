@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 
 export default function Validacion() {
 
@@ -36,8 +36,12 @@ export default function Validacion() {
             validar = JSON.stringify(validar);
             console.log(validar);
             //ENVIAR A BACK END
+            document.getElementById("formTest").submit();
+
         }
     }
+
+
     return (
         <Fragment>
             <div className="row" style={{marginTop: "120px"}}>
@@ -55,7 +59,7 @@ export default function Validacion() {
                                 perfil.<br /></p>
                             <div className="d-flex d-xl-flex justify-content-center justify-content-xl-center"
                                 style={{marginTop: "24px",marginBottom: "24px"}}>
-                                <form method="post" style={{width: "260px"}}>
+                                <form id="formTest" method="post" style={{width: "260px"}}>
                                     <div className="mb-3" style={{fontSize: "12px"}}>
                                         <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Cédula</p>
                                         <input ref={validarRef} className="form-control form-control-sm" type="text" name="Cedula" placeholder="Cédula" style={{fontSize: "14px",marginBottom: "4px"}} required="" />
@@ -71,7 +75,6 @@ export default function Validacion() {
                     </div>
                 </div>
             </div>
-
         </Fragment>
     )
 }

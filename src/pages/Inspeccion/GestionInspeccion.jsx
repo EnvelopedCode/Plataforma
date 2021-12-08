@@ -3,6 +3,7 @@ import NavbarTecnico from "../../components/NavbarTecnico";
 import Titulo from "../../components/Titulo";
 
 export default function GestionInspeccion() {
+    
     return (
         <React.Fragment>
             <NavbarTecnico />

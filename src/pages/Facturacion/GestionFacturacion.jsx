@@ -2,20 +2,42 @@ import React from 'react'
 import NavbarTecnico from '../../components/NavbarUsuario';
 import Titulo from '../../components/Titulo';
 import { useState } from 'react';
+import existencias from '../../mocks/Facturacion/facturas';
 
 export default function GestionFacturacion() {
+    
+    const facturas = []
 
-    const [getFacturas, setGetFacturas] = useState([ //Este estado representa los registros del usuario en cuanto se carga la pagina (se manda un GET)
-        ["1000403193-1"],
-        ["1000403193-2"],
-        ["1000403193-3"]
-    ])
+    for(let indice in existencias){
+
+        //PENDIENTE: Revisar parseo de abajo
+
+        let servicio = []
+
+        facturas.push(existencias[indice].servicio)
+        facturas.push(existencias[indice].cedula)
+        facturas.push(existencias[indice].nombre)
+        facturas.push(existencias[indice].apellido)
+        facturas.push(existencias[indice].departamento)
+        facturas.push(existencias[indice].municipio)
+        facturas.push(existencias[indice].direccion)
+        facturas.push(existencias[indice].barrio)
+        facturas.push(existencias[indice].estrato)
+        facturas.push(existencias[indice].fecha)
+
+        existencias.push(servicio);
+        console.log(servicio);
+
+      }
+
+    const [getFacturas, setGetFacturas] = useState() //Este estado representa los registros del usuario en cuanto se carga la pagina (se manda un GET)
 
     const [formulario, setFormulario] = useState(false)
+    const [titulo, setTitulo] = useState("");
 
     const buscarRegistro = (event) => {
         event.preventDefault();
-        console.log("CLICK")
+        setTitulo(event.target.value);
         setFormulario(true);
     }
 
@@ -47,7 +69,7 @@ export default function GestionFacturacion() {
             {formulario &&
             <div className="d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-center justify-content-sm-center justify-content-md-center justify-content-lg-center justify-content-xl-center" style={{marginBottom: "36px"}}>
                 <div style={{background: "#FFFFFF",width: "386px",borderTopLeftRadius: "8px",borderTopRightRadius: "8px",borderBottomRightRadius: "8px",borderBottomLeftRadius: "8px"}}>
-                    <h2 className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{fontSize: "20px",textAlign: "center",fontWeight: "bold",marginBottom: "12px",marginTop: "32px"}}>1140123456-2</h2>
+                    <h2 className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{fontSize: "20px",textAlign: "center",fontWeight: "bold",marginBottom: "12px",marginTop: "32px"}}>{titulo}</h2>
                     <p className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{textAlign: "center",fontSize: "12px",color: "#A1AEB7",marginBottom: "0px",paddingRight: "32px",paddingLeft: "32px"}}>Información básica del cliente asociado al servicio número 1140123567-2.<br /></p>
                     <div className="d-flex d-xl-flex justify-content-center justify-content-xl-center" style={{marginTop: "24px",marginBottom: "24px"}}>
                         <form method="post" style={{width: "260px"}}>
