@@ -1,8 +1,26 @@
 import React from "react";
 import NavbarTecnico from "../../components/NavbarTecnico";
 import Titulo from "../../components/Titulo";
+import tareas from "../../mocks/Inspeccion/tareas";
+import { useState } from "react";
 
 export default function GestionInspeccion() {
+
+    const inspecciones = []
+
+    for(let indice in tareas){
+
+        let inspeccion = []
+        inspeccion.push(tareas[indice].servicio)
+        inspeccion.push(tareas[indice].cedula)
+        inspeccion.push(tareas[indice].nombre)
+        inspeccion.push(tareas[indice].direccion)
+        inspeccion.push(tareas[indice].fecha)
+
+        inspecciones.push(inspeccion);
+      }
+    
+    const [inspeccionesTabla, setInspeccionesTabla] = useState(inspecciones)
     
     return (
         <React.Fragment>
@@ -34,20 +52,15 @@ export default function GestionInspeccion() {
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        {inspeccionesTabla.map((inspeccion) =>
                                         <tr className="text-nowrap">
-                                            <td>1140123567-1</td>
-                                            <td>1140123567</td>
-                                            <td>Carlos Sierra</td>
-                                            <td>Cra. 52 # 84-120</td>
-                                            <td>4/12/2021</td>
+                                            <td>{inspeccion[0]}</td> {/*servicio*/}
+                                            <td>{inspeccion[1]}</td> {/*cedula*/}
+                                            <td>{inspeccion[2]}</td> {/*nombre*/}
+                                            <td>{inspeccion[3]}</td> {/*direccion*/}
+                                            <td>{inspeccion[4]}</td> {/*fecha*/}
                                         </tr>
-                                        <tr className="text-nowrap">
-                                            <td>1140123567-2</td>
-                                            <td>1140123567</td>
-                                            <td>Carlos Sierra</td>
-                                            <td>Calle 110 # 58-45<br /></td>
-                                            <td>5/12/2021<br /></td>
-                                        </tr>
+                                        )}
                                     </tbody>
                                 </table>
                             </div>

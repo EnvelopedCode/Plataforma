@@ -5,20 +5,36 @@ import RegistroMasivo from '../../components/RegistroMasivo';
 import { useRef } from 'react';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import servicios from '../../mocks/Servicios/servicios';
 
 export default function ServiciosGestion() {
 
+    const formularioListado = []
+
+    for(let indice in servicios){
+        let servicio = []
+        servicio.push(servicios[indice].servicio)
+        servicio.push(servicios[indice].cedula)
+        servicio.push(servicios[indice].nombre)
+        servicio.push(servicios[indice].apellido)
+        servicio.push(servicios[indice].departamento)
+        servicio.push(servicios[indice].municipio)
+        servicio.push(servicios[indice].direccion)
+        servicio.push(servicios[indice].barrio)
+        servicio.push(servicios[indice].estrato)
+        servicio.push(servicios[indice].fecha)
+        formularioListado.push(servicio);
+      }
+
     {/*PROVICIONAL*/}
+    const [formulario, setFormulario] = useState([])
     const [registros, setRegistros] = useState([])
     const [informacion, setInformacion] = useState(false)
     const [titulo, setTitulo] = useState("")
     const [cedula, setCedula] = useState("")
 
-    const cedulas = ["1000403193", "1234567890"]
-    const cedula_1 = ["1000403193-1", "1000403193-2", "1000403193-3"]
-    const cedula_2 = ["1234567890-1", "1234567890-2", "1234567890-3", "1234567890-4"]
-    
-    let cedulaActual = cedula;
+    const cedulas = ["1000403193"] //Base de datos con cedulas
+    const cedula_1 = [] //Servicios asociados
 
     const departamentoRef = useRef("");
     const municipioRef = useRef("");
@@ -30,6 +46,11 @@ export default function ServiciosGestion() {
     {/*PROVICIONAL*/}
 
     const buscarCedula = (event) => { //Valida la cedula y realiza la busqueda de servicios asociados
+        setFormulario([])
+        setRegistros([])
+        setInformacion(false)
+        setTitulo("")
+        setCedula("")
 
         if (event.key === 'Enter') {
 
@@ -62,42 +83,28 @@ export default function ServiciosGestion() {
 
             if(flag === false){
 
-                setCedula(ced)
                 errorC = "";
                 cedulaError.innerHTML = errorC;
 
-                function cedulaEncontrar(ced){
-                    for(let cedula in cedulas){
+                for(let cedula in cedulas){
+
+                    if(ced === cedulas[cedula]){
+
+                        setCedula(cedulas[cedula])
+                        setInformacion(false)
+
+                    } else{ //No se encontro la cedula
+
+                        setRegistros([])
+                        setInformacion(false)
+                        errorC = "No se encontro la cedula"
+                        cedulaError.innerHTML = errorC;
     
-                        if(ced === cedulas[cedula]){
-                     
-                            return cedulas[cedula]
-                            //break;
-                        }
                     }
-                }
-                
-                let resultado = cedulaEncontrar(ced) //Resultado de la busqueda de la cedula en base de datos
-    
-                console.log("EVALUAR")
-                console.warn(resultado)
-                console.log("EVALUAR")
-    
-                if(resultado === "1000403193"){
-                    setRegistros(cedula_1)
-
-                } else if (resultado === "1234567890"){
-                    setRegistros(cedula_2)
-
-                } else{ //No se encontro la cedula
-                    setRegistros([])
-                    setInformacion(false)
-                    errorC = "No se encontro la cedula"
-                    cedulaError.innerHTML = errorC;
-
-                }
+                }              
 
             } else { //Hubieron errores al ingresar la cedula
+                console.log("Error de sintaxis")
                 cedulaError.innerHTML = errorC;
                 setRegistros([]);
             }
@@ -108,8 +115,12 @@ export default function ServiciosGestion() {
     const buscarRegistro = (event) => { //Despliega la informacion individual de un servicio
         event.preventDefault();
         setTitulo(event.target.value);
-        setCedula(cedulaActual);
         setInformacion(true);
+        for(let dato in formularioListado){
+            if(formularioListado[dato][0] === event.target.value){
+                setFormulario(formularioListado[dato])
+            }
+        }      
 
     }
     
@@ -178,7 +189,7 @@ export default function ServiciosGestion() {
             fechaIngresoRef.current.value = "";
 
             let servicioG = {
-                "cedula": cedulaActual,
+                "cedula": cedula,
                 "nombre": "Nilzon", //Traer de Base de datos
                 "apellido": "Gomez", //Traer de Base de datos
                 "departamento": departamento,
@@ -244,6 +255,20 @@ export default function ServiciosGestion() {
         } 
 
     }, [informacion])
+
+    useEffect(() => {
+
+        console.warn("DETECTO LA CEDULA")
+
+        for(let servicio in formularioListado){
+            if(formularioListado[servicio][1] === cedula){
+                cedula_1.push(formularioListado[servicio][0]) //Agarramos servicios asociados
+            }
+        }
+        console.log(cedula_1)
+        setRegistros(cedula_1)
+
+    }, [cedula])
     
 
     return (
@@ -287,15 +312,15 @@ export default function ServiciosGestion() {
                         <form method="post" style={{width: "260px"}}>
                                 <div className="mb-3" style={{fontSize: "12px"}}>
                                     <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Cedula</p>
-                                    <input className="form-control form-control-sm" type="text" name="Cedula" placeholder="Cédula" value={cedulaActual} style={{fontSize: "14px",marginBottom: "4px"}} readonly="" />
+                                    <input className="form-control form-control-sm" type="text" name="Cedula" placeholder={formulario[1]} style={{fontSize: "14px",marginBottom: "4px"}} readonly="" />
                                 </div>
                                 <div className="mb-3" style={{fontSize: "12px"}}>
                                     <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Nombre</p>
-                                    <input className="form-control form-control-sm" type="text" name="Nombre" placeholder="Nombre" style={{marginBottom: "4px"}} readonly="" />
+                                    <input className="form-control form-control-sm" type="text" name="Nombre" placeholder={formulario[2]} style={{marginBottom: "4px"}} readonly="" />
                                 </div>
                                 <div className="mb-3" style={{fontSize: "12px"}}>
                                     <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Apellido</p>
-                                    <input className="form-control form-control-sm" type="text" name="Apellido" placeholder="Apellido" style={{marginBottom: "4px"}} readonly="" />
+                                    <input className="form-control form-control-sm" type="text" name="Apellido" placeholder={formulario[3]} style={{marginBottom: "4px"}} readonly="" />
                                 </div>
                                 <div className="d-xl-flex justify-content-xl-center mb-3" style={{width: "50%",marginLeft: "25%",fontSize: "14px"}}>
                                     <button className="btn btn-primary d-block w-100" type="button" style={{background: "#424B5A",borderColor: "#424B5A",fontSize: "14px"}} data-bs-target="#modal-1" data-bs-toggle="modal">Ver facturación</button>
@@ -325,12 +350,12 @@ export default function ServiciosGestion() {
                                 </div>
                                 <div className="mb-3" style={{fontSize: "12px"}}>
                                     <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Dirección</p>
-                                    <input ref={direccionRef} className="form-control form-control-sm" type="text" id="direccion" name="Direccion" placeholder="Carrera 52 # 98 - 120" style={{fontSize: "14px",marginBottom: "4px"}} required="" />
+                                    <input ref={direccionRef} className="form-control form-control-sm" type="text" id="direccion" name="Direccion" placeholder={formulario[6]} style={{fontSize: "14px",marginBottom: "4px"}} required="" />
                                     <p id="direccionError" value="" style={{color: "var(--bs-red)"}}></p>
                                 </div>
                                 <div className="mb-3" style={{fontSize: "12px"}}>
                                     <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Barrio</p>
-                                    <input ref={barrioRef} className="form-control form-control-sm" type="text" id="barrio" name="Barrio" placeholder="Buenavista" style={{fontSize: "14px",marginBottom: "4px"}} required />
+                                    <input ref={barrioRef} className="form-control form-control-sm" type="text" id="barrio" name="Barrio" placeholder={formulario[7]} style={{fontSize: "14px",marginBottom: "4px"}} required />
                                     <p id="barrioError" value="" style={{color: "var(--bs-red)"}}></p>
                                 </div>
                                 <div className="mb-3" style={{fontSize: "12px"}}>

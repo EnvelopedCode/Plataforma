@@ -20,7 +20,6 @@ export default function Facturacion() {
     servicio.push(itinerario[indice].consumo)
     servicio.push(itinerario[indice].valor)
     itinerarios.push(servicio);
-    console.log(servicio)
   }
 
   for(let indice in sinFacturasJSON ){
@@ -34,7 +33,6 @@ export default function Facturacion() {
     servicio.push(sinFacturasJSON[indice].valor)
     servicio.push(sinFacturasJSON[indice].observaciones)
     sinFacturas.push(servicio);
-    console.log(servicio)
   }
 
 
@@ -42,9 +40,9 @@ export default function Facturacion() {
 
   const [sinFacturar, setSinFacturar] = useState(sinFacturas)
   
-  function getSelectedCheckboxValues(name) { //SE TRAE LAS REFERENCIAS DE TODOS LOS CHECKBOX QUE ESTEN SELECCIONADOS
+  function getSelectedCheckboxValues1() { //SE TRAE LAS REFERENCIAS DE TODOS LOS CHECKBOX QUE ESTEN SELECCIONADOS
     console.log("ENTRO A LA FUNCION")
-    const checkboxes = document.querySelectorAll(`input[name="${name}"]:checked`); //crea arreglo con los input del nombre especificado que esten seleccionados
+    const checkboxes = document.querySelectorAll(`input[name="tab-1"]:checked`); //crea arreglo con los input del nombre especificado que esten seleccionados
     let values = [];
     checkboxes.forEach((checkbox) => { //añade a una lista los value(referencia) de todos los input seleccionados
 
@@ -61,6 +59,25 @@ export default function Facturacion() {
     console.warn("INVALIDAR LO DE ABAJO")
     return values;
 }
+  function getSelectedCheckboxValues2() { //SE TRAE LAS REFERENCIAS DE TODOS LOS CHECKBOX QUE ESTEN SELECCIONADOS
+    console.log("ENTRO A LA FUNCION")
+    const checkboxes = document.querySelectorAll(`input[name="tab-2"]:checked`); //crea arreglo con los input del nombre especificado que esten seleccionados
+    let values = [];
+    checkboxes.forEach((checkbox) => { //añade a una lista los value(referencia) de todos los input seleccionados
+
+      if(sinFacturar[checkbox.value][5] === ""){
+        console.log("Entro al if")
+        alert(`No se pudo facturar el servicio ${sinFacturar[checkbox.value][0]}`)
+      } else {      
+        console.log("Entro al false") 
+        values.push(checkbox.value);
+      }
+    });
+
+    console.log(values);
+    console.warn("INVALIDAR LO DE ABAJO")
+    return values;
+  }
 
   const facturarItinerario = (event) =>{ //BUSCA LAS REFERENCIAS Y LAS AÑADE A UN ARREGLO DE FACTURAS SELECCIONADAS
 
@@ -68,7 +85,7 @@ export default function Facturacion() {
     let referencias = []
 
     event.preventDefault()
-    referencias = getSelectedCheckboxValues('tab-1'); //trae las referencias(indices) de los input seleccionados
+    referencias = getSelectedCheckboxValues1(); //trae las referencias(indices) de los input seleccionados
 
     for(let referencia in referencias){
       
@@ -97,7 +114,7 @@ export default function Facturacion() {
 
     //ENVIAR A BACKEND
     console.log("");
-    console.log("BACKEND")
+    console.log("DATOS PARA LA API")
     let serviciosFacturar = []
 
     for(let indice in facturarReferencias){
@@ -126,7 +143,7 @@ export default function Facturacion() {
     let referencias = []
 
     event.preventDefault()
-    referencias = getSelectedCheckboxValues('tab-2'); //trae las referencias(indices) de los input seleccionados
+    referencias = getSelectedCheckboxValues2(); //trae las referencias(indices) de los input seleccionados
 
     for(let referencia in referencias){
       

@@ -1,7 +1,7 @@
 import React from 'react'
 import NavbarTecnico from '../../components/NavbarUsuario';
 import Titulo from '../../components/Titulo';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import existencias from '../../mocks/Facturacion/facturas';
 
 export default function GestionFacturacion() {
@@ -14,34 +14,54 @@ export default function GestionFacturacion() {
 
         let servicio = []
 
-        facturas.push(existencias[indice].servicio)
-        facturas.push(existencias[indice].cedula)
-        facturas.push(existencias[indice].nombre)
-        facturas.push(existencias[indice].apellido)
-        facturas.push(existencias[indice].departamento)
-        facturas.push(existencias[indice].municipio)
-        facturas.push(existencias[indice].direccion)
-        facturas.push(existencias[indice].barrio)
-        facturas.push(existencias[indice].estrato)
-        facturas.push(existencias[indice].fecha)
+        servicio.push(existencias[indice].servicio)
+        servicio.push(existencias[indice].cedula)
+        servicio.push(existencias[indice].nombre)
+        servicio.push(existencias[indice].apellido)
+        servicio.push(existencias[indice].departamento)
+        servicio.push(existencias[indice].municipio)
+        servicio.push(existencias[indice].direccion)
+        servicio.push(existencias[indice].barrio)
+        servicio.push(existencias[indice].estrato)
+        servicio.push(existencias[indice].fecha)
 
-        existencias.push(servicio);
+        facturas.push(servicio);
         console.log(servicio);
 
       }
 
-    const [getFacturas, setGetFacturas] = useState() //Este estado representa los registros del usuario en cuanto se carga la pagina (se manda un GET)
 
+    const [getFacturas, setGetFacturas] = useState(facturas) //Este estado representa los registros del usuario en cuanto se carga la pagina (se manda un GET)
     const [formulario, setFormulario] = useState(false)
     const [titulo, setTitulo] = useState("");
+    const [informacion, setInformacion] =useState([]);
+
+    const Informacion = (servicio) => {
+        for(let registro in facturas){
+
+            if(facturas[registro][0] === servicio){
+                setInformacion(facturas[registro]);
+            }
+        }
+    } 
 
     const buscarRegistro = (event) => {
         event.preventDefault();
         setTitulo(event.target.value);
+        Informacion(event.target.value);
         setFormulario(true);
     }
 
     //POR HACER: Imprimir titulo en la generacion de la informacion
+
+    useEffect(() => {
+        console.log(facturas);
+    }, [])
+
+    useEffect(() => {
+        console.log("Evaluar")
+        console.log(informacion)
+    }, [informacion])
 
     return (
       <React.Fragment>
@@ -57,9 +77,9 @@ export default function GestionFacturacion() {
                     <p className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{textAlign: "center",fontSize: "12px",color: "#A1AEB7",marginBottom: "0px",paddingRight: "32px",paddingLeft: "32px"}}>Listado de servicios asociados a tu cédula.<br /></p>
                     <div className="d-flex d-xl-flex justify-content-center justify-content-xl-center" style={{marginTop: "24px",marginBottom: "24px"}}>
                         <form method="post" style={{width: "260px"}}>
-                            {getFacturas.map((factura) =>
+                            {getFacturas.map((registro) =>
                             <div className="d-xl-flex justify-content-xl-center mb-3" style={{width: "55%",marginLeft: "22%"}}>
-                                <button className="btn btn-primary d-block w-100" onClick={buscarRegistro} value={factura} type="button" style={{background: "#424B5A",borderColor: "#424B5A",fontSize: "12px"}}>{factura}</button>
+                                <button className="btn btn-primary d-block w-100" onClick={buscarRegistro} value={registro[0]} type="button" style={{background: "#424B5A",borderColor: "#424B5A",fontSize: "12px"}}>{registro[0]}</button>
                             </div>
                             )}
                         </form>
@@ -74,33 +94,41 @@ export default function GestionFacturacion() {
                     <div className="d-flex d-xl-flex justify-content-center justify-content-xl-center" style={{marginTop: "24px",marginBottom: "24px"}}>
                         <form method="post" style={{width: "260px"}}>
                             <div className="mb-3" style={{fontSize: "12px"}}>
-                                <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Cédula</p><input className="form-control form-control-sm" type="text" name="Cedula" placeholder="Cédula" style={{fontSize: "14px",marginBottom: "4px"}} readonly=""/>
+                                <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Cédula</p>
+                                <input className="form-control form-control-sm" type="text" name="Cedula" value={informacion[1]} style={{fontSize: "14px",marginBottom: "4px"}} readonly=""/>
                             </div>
                             <div className="mb-3" style={{fontSize: "12px"}}>
-                                <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Nombre</p><input className="form-control form-control-sm" type="text" name="Nombre" placeholder="Nombre" style={{marginBottom: "4px"}} readonly="" />
+                                <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Nombre</p>
+                                <input className="form-control form-control-sm" type="text" name="Nombre" value={informacion[2]} style={{marginBottom: "4px"}} readonly="" />
                             </div>
                             <div className="mb-3" style={{fontSize: "12px"}}>
-                                <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Apellido</p><input className="form-control form-control-sm" type="text" name="Apellido" placeholder="Apellido" style={{marginBottom: "4px"}} readonly="" />
+                                <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Apellido</p>
+                                <input className="form-control form-control-sm" type="text" name="Apellido" value={informacion[3]} style={{marginBottom: "4px"}} readonly="" />
                             </div>
-                            <div className="d-xl-flex justify-content-xl-center mb-3" style={{width: "50%",marginLeft: "25%",fontSize: "14px"}}><button className="btn btn-primary d-block w-100" type="button" style={{background: "#424B5A",borderColor: "#424B5A",fontSize: "14px"}} data-bs-target="#modal-1" data-bs-toggle="modal">Ver facturación</button></div>
-                            <p className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{textAlign: "center",fontSize: "12px",color: "#A1AEB7",marginBottom: "24px",paddingRight: "32px",paddingLeft: "32px",borderColor: "#A1AEB7"}}>Información básica del servicio asociado al cliente.<br /></p>
-                            <div className="mb-3" style={{fontSize: "12px"}}>
-                                <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Departamento</p><input className="form-control form-control-sm" type="text" name="Departamento" placeholder="Atlántico" style={{fontSize: "14px",marginBottom: "4px"}} required="" readonly="" />
+                            <div className="d-xl-flex justify-content-xl-center mb-3" style={{width: "50%",marginLeft: "25%",fontSize: "14px"}}>
+                                <button className="btn btn-primary d-block w-100" type="button" style={{background: "#424B5A",borderColor: "#424B5A",fontSize: "14px"}} data-bs-target="#modal-1" data-bs-toggle="modal">Ver facturación</button>
                             </div>
+                            <p className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{textAlign: "center",fontSize: "12px",color: "#A1AEB7",marginBottom: "24px",paddingRight: "32px",paddingLeft: "32px",borderColor: "#A1AEB7"}}>Información básica del servicio asociado al cliente.<br />
+                            </p>
                             <div className="mb-3" style={{fontSize: "12px"}}>
-                                <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Municipio</p><input className="form-control form-control-sm" type="text" name="Municipio" placeholder="Barranquilla" style={{fontSize: "14px",marginBottom: "4px"}} required="" readonly="" />
-                            </div>
-                            <div className="mb-3" style={{fontSize: "12px"}}>
-                                <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Dirección</p><input className="form-control form-control-sm" type="text" name="Direccion" placeholder="Carrera 52 # 98 - 120" style={{fontSize: "14px",marginBottom: "4px"}} required="" readonly="" />
-                            </div>
-                            <div className="mb-3" style={{fontSize: "12px"}}>
-                                <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Barrio</p><input className="form-control form-control-sm" type="text" name="Barrio" placeholder="Buenavista" style={{fontSize: "14px",marginBottom: "4px"}} required="" readonly="" />
+                                <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Departamento</p>
+                                <input className="form-control form-control-sm" type="text" name="Departamento" value={informacion[4]} style={{fontSize: "14px",marginBottom: "4px"}} required="" readonly="" />
                             </div>
                             <div className="mb-3" style={{fontSize: "12px"}}>
-                                <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Estrato</p><input className="form-control form-control-sm" type="text" name="Estrato" placeholder="5" style={{fontSize: "14px",marginBottom: "4px"}} required="" readonly="" />
+                                <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Municipio</p><input className="form-control form-control-sm" type="text" name="Municipio" value={informacion[5]} style={{fontSize: "14px",marginBottom: "4px"}} required="" readonly="" />
                             </div>
                             <div className="mb-3" style={{fontSize: "12px"}}>
-                                <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Próxima de facturación</p><input className="form-control form-control-sm" name="Fecha" placeholder="Fecha inicio" style={{fontSize: "14px",marginBottom: "4px",color: 'rgba(33,37,41,0.7)'}} type="date" required="" readonly="" />
+                                <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Dirección</p><input className="form-control form-control-sm" type="text" name="Direccion" value={informacion[6]} style={{fontSize: "14px",marginBottom: "4px"}} required="" readonly="" />
+                            </div>
+                            <div className="mb-3" style={{fontSize: "12px"}}>
+                                <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Barrio</p><input className="form-control form-control-sm" type="text" name="Barrio" value={informacion[7]} style={{fontSize: "14px",marginBottom: "4px"}} required="" readonly="" />
+                            </div>
+                            <div className="mb-3" style={{fontSize: "12px"}}>
+                                <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Estrato</p><input className="form-control form-control-sm" type="text" name="Estrato" value={informacion[8]} style={{fontSize: "14px",marginBottom: "4px"}} required="" readonly="" />
+                            </div>
+                            <div className="mb-3" style={{fontSize: "12px"}}>
+                                <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Próxima de facturación</p>
+                                <input className="form-control form-control-sm" name="Fecha" value={informacion[9]} style={{fontSize: "14px",marginBottom: "4px",color: 'rgba(33,37,41,0.7)'}} type="text" required="" readonly="" />
                             </div>
                         </form>
                     </div>
