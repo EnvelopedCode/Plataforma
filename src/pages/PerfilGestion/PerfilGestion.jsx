@@ -1,7 +1,7 @@
 import React from 'react'
-import NavbarAdmin from '../../components/NavbarAdmin'
 import Titulo from '../../components/Titulo';
 import { useRef } from 'react';
+import NavbarAnalista from '../../components/NavbarAnalista';
 
 export default function PerfilGestion() {
 
@@ -77,7 +77,6 @@ export default function PerfilGestion() {
             }
 
             perfil = JSON.stringify(perfil)
-            console.log(typeof perfil)
             console.log(perfil)
             //HACER POST A LA RUTA
 
@@ -162,7 +161,7 @@ export default function PerfilGestion() {
 
     return (
         <React.Fragment>
-            <NavbarAdmin />
+            <NavbarAnalista />
             <div className="container" style={{ color: "#424B5A;" }}>
                 <Titulo
                     titulo="GESTIÓN PERFIL"

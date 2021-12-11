@@ -1,11 +1,11 @@
 import React from 'react'
-import NavbarAdmin from '../../components/NavbarAdmin'
 import Titulo from '../../components/Titulo'
 import RegistroMasivo from '../../components/RegistroMasivo';
 import { useRef } from 'react';
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import NavbarAnalista from "../../components/NavbarAnalista";
 import servicios from '../../mocks/Servicios/servicios';
+
 
 export default function ServiciosGestion() {
 
@@ -26,12 +26,12 @@ export default function ServiciosGestion() {
         formularioListado.push(servicio);
       }
 
-    {/*PROVICIONAL*/}
-    const [formulario, setFormulario] = useState([])
-    const [registros, setRegistros] = useState([])
-    const [informacion, setInformacion] = useState(false)
-    const [titulo, setTitulo] = useState("")
-    const [cedula, setCedula] = useState("")
+    const [formulario, setFormulario] = useState([]) //Datos del formulario
+    const [registros, setRegistros] = useState([]) //Servicios asociados a la cedula
+    const [informacion, setInformacion] = useState(false) //Despliegue del formulario
+    const [titulo, setTitulo] = useState("") //Titulo del formulario
+    const [cedula, setCedula] = useState("") //Cedula a buscar
+    const [date, setDate] = useState("") //Fecha del formulario actual
 
     const cedulas = ["1000403193"] //Base de datos con cedulas
     const cedula_1 = [] //Servicios asociados
@@ -43,6 +43,26 @@ export default function ServiciosGestion() {
     const estratoRef = useRef("");
     const fechaIngresoRef = useRef("");
 
+    const depOptions = [{name: 'Atlantico'}, {name: 'Bolivar'}, {name: 'Magdalena'}]; //Set de opciones
+    const [depOption, setDepOption] = useState("") //Opcion por default
+    const depOptionHandle = (event) => {
+        setDepOption(event.target.value)
+    }
+
+    const munOptions = [{name: 'Barranquilla'}, {name: 'Soledad'}, {name: 'Puerto Colombia'}];
+    const [munOption, setMunOption] = useState("")
+    const munOptionHandle = (event) => {
+        console.warn("ENTRO A MUNOPTION HANDLE")
+        setMunOption(event.target.value)
+    }
+
+    const estOptions = [{name: '1'}, {name: '2'}, {name: '3'}, {name: '4'}, {name: '5'}];
+    const [estOption, setEstOption] = useState("")
+    const estOptionHandle = (event) => {
+        console.warn("ENTRO A MUNOPTION HANDLE")
+        setEstOption(event.target.value)
+    }
+
     {/*PROVICIONAL*/}
 
     const buscarCedula = (event) => { //Valida la cedula y realiza la busqueda de servicios asociados
@@ -50,7 +70,6 @@ export default function ServiciosGestion() {
         setRegistros([])
         setInformacion(false)
         setTitulo("")
-        setCedula("")
 
         if (event.key === 'Enter') {
 
@@ -104,7 +123,7 @@ export default function ServiciosGestion() {
                 }              
 
             } else { //Hubieron errores al ingresar la cedula
-                console.log("Error de sintaxis")
+
                 cedulaError.innerHTML = errorC;
                 setRegistros([]);
             }
@@ -119,12 +138,15 @@ export default function ServiciosGestion() {
         for(let dato in formularioListado){
             if(formularioListado[dato][0] === event.target.value){
                 setFormulario(formularioListado[dato])
+                setDepOption(formularioListado[dato][4])
+                setMunOption(formularioListado[dato][5])
+                setEstOption(formularioListado[dato][8])
             }
         }      
 
     }
     
-    const actualizar = (event) => { //Valida la actualizacion de la informacion de un servicio
+    const actualizar = () => { //Valida la actualizacion de la informacion de un servicio
 
         let flag = false;
 
@@ -134,10 +156,6 @@ export default function ServiciosGestion() {
         let barrio = barrioRef.current.value;
         let estrato = estratoRef.current.value;
         let fecha = fechaIngresoRef.current.value;
-
-        console.log("EVALUAR")
-        console.log(direccion)
-        console.log("EVALUAR")
 
         const direccionError = document.getElementById("direccionError");
         const barrioError = document.getElementById("barrioError");
@@ -201,8 +219,8 @@ export default function ServiciosGestion() {
             }
 
             servicioG = JSON.stringify(servicioG)
-            console.log(typeof servicioG)
             console.log(servicioG)
+            setInformacion(false)
             //HACER POST A LA RUTA
 
         }
@@ -222,14 +240,10 @@ export default function ServiciosGestion() {
     }, [registros])
 
     useEffect(()=>{
-        
-        console.log("USEFFECT")
-        console.log(titulo)
 
         if(informacion === true){
 
             let focusme = document.getElementById("focusInformacion");
-            console.warn(focusme)
             focusme.scrollIntoView();
 
             const direccionError = document.getElementById("direccionError");
@@ -265,15 +279,24 @@ export default function ServiciosGestion() {
                 cedula_1.push(formularioListado[servicio][0]) //Agarramos servicios asociados
             }
         }
-        console.log(cedula_1)
         setRegistros(cedula_1)
 
     }, [cedula])
+
+    useEffect(() => {
+        console.warn("USEFFECT EN FORMULARIO")
+        setDepOption(formulario[4])
+        console.log(formulario[4])
+    }, [formulario])
     
+    useEffect(() => {
+        console.warn("USEFFECT EN DEPOPTION")
+        console.log(depOption)
+    }, [depOption])
 
     return (
         <React.Fragment>
-            <NavbarAdmin />
+            <NavbarAnalista />
             <div className="container" style={{ color: "#424B5A;" }}>
                 <Titulo
                 titulo="GESTION DE SERVICIOS"
@@ -328,22 +351,22 @@ export default function ServiciosGestion() {
                                 <p className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{textAlign: "center",fontSize: "12px",color: "#A1AEB7",marginBottom: "24px",paddingRight: "32px",paddingLeft: "32px",borderColor: "#A1AEB7"}}>Información básica del servicio asociado al cliente.<br /></p>
                                 <div className="mb-3" style={{fontSize: "12px"}}>
                                     <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Departamento</p>
-                                    <select ref={departamentoRef} className="form-select form-select-sm" style={{fontSize: "14px",color: "rgba(33,37,41,0.7)",marginBottom: "4px"}} required="" name="Departamento">
+                                    <select defaultValue={depOption} value={depOption} onChange={depOptionHandle} ref={departamentoRef} className="form-select form-select-sm" style={{fontSize: "14px",color: "rgba(33,37,41,0.7)",marginBottom: "4px"}} required="" name="Departamento">
                                         <optgroup label="Departamento">
-                                            <option value="12" selected="">Atlántico</option>
-                                            <option value="13">Bolívar</option>
-                                            <option value="14">Magdalena</option>
+                                        {depOptions.map((valor, index) =>
+                                        <option key={index} value={depOptions[index].name}>{depOptions[index].name}</option>
+                                        )}
                                         </optgroup>
                                     </select>
                                     <p id="errorDepartamento" value="" style={{color: "var(--bs-red)"}}></p>
                                 </div>
                                 <div className="mb-3" style={{fontSize: "12px"}}>
                                     <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Municipio</p>
-                                    <select ref={municipioRef} className="form-select form-select-sm" style={{fontSize: "14px",color: "rgba(33,37,41,0.7)",marginBottom: "4px"}} required="" name="Municipio">
+                                    <select defaultValue={munOption} value={munOption} onChange={munOptionHandle} ref={municipioRef} className="form-select form-select-sm" style={{fontSize: "14px",color: "rgba(33,37,41,0.7)",marginBottom: "4px"}} required="" name="Municipio">
                                         <optgroup label="Municipio">
-                                            <option value="12" selected="">Barranquilla</option>
-                                            <option value="13">Puerto Colombia</option>
-                                            <option value="14">Soledad</option>
+                                        {munOptions.map((valor, index) =>
+                                            <option key={index} value={munOptions[index].name}>{munOptions[index].name}</option>
+                                        )}
                                         </optgroup>
                                     </select>
                                     <p id="errorMunicipio" value="" style={{color: "var(--bs-red)"}}></p>
@@ -360,20 +383,18 @@ export default function ServiciosGestion() {
                                 </div>
                                 <div className="mb-3" style={{fontSize: "12px"}}>
                                     <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Estrato</p>
-                                    <select ref={estratoRef} className="form-select form-select-sm" style={{fontSize: "14px",color: "rgba(33,37,41,0.7)",marginBottom: "4px"}}required="" name="Estrato">
+                                    <select defaultValue={estOption} value={estOption} onChange={estOptionHandle} ref={estratoRef} className="form-select form-select-sm" style={{fontSize: "14px",color: "rgba(33,37,41,0.7)",marginBottom: "4px"}}required="" name="Estrato">
                                         <optgroup label="Estrato">
-                                            <option value="1" selected="">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5" selected="">5</option>
+                                        {estOptions.map((valor, index) =>
+                                            <option key={index} value={estOptions[index].name}>{estOptions[index].name}</option>
+                                        )}
                                         </optgroup>
                                     </select>
                                     <p id="errorEstrato" value="" style={{color: "var(--bs-red)"}}></p>
                                 </div>
                                 <div className="mb-3" style={{fontSize: "12px"}}>
                                     <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Próxima de facturación</p>
-                                    <input ref={fechaIngresoRef} className="form-control form-control-sm" id="fechaIngreso" name="Fecha" placeholder="Fecha inicio" style={{fontSize: "14px",marginBottom: "4px",color: "rgba(33,37,41,0.7)"}} type="date" required="" />
+                                    <input value={date} ref={fechaIngresoRef} className="form-control form-control-sm" id="fechaIngreso" name="Fecha" placeholder="Fecha inicio" style={{fontSize: "14px",marginBottom: "4px",color: "rgba(33,37,41,0.7)"}} type="date" required="" />
                                     <p id="fechaIngresoError" value="" style={{color: "var(--bs-red)"}}></p>
                                 </div>
                                 <div className="d-xl-flex justify-content-xl-center mb-3" style={{width: "40%",marginLeft: "30%",fontSize: "14px"}}>

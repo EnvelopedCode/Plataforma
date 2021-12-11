@@ -1,8 +1,8 @@
 import React from 'react'
-import NavbarAdmin from '../../components/NavbarAdmin';
 import Titulo from '../../components/Titulo';
 import RegistroMasivo from '../../components/RegistroMasivo';
 import { useRef } from 'react';
+import NavbarAnalista from '../../components/NavbarAnalista';
 
 export default function GestionMedidas() {
 
@@ -104,7 +104,6 @@ export default function GestionMedidas() {
               }
 
               medida = JSON.stringify(medida)
-              console.log(typeof medida)
               console.log(medida)
               //HACER POST A LA RUTA
         }
@@ -113,7 +112,7 @@ export default function GestionMedidas() {
     
     return (
       <React.Fragment>
-        <NavbarAdmin />
+        <NavbarAnalista />
         <div className="container" style={{ color: "#424B5A" }}>
           <Titulo
             titulo="GESTIÓN DE MEDIDAS"

@@ -50,3 +50,8 @@ Observaciones:
     
     - Por convencion es recomendable reemplazar los document.getElementById() por useRef(), para useRef basta con asignar la funcion useRef() a una variable, puede obtener un parametro por defecto, pero el input nunca debe tener value, solo debe tener el atributo ref={} y entre los corchetes la variable a la que se desea enganchar
     - readonly puede tirar alerta pero si se deja como readOnly no funcionara
+
+12/9/2021
+
+    - Para los select, debera usarse un value apuntando a un estado y un onChange apuntando a un Handler que haga el cambio de estado, en caso de preselccionarse algo debera de usarse un defaultValue apuntando al mismo estado que value.
+    Si DefaultValue o Value no encuentra el estado en sus opciones, se seleccionara automaticamente la primera opcion (osea por defecto)

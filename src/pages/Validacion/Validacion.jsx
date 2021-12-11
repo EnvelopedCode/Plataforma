@@ -4,6 +4,7 @@ import { useRef, useEffect } from 'react';
 export default function Validacion() {
 
     const validarRef = useRef("");
+    var host = "http://localhost:8080";
 
     const validar = (event) => {
         event.preventDefault();
@@ -33,14 +34,25 @@ export default function Validacion() {
                 "cedula": cedula
             }
 
-            validar = JSON.stringify(validar);
-            console.log(validar);
+            // console.log(validar);
             //ENVIAR A BACK END
-            document.getElementById("formTest").submit();
+            // document.getElementById("formTest").submit();
+
+            fetch(`${host}/validacion`, {
+              headers: { "content-type": "application/json" },
+              method: "POST",
+              body: JSON.stringify(validar)
+            })
+              .then((data) => data.json()) // Obtener los datos
+              .then((data) => {
+                alert(data.msg);
+              }).catch((error) => alert(error));
+                    
 
         }
     }
 
+    
 
     return (
         <Fragment>

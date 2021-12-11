@@ -1,7 +1,7 @@
 import React from 'react';
-import NavbarAdmin from '../../components/NavbarAdmin'
 import Titulo from '../../components/Titulo'
 import { useRef, useState, useEffect } from 'react';
+import NavbarAnalista from '../../components/NavbarAnalista';
 
 export default function GeneracionInspeccion() {
 
@@ -24,7 +24,6 @@ export default function GeneracionInspeccion() {
             setBtnGenerar(true);
 
             if(ser === ""){
-                console.warn("SERVICIO ESTABA VACIO")
                 let servicioError = document.getElementById("errorServicio");
                 let errorS = "Ingrese un servicio";
                 servicioError.innerHTML = errorS;
@@ -144,7 +143,7 @@ export default function GeneracionInspeccion() {
 
     return (
         <React.Fragment>
-            <NavbarAdmin />
+            <NavbarAnalista/>
             <div className="container" style={{ color: "#424B5A" }}>
                 <Titulo
                     titulo="GESTIÓN INSPECCIÓN"

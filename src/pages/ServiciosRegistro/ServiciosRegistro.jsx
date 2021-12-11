@@ -1,8 +1,8 @@
 import React from 'react'
-import NavbarAdmin from '../../components/NavbarAdmin'
 import Titulo from '../../components/Titulo'
 import RegistroMasivo from '../../components/RegistroMasivo';
 import { useRef } from 'react';
+import NavbarAnalista from '../../components/NavbarAnalista';
 
 export default function ServiciosRegistro() {
 
@@ -15,6 +15,7 @@ export default function ServiciosRegistro() {
     const barrioRef = useRef("");
     const estratoRef = useRef("");
     const fechaInicioRef = useRef("");
+    var host = "http://localhost:8080";
 
     let flag = false;
 
@@ -162,7 +163,7 @@ export default function ServiciosRegistro() {
         barrioRef.current.value="";
         fechaInicioRef.current.value="";
 
-        let servicio = {
+        const servicio = {
           "cedula": cedula,
           "nombre": nombre,
           "apellido": apellido,
@@ -171,22 +172,29 @@ export default function ServiciosRegistro() {
           "direccion": direccion,
           "barrio": barrio,
           "estrato": estrato,
-          "fecha": fecha
-        }
-        servicio = JSON.stringify(servicio)
-        console.log(typeof servicio)
-        console.log(servicio)
-        //HACER POST A LA RUTA
+          "fecha": fecha,
+          "servicio": cedula
+        } 
+
+        fetch(`${host}/servicioRegistro`, {
+          headers: { "content-type": "application/json" },
+          method: "POST",
+          body: JSON.stringify(servicio)
+          // JSON.stringify({ cedula, nombre, apellido, departamento, municipio, direccion, barrio, estrato, fecha }),
+        })
+          .then((data) => data.json()) // Obtener los datos
+          .then((data) => {
+            alert(data.msg);
+          })
+          .catch((error) => alert(error));
         
       }
+      
     }
-
-    console.log("VALIDACIONES")
-    console.log("VALIDACIONES")   
 
     return (
       <React.Fragment>
-        <NavbarAdmin />
+        <NavbarAnalista />
         <div classNameNameName="container" style={{ color: "#424B5A;" }}>
           <Titulo
             titulo="REGISTRO DE SERVICIO"

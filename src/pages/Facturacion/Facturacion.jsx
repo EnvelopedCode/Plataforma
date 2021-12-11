@@ -1,12 +1,13 @@
 import React from "react";
-import NavbarAdmin from "../../components/NavbarAdmin";
 import Titulo from "../../components/Titulo";
 import { useEffect, useState } from "react";
 import itinerario from "../../mocks/Facturacion/itinerarios"; //SIMULACION DATOS API
 import sinFacturasJSON from "../../mocks/Facturacion/sinfactura";
+import NavbarAnalista from "../../components/NavbarAnalista";
 
 export default function Facturacion() {
   
+  {/*JSON*/}
   const itinerarios = [];
   const sinFacturas = [];
 
@@ -34,12 +35,15 @@ export default function Facturacion() {
     servicio.push(sinFacturasJSON[indice].observaciones)
     sinFacturas.push(servicio);
   }
+  {/*JSON*/}
 
-
+  {/*DATOS TABLAS*/}
   const [facturasItinerario, setFacturasItinerario] = useState(itinerarios) //el estado representa las facturas que se veran
 
   const [sinFacturar, setSinFacturar] = useState(sinFacturas)
-  
+  {/*DATOS TABLAS*/}
+
+  {/*FACTURAR*/}
   function getSelectedCheckboxValues1() { //SE TRAE LAS REFERENCIAS DE TODOS LOS CHECKBOX QUE ESTEN SELECCIONADOS
     console.log("ENTRO A LA FUNCION")
     const checkboxes = document.querySelectorAll(`input[name="tab-1"]:checked`); //crea arreglo con los input del nombre especificado que esten seleccionados
@@ -47,35 +51,26 @@ export default function Facturacion() {
     checkboxes.forEach((checkbox) => { //añade a una lista los value(referencia) de todos los input seleccionados
 
       if(facturasItinerario[checkbox.value][5] === ""){
-        console.log("Entro al if")
         alert(`No se pudo facturar el servicio ${facturasItinerario[checkbox.value][0]}`)
       } else {      
-        console.log("Entro al false") 
         values.push(checkbox.value);
       }
     });
 
-    console.log(values);
-    console.warn("INVALIDAR LO DE ABAJO")
     return values;
 }
   function getSelectedCheckboxValues2() { //SE TRAE LAS REFERENCIAS DE TODOS LOS CHECKBOX QUE ESTEN SELECCIONADOS
-    console.log("ENTRO A LA FUNCION")
     const checkboxes = document.querySelectorAll(`input[name="tab-2"]:checked`); //crea arreglo con los input del nombre especificado que esten seleccionados
     let values = [];
     checkboxes.forEach((checkbox) => { //añade a una lista los value(referencia) de todos los input seleccionados
 
       if(sinFacturar[checkbox.value][5] === ""){
-        console.log("Entro al if")
         alert(`No se pudo facturar el servicio ${sinFacturar[checkbox.value][0]}`)
       } else {      
-        console.log("Entro al false") 
         values.push(checkbox.value);
       }
     });
 
-    console.log(values);
-    console.warn("INVALIDAR LO DE ABAJO")
     return values;
   }
 
@@ -93,7 +88,6 @@ export default function Facturacion() {
     
     }
 
-    console.log("EVALUAR:")
 
     let facturasNuevas = facturasItinerario;
 
@@ -105,8 +99,6 @@ export default function Facturacion() {
       return el != '';
     });
   
-    console.log(facturarReferencias)
-    console.log(filtered)
 
     setFacturasItinerario(filtered)
 
@@ -192,10 +184,11 @@ export default function Facturacion() {
     console.log(noServiciosFacturar);
 
   }
+  {/*FACTURAR*/}
 
   return (
     <React.Fragment>
-      <NavbarAdmin />
+      <NavbarAnalista />
       <div className="container" style={{ color: "#424B5A;" }}>
         <Titulo
           titulo="FACTURACION"

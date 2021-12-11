@@ -1,7 +1,7 @@
 import React from 'react';
-import NavbarAdmin from '../../components/NavbarAdmin';
 import Titulo from '../../components/Titulo';
 import {useRef} from 'react';
+import NavbarAdmin from '../../components/NavbarAdmin';
 
 export default function UsuariosGestion() {
 

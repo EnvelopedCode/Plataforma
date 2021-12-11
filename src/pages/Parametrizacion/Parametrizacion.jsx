@@ -1,7 +1,7 @@
 import React from 'react'
-import NavbarAdmin from "../../components/NavbarAdmin";
 import Titulo from "../../components/Titulo";
 import { useRef } from 'react';
+import NavbarAnalista from '../../components/NavbarAnalista';
 
 export default function Parametrizacion() {
 
@@ -28,8 +28,6 @@ export default function Parametrizacion() {
         let errorV = "";
         let errorI= "";
         let errorS = "";
-
-        console.log(valorUnidad);
 
         //VALOR UNIDAD
         if (valorUnidad === "") {
@@ -87,7 +85,6 @@ export default function Parametrizacion() {
             }
 
             estratoP = JSON.stringify(estratoP)
-            console.log(typeof estratoP)
             console.log(estratoP)
             //HACER POST A LA RUTA
         }
@@ -95,11 +92,9 @@ export default function Parametrizacion() {
     }
 
 
-
-
     return (
       <React.Fragment>
-        <NavbarAdmin />
+        <NavbarAnalista />
         <div classNameNameName="container" style={{ color: "#424B5A;" }}>
           <Titulo
             titulo="PARAMETRIZACIÓN"

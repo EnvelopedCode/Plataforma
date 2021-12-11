@@ -9,6 +9,10 @@
     - Validar que los municipios en Registro de Servicio correspondan a los departamentos (Sprint #5)
     - Añadir IDs para hijos de la lista de registros en ServiciosGestion (Sprint #5)
     - Realizar validaciones de Facturacion y generar JSONs
+
+
+Backend:
+    - Terminar de mandar todos los datos en ServiciosRegistro
         
     Realizadas:
     - Añadir focus

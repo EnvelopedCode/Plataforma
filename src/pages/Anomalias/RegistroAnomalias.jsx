@@ -1,8 +1,8 @@
 import React from 'react'
-import NavbarAdmin from '../../components/NavbarAdmin';
 import Titulo from '../../components/Titulo';
 import RegistroMasivo from '../../components/RegistroMasivo';
 import { useRef } from 'react';
+import NavbarAnalista from '../../components/NavbarAnalista';
 
 export default function RegistroAnomalias() {
 
@@ -38,9 +38,6 @@ export default function RegistroAnomalias() {
 
         let flag = false;
 
-        console.warn("EVALUAR")
-        console.log(validarTexto("TEST"));
-        console.warn("EVALUAR")
 
         if(servicio === ""){
             errorS = "Ingrese un servicio";
@@ -78,7 +75,6 @@ export default function RegistroAnomalias() {
             }
 
             anomaliaR = JSON.stringify(anomaliaR)
-            console.log(typeof anomaliaR)
             console.log(anomaliaR)
             //HACER POST A LA RUTA
         }
@@ -87,7 +83,7 @@ export default function RegistroAnomalias() {
 
     return (
       <React.Fragment>
-        <NavbarAdmin />
+        <NavbarAnalista/>
         <div className="container" style={{ color: "#424B5A;" }}>
             <Titulo
             titulo="GESTIÓN DE ANOMALÍAS"
@@ -96,10 +92,6 @@ export default function RegistroAnomalias() {
             <RegistroMasivo subtitulo="Adjunta el archivo .xlsx con la información básica de los servicios a actualizar." subtitulo2="Descarga el historico anual de anomalia de servicios." descarga={true} />
 
             <div className="container" style={{color: "#424B5A"}}>
-                {/* <div style={{cmarginBottom: "36px"}}>
-                    <h1 style={{textAlign: "center",fontSize: "54px",marginBottom: "0px"}}>GESTIÓN DE ANOMALÍAS</h1>
-                    <p style={{textAlign: "center",fontSize: "12px",color: "#A1AEB7",marginBottom: "0px",paddingRight: "30%",paddingLeft: "30%"}}>A continuación, podrás registrar tanto de forma manual como masiva las anomalías de los servicios.<br /></p>
-                </div> */}
                 <div className="d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-center justify-content-sm-center justify-content-md-center justify-content-lg-center justify-content-xl-center" style={{marginBottom: "36px"}}>
                     <div style={{background: "#FFFFFF",width: "386px",borderTopLeftRadius: "8px",borderTopRightRadius: "8px",borderBottomRightRadius: "8px",borderBottomLeftRadius: "8px"}}>
                         <h2 className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{fontSize: "20px",textAlign: "center",fontWeight: "bold",marginBottom: "12px",marginTop: "32px"}}>Registro individual</h2>

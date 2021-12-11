@@ -26,7 +26,6 @@ export default function GestionFacturacion() {
         servicio.push(existencias[indice].fecha)
 
         facturas.push(servicio);
-        console.log(servicio);
 
       }
 
@@ -52,16 +51,6 @@ export default function GestionFacturacion() {
         setFormulario(true);
     }
 
-    //POR HACER: Imprimir titulo en la generacion de la informacion
-
-    useEffect(() => {
-        console.log(facturas);
-    }, [])
-
-    useEffect(() => {
-        console.log("Evaluar")
-        console.log(informacion)
-    }, [informacion])
 
     return (
       <React.Fragment>
