@@ -52,7 +52,6 @@ export default function Validacion() {
         }
     }
 
-    
 
     return (
         <Fragment>

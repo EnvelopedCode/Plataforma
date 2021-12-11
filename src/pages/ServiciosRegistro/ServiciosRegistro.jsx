@@ -19,7 +19,84 @@ export default function ServiciosRegistro() {
 
     let flag = false;
 
-    const guardar = () => {
+    const consultar = (e) => {
+
+      if(e.key == 'Enter' || e._reactName === "onBlur"){
+        console.warn("Ingresa consultar")
+
+        flag = false;
+        let cedula = cedulaRef.current.value;
+        const cedulaError = document.getElementById("cedulaError");
+        let Nombre = document.getElementById("Nombre");
+        let Apellido = document.getElementById("Apellido");
+        let errorC = "";
+
+        console.log(cedula)
+
+        /*CEDULA*/
+        if (cedula === "") {
+          console.log("valida la cedula en 0");
+          errorC = "Ingrese una cedula valida";
+          flag = true;
+        } else if (cedula.length < 10) {
+          errorC = "Ingrese una longitud valida";
+          flag = true;
+        } else if (isNaN(cedula)){
+          errorC = "No ingrese caracteres";
+          flag = true;
+        }
+
+        if(flag === true){
+          console.warn("FLAG === TRUE");
+          cedulaError.innerHTML = errorC;
+        } else {
+          console.warn("FLAG === FALSE")
+          errorC = "";
+          cedulaError.innerHTML = errorC;
+
+          const servicio = {
+            "cedula": cedula,
+          } 
+
+          fetch(`${host}/usuariosBusqueda`, { //REVISAR RUTA
+            headers: { "content-type": "application/json" },
+            method: "POST",
+            body: JSON.stringify(servicio)
+          })
+            .then((data) => data.json()) // Obtener los datos
+            .then((data) => {
+              if(data.estado === "OK"){ //Encontro la cedula
+
+                  console.log("Encontro cedula")
+                  Nombre.value = data.nombre
+                  Apellido.value = data.apellido
+                  
+
+                  Nombre.readOnly = true;
+                  Apellido.readOnly = true;
+
+              } else if(data.estado === "error"){ //No encontro la cedula
+
+                  console.log("No encontro cedula")
+                  Nombre.value = ""
+                  Apellido.value = ""
+
+                  Nombre.readOnly = false;
+                  Apellido.readOnly = false;
+
+              }
+            })
+            .catch((error) => { //Hubo error en la busqueda
+              console.log("Error del servidor")
+              alert(error)
+            });
+
+        }
+      }
+
+    }
+
+    const guardar = () => { //Boton registrar
 
       flag = false;
 
@@ -184,7 +261,9 @@ export default function ServiciosRegistro() {
         })
           .then((data) => data.json()) // Obtener los datos
           .then((data) => {
-            alert(data.msg);
+            alert(data.estado);
+            alert(data.msgU);
+            alert(data.msgS);
           })
           .catch((error) => alert(error));
         
@@ -211,18 +290,19 @@ export default function ServiciosRegistro() {
                   {/*FORM*/}
                   <form method="post" style={{width: "260px"}}>
                         <div className="mb-3" style={{fontSize: "12px"}}>
+                            {/**/}
                             <p style={{color: "#A1AEB7",marginBotton: "0px",paddingBottom: "4px"}}>Cédula</p>
-                            <input ref={cedulaRef} className="form-control form-control-sm" type="number" name="Cedula" placeholder="Cédula" style={{fontSize: "14px",marginBottom: "4px"}} />
+                            <input onKeyDown={consultar} onBlur={consultar} id="cedulaConsulta" ref={cedulaRef} className="form-control form-control-sm" type="number" name="Cedula" placeholder="Cédula" style={{fontSize: "14px",marginBottom: "4px"}} />
                             <p id="cedulaError" name="cedulaError" value="" style={{color: 'var(--bs-red)'}}></p>
                         </div>
                         <div className="mb-3" style={{fontSize: "12px"}}>
                             <p style={{color: "#A1AEB7",marginBotton: "0px",paddingBottom: "4px"}}>Nombre</p>
-                            <input ref={nombreRef} className="form-control form-control-sm" type="text" name="Nombre" placeholder="Nombre" style={{fontSize: "14px",marginBotton: "4px"}} required="" />
+                            <input id="Nombre" ref={nombreRef} className="form-control form-control-sm" type="text" name="Nombre" placeholder="Nombre" style={{fontSize: "14px",marginBotton: "4px"}} required="" />
                             <p id="nombreError" value="" style={{color: 'var(--bs-red)'}}></p>
                         </div>
                         <div className="mb-3" style={{fontSize: "12px"}}>
                             <p style={{color: "#A1AEB7",marginBotton: "0px",paddingBottom: "4px"}}>Apellido</p>
-                            <input ref={apellidoRef} className="form-control form-control-sm" type="text" name="Apellido" placeholder="Apellido" style={{fontSize: "14px",marginBotton: "4px"}} required="" />
+                            <input id="Apellido" ref={apellidoRef} className="form-control form-control-sm" type="text" name="Apellido" placeholder="Apellido" style={{fontSize: "14px",marginBotton: "4px"}} required="" />
                             <p id="apellidoError" value="" style={{color: 'var(--bs-red)'}}></p>
                         </div>
                         <p className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{textAlign: "center",fontSize: "12px",color: "#A1AEB7",marginBotton: "24px",paddingRight: "32px",paddingLeft: "32px",borderColor: "#A1AEB7"}}>Ingresa la información básica del servicio a asociar al cliente.<br /></p>
