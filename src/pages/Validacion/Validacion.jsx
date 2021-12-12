@@ -1,10 +1,19 @@
 import React, { Fragment } from 'react'
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
+import { useNavigate } from "react-router-dom";
+
+export var cedulaLogin = "";
+export var cedulaRegistro = "";
 
 export default function Validacion() {
 
     const validarRef = useRef("");
+    const navigate = useNavigate();
     var host = "http://localhost:8080";
+
+    const navegar = (url) => {
+        navigate(url);
+    }
 
     const validar = (event) => {
         event.preventDefault();
@@ -34,9 +43,6 @@ export default function Validacion() {
                 "cedula": cedula
             }
 
-            // console.log(validar);
-            //ENVIAR A BACK END
-            // document.getElementById("formTest").submit();
 
             fetch(`${host}/validacion`, {
               headers: { "content-type": "application/json" },
@@ -45,7 +51,13 @@ export default function Validacion() {
             })
               .then((data) => data.json()) // Obtener los datos
               .then((data) => {
-                alert(data.msg);
+                if(data.url){
+                    navegar(data.url);
+                    cedulaLogin = data.cedula;
+                    cedulaRegistro = data.cedula;
+                } else {
+                    alert(data.msg);
+                }
               }).catch((error) => alert(error));
                     
 

@@ -10,11 +10,14 @@
     - Añadir IDs para hijos de la lista de registros en ServiciosGestion (Sprint #5)
     - Realizar validaciones de Facturacion y generar JSONs
 
+13/11/2021
 
-Backend:
-    - Terminar de mandar todos los datos en ServiciosRegistro
+    - Añadir autoComplete="off" a todos los input
+    - Añadir margin-bottom: 0px; a los label que necesiten
+    - Organizar fecha a horario Colombia
+
         
-    Realizadas:
+Realizadas:
     - Añadir focus
     - Cambiar inputs de las primeras vistas por useRef();
     - Capturar fechas (ServiciosGestion, ServiciosRegistro, GestionMedidas)

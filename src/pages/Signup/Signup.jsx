@@ -1,7 +1,10 @@
 import React from 'react';
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
+import { cedulaRegistro } from '../Validacion/Validacion';
 
 export default function Signup() {
+
+    const [cedula, setCedula] = useState(cedulaRegistro);
 
     const nombreRef = useRef("");
     const apellidoRef = useRef("");
@@ -117,6 +120,9 @@ export default function Signup() {
 
     }
 
+    useEffect(() => {
+        setCedula(cedulaRegistro)
+    }, [])
 
     return (
         <React.Fragment>
@@ -141,7 +147,7 @@ export default function Signup() {
                                         <div className="mb-3" style={{fontSize: "12px"}}>
                                             <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Cédula</p>
                                             <input
-                                                className="form-control form-control-sm" type="text" name="Cedula"
+                                                value={cedula} className="form-control form-control-sm" type="text" name="Cedula"
                                                 placeholder="Cédula" style={{fontSize: "14px",marginBottom: "4px"}} required=""
                                                 readonly="" />
                                         </div>

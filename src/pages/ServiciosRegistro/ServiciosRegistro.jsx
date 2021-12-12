@@ -1,7 +1,8 @@
 import React from 'react'
 import Titulo from '../../components/Titulo'
 import RegistroMasivo from '../../components/RegistroMasivo';
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
+import moment from 'moment'
 import NavbarAnalista from '../../components/NavbarAnalista';
 
 export default function ServiciosRegistro() {
@@ -15,6 +16,34 @@ export default function ServiciosRegistro() {
     const barrioRef = useRef("");
     const estratoRef = useRef("");
     const fechaInicioRef = useRef("");
+
+    console.warn("TEST ZONE")
+    //Crear fecha base (fecha de hoy)
+    const respaldo = new Date()
+
+    const A = new Date() //Fecha actual
+    console.log(respaldo)
+    console.log(respaldo.toISOString())
+    var B = A.toISOString();
+    var date = B.substring(0, 10);
+    console.log(`Actual: ${date}`);
+
+    const objetoRespaldo = respaldo.getDate()
+
+    //Establecer minimo
+    A.setDate(objetoRespaldo-29) //No usamos A porque A al final termina parseandose a string, asi que usamos un objeto Date de repuesto
+    B = A.toISOString();
+    var Min = B.substring(0, 10);
+    console.log(`Minimo: ${Min}`)
+    
+    //Establecer maximo
+    A.setDate(objetoRespaldo+60)
+    B = A.toISOString();
+    var Max = B.substring(0, 10);
+    console.log(`Maximo: ${Max}`)
+
+    console.warn("TEST ZONE")
+
     var host = "http://localhost:8080";
 
     let flag = false;
@@ -257,24 +286,30 @@ export default function ServiciosRegistro() {
           headers: { "content-type": "application/json" },
           method: "POST",
           body: JSON.stringify(servicio)
-          // JSON.stringify({ cedula, nombre, apellido, departamento, municipio, direccion, barrio, estrato, fecha }),
         })
           .then((data) => data.json()) // Obtener los datos
           .then((data) => {
-            alert(data.estado);
-            alert(data.msgU);
-            alert(data.msgS);
+            alert(data.msg);
+            document.getElementById("Nombre").readOnly = false;
+            document.getElementById("Apellido").readOnly = false;
           })
-          .catch((error) => alert(error));
+          .catch((error) => {
+            alert(error.msg);
+          });
         
       }
       
     }
 
+    useEffect(() => {
+      document.getElementById("datePicker").setAttribute("min", Min);
+      document.getElementById("datePicker").setAttribute("max", Max);
+    },)
+
     return (
       <React.Fragment>
         <NavbarAnalista />
-        <div classNameNameName="container" style={{ color: "#424B5A;" }}>
+        <div className="container" style={{ color: "#424B5A;" }}>
           <Titulo
             titulo="REGISTRO DE SERVICIO"
             subTitulo1="A continuación, podrás registrar tanto de forma manual como masiva los nuevos servicios de clientes"
@@ -292,22 +327,23 @@ export default function ServiciosRegistro() {
                         <div className="mb-3" style={{fontSize: "12px"}}>
                             {/**/}
                             <p style={{color: "#A1AEB7",marginBotton: "0px",paddingBottom: "4px"}}>Cédula</p>
-                            <input onKeyDown={consultar} onBlur={consultar} id="cedulaConsulta" ref={cedulaRef} className="form-control form-control-sm" type="number" name="Cedula" placeholder="Cédula" style={{fontSize: "14px",marginBottom: "4px"}} />
+                            <input autocomplete="off" onKeyDown={consultar} onBlur={consultar} id="cedulaConsulta" ref={cedulaRef} className="form-control form-control-sm" type="number" name="Cedula" placeholder="Cédula" style={{fontSize: "14px",marginBottom: "4px"}} />
                             <p id="cedulaError" name="cedulaError" value="" style={{color: 'var(--bs-red)'}}></p>
                         </div>
                         <div className="mb-3" style={{fontSize: "12px"}}>
                             <p style={{color: "#A1AEB7",marginBotton: "0px",paddingBottom: "4px"}}>Nombre</p>
-                            <input id="Nombre" ref={nombreRef} className="form-control form-control-sm" type="text" name="Nombre" placeholder="Nombre" style={{fontSize: "14px",marginBotton: "4px"}} required="" />
+                            <input autocomplete="off" id="Nombre" ref={nombreRef} className="form-control form-control-sm" type="text" name="Nombre" placeholder="Nombre" style={{fontSize: "14px",marginBotton: "4px"}} required="" />
                             <p id="nombreError" value="" style={{color: 'var(--bs-red)'}}></p>
                         </div>
                         <div className="mb-3" style={{fontSize: "12px"}}>
                             <p style={{color: "#A1AEB7",marginBotton: "0px",paddingBottom: "4px"}}>Apellido</p>
-                            <input id="Apellido" ref={apellidoRef} className="form-control form-control-sm" type="text" name="Apellido" placeholder="Apellido" style={{fontSize: "14px",marginBotton: "4px"}} required="" />
+                            <input autocomplete="off" id="Apellido" ref={apellidoRef} className="form-control form-control-sm" type="text" name="Apellido" placeholder="Apellido" style={{fontSize: "14px",marginBotton: "4px"}} required="" />
                             <p id="apellidoError" value="" style={{color: 'var(--bs-red)'}}></p>
                         </div>
                         <p className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{textAlign: "center",fontSize: "12px",color: "#A1AEB7",marginBotton: "24px",paddingRight: "32px",paddingLeft: "32px",borderColor: "#A1AEB7"}}>Ingresa la información básica del servicio a asociar al cliente.<br /></p>
                         <div className="mb-3" style={{fontSize: "12px"}}>
-                            <p style={{color: "#A1AEB7",marginBotton: "0px",paddingBottom: "4px"}}>Departamento</p><select ref={departamentoRef} className="form-select form-select-sm" style={{fontSize: "14px",color: 'rgba(33,37,41,0.7)',marginBotton: "4px"}} required="" name="Departamento">
+                            <p style={{color: "#A1AEB7",marginBotton: "0px",paddingBottom: "4px"}}>Departamento</p>
+                            <select ref={departamentoRef} className="form-select form-select-sm" style={{fontSize: "14px",color: 'rgba(33,37,41,0.7)',marginBotton: "4px"}} required="" name="Departamento">
                                 <optgroup label="Departamento">
                                     <option value="Atlantico" selected="">Atlantico</option>
                                     <option value="Bolivar">Bolivar</option>
@@ -317,7 +353,8 @@ export default function ServiciosRegistro() {
                             <p id="departamentoError" value="" style={{color: 'var(--bs-red)'}}></p>
                         </div>
                         <div className="mb-3" style={{fontSize: "12px"}}>
-                            <p style={{color: "#A1AEB7",marginBotton: "0px",paddingBottom: "4px"}}>Municipio</p><select ref={municipioRef} className="form-select form-select-sm" style={{fontSize: "14px",color: 'rgba(33,37,41,0.7)',marginBotton: "4px"}} required="" name="Municipio">
+                            <p style={{color: "#A1AEB7",marginBotton: "0px",paddingBottom: "4px"}}>Municipio</p>
+                            <select ref={municipioRef} className="form-select form-select-sm" style={{fontSize: "14px",color: 'rgba(33,37,41,0.7)',marginBotton: "4px"}} required="" name="Municipio">
                                 <optgroup label="Municipio">
                                     <option value="Barranquilla" selected="">Barranquilla</option>
                                     <option value="Puerto Colombia">Puerto Colombia</option>
@@ -328,12 +365,12 @@ export default function ServiciosRegistro() {
                         </div>
                         <div className="mb-3" style={{fontSize: "12px"}}>
                             <p style={{color: "#A1AEB7",marginBotton: "0px",paddingBottom: "4px"}}>Dirección</p>
-                            <input ref={direccionRef} className="form-control form-control-sm"type="text" name="Direccion" placeholder="Dirección" style={{fontSize: "14px",marginBotton: "4px"}} required="" />
+                            <input autocomplete="off" ref={direccionRef} className="form-control form-control-sm"type="text" name="Direccion" placeholder="Dirección" style={{fontSize: "14px",marginBotton: "4px"}} required="" />
                             <p id="direccionError" value="" style={{color: 'var(--bs-red)'}}></p>
                         </div>
                         <div className="mb-3" style={{fontSize: "12px"}}>
                             <p style={{color: "#A1AEB7",marginBotton: "0px",paddingBottom: "4px"}}>Barrio</p>
-                            <input ref={barrioRef} className="form-control form-control-sm" type="text" name="Barrio" placeholder="Barrio" style={{fontSize: "14px",marginBotton: "4px"}} required="" />
+                            <input autocomplete="off" ref={barrioRef} className="form-control form-control-sm" type="text" name="Barrio" placeholder="Barrio" style={{fontSize: "14px",marginBotton: "4px"}} required="" />
                             <p id="barrioError" value="" style={{color: 'var(--bs-red)'}}></p>
                         </div>
                         <div className="mb-3" style={{fontSize: '12px'}}>
@@ -350,7 +387,8 @@ export default function ServiciosRegistro() {
                             <p id="estratoError"value="" style={{color: 'var(--bs-red)'}}></p>
                         </div>
                         <div className="mb-3" style={{fontSize: "12px"}}>
-                            <p style={{color: "#A1AEB7",marginBotton: "0px",paddingBottom: "4px"}}>Primera fecha de facturación</p><input ref={fechaInicioRef} className="form-control form-control-sm" name="Fecha" placeholder="Fecha inicio" style={{fontSize: "14px",marginBotton: "4px",color: 'rgba(33,37,41,0.7)'}} type="date" required="" /> 
+                            <p style={{color: "#A1AEB7",marginBotton: "0px",paddingBottom: "4px"}}>Primera fecha de facturación</p>
+                            <input id="datePicker" defaultValue={date} ref={fechaInicioRef} className="form-control form-control-sm" name="Fecha" placeholder="Fecha inicio" style={{fontSize: "14px",marginBotton: "4px",color: 'rgba(33,37,41,0.7)'}} type="date" required="" /> 
                             <p id="fechaInicioError" value="" style={{color: 'var(--bs-red)'}}></p>
                         </div>
                         <div className="d-xl-flex justify-content-xl-center mb-3" style={{width: "40%",marginLeft: "30%",fontSize: "14px"}}>

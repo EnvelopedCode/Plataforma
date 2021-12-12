@@ -1,6 +1,15 @@
 import React from 'react'
+import { cedulaLogin } from '../Validacion/Validacion'
+import { useState, useEffect } from 'react';
 
 export default function Login() {
+
+    const [cedula, setCedula] = useState(cedulaLogin);
+
+    useEffect(() => {
+        setCedula(cedulaLogin);
+    }, [])
+
     return (
         <React.Fragment>
 
@@ -13,7 +22,8 @@ export default function Login() {
                             <div className="d-flex d-xl-flex justify-content-center justify-content-xl-center" style={{ marginTop: "24px", marginBottom: "24px" }}>
                                 <form method="post" style={{ width: "260px" }}>
                                     <div className="mb-3" style={{ fontSize: "12px" }}>
-                                        <p style={{ color: "#A1AEB7", marginBottom: "0px", paddingBottom: "4px" }}>Cédula</p><input className="form-control form-control-sm" type="text" name="Cedula" placeholder="Cédula" style={{ fontSize: "14px", marginBottom: "4px" }} required="" readonly="" />
+                                        <p style={{ color: "#A1AEB7", marginBottom: "0px", paddingBottom: "4px" }}>Cédula</p>
+                                        <input value={cedula} className="form-control form-control-sm" type="text" name="Cedula" placeholder="Cédula" style={{ fontSize: "14px", marginBottom: "4px" }} required="" readonly="" />
                                     </div>
                                     <div className="mb-3" style={{ fontSize: "12px" }}>
                                         <p style={{ color: "#A1AEB7", marginBottom: "0px", paddingBottom: "4px" }}>Contraseña</p>
