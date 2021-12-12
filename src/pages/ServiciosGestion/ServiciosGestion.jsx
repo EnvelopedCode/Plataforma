@@ -4,27 +4,11 @@ import RegistroMasivo from '../../components/RegistroMasivo';
 import { useRef } from 'react';
 import { useState, useEffect } from 'react';
 import NavbarAnalista from "../../components/NavbarAnalista";
-import servicios from '../../mocks/Servicios/servicios';
 
 
 export default function ServiciosGestion() {
 
-    const formularioListado = []
-
-    for(let indice in servicios){
-        let servicio = []
-        servicio.push(servicios[indice].servicio)
-        servicio.push(servicios[indice].cedula)
-        servicio.push(servicios[indice].nombre)
-        servicio.push(servicios[indice].apellido)
-        servicio.push(servicios[indice].departamento)
-        servicio.push(servicios[indice].municipio)
-        servicio.push(servicios[indice].direccion)
-        servicio.push(servicios[indice].barrio)
-        servicio.push(servicios[indice].estrato)
-        servicio.push(servicios[indice].fecha)
-        formularioListado.push(servicio);
-      }
+    const [formularioListado, setFormularioListado] = useState([])
 
     const [formulario, setFormulario] = useState([]) //Datos del formulario
     const [registros, setRegistros] = useState([]) //Servicios asociados a la cedula
@@ -33,8 +17,7 @@ export default function ServiciosGestion() {
     const [cedula, setCedula] = useState("") //Cedula a buscar
     const [date, setDate] = useState("") //Fecha del formulario actual
 
-    const cedulas = ["1000403193"] //Base de datos con cedulas
-    const cedula_1 = [] //Servicios asociados
+    var host = "http://localhost:8080";
 
     const departamentoRef = useRef("");
     const municipioRef = useRef("");
@@ -100,27 +83,90 @@ export default function ServiciosGestion() {
                 flag = true;
             }
 
-            if(flag === false){
+            if(flag === false){ //Cedula consultada correctamente
+
+                console.log("FLAG === FALSE")
 
                 errorC = "";
                 cedulaError.innerHTML = errorC;
 
-                for(let cedula in cedulas){
+                let cedula = {
+                    "cedula": ced
+                }
 
-                    if(ced === cedulas[cedula]){
+                fetch(`${host}/gestionCedula`, { 
+                    headers: { "content-type": "application/json" },
+                    method: "POST",
+                    body: JSON.stringify(cedula)
+                  })
+                    .then((data) => data.json()) // Obtener los datos
+                    .then((data) => {
+                        if(data.cedula){
+                            setCedula(data.cedula);
+                            setInformacion(false);
+                            //Hacer fetch con la cedula encontrada a la base de datos de servicios
 
-                        setCedula(cedulas[cedula])
-                        setInformacion(false)
+                            fetch(`${host}/gestionServicio`, {
+                                headers: { "content-type": "application/json" },
+                                method: "POST",
+                                body: JSON.stringify(cedula)
+                            })
+                                .then((data) => data.json())
+                                .then((data) => {
+                                    if(data.servicios){ //Servicios encontrados
 
-                    } else{ //No se encontro la cedula
+                                        console.warn(data.servicios) //Arreglo de JSOns
+                                        var servicios = data.servicios
+                                        console.warn(servicios)
+                                        let serviciosFormateados = []
+                                        let IDs = []
 
-                        setRegistros([])
-                        setInformacion(false)
-                        errorC = "No se encontro la cedula"
-                        cedulaError.innerHTML = errorC;
-    
-                    }
-                }              
+
+                                        //Parseo de servicios
+                                        for(let indice in servicios){ //Sacamos unicamente los valores de cada llave de los servicios
+
+                                            let servicio = []
+
+                                            servicio.push(servicios[indice].servicio)
+                                            servicio.push(servicios[indice].cedula)
+                                            servicio.push(servicios[indice].nombre)
+                                            servicio.push(servicios[indice].apellido)
+                                            servicio.push(servicios[indice].departamento)
+                                            servicio.push(servicios[indice].municipio)
+                                            servicio.push(servicios[indice].direccion)
+                                            servicio.push(servicios[indice].barrio)
+                                            servicio.push(servicios[indice].estrato)
+                                            setDate(servicios[indice].fecha)
+                                            serviciosFormateados.push(servicio);
+                                        }
+
+                                        setFormularioListado(serviciosFormateados);
+                                        //Parseo de servicios
+                                
+                                        for(let s in serviciosFormateados){
+                                            IDs.push(serviciosFormateados[s][0])
+                                        }
+
+                                        setRegistros(IDs)
+
+                                    } else {
+                                        alert(data.msg)
+                                    }
+
+                                })
+                                .catch((error) => {
+                                    alert(error)
+                                })
+
+                        } else{
+                            setRegistros([])
+                            setInformacion(false)
+                            errorC = data.msg
+                            cedulaError.innerHTML = errorC;
+                        }       
+                        
+                    })
+          
 
             } else { //Hubieron errores al ingresar la cedula
 
@@ -131,12 +177,16 @@ export default function ServiciosGestion() {
         }
     }
     
-    const buscarRegistro = (event) => { //Despliega la informacion individual de un servicio
+    const buscarRegistro = (event) => { //Despliega la informacion individual de un servicio al clickearlo
+        console.log("Entro a buscarRegistro")
         event.preventDefault();
         setTitulo(event.target.value);
         setInformacion(true);
+
         for(let dato in formularioListado){
+
             if(formularioListado[dato][0] === event.target.value){
+
                 setFormulario(formularioListado[dato])
                 setDepOption(formularioListado[dato][4])
                 setMunOption(formularioListado[dato][5])
@@ -271,15 +321,7 @@ export default function ServiciosGestion() {
     }, [informacion])
 
     useEffect(() => {
-
-        console.warn("DETECTO LA CEDULA")
-
-        for(let servicio in formularioListado){
-            if(formularioListado[servicio][1] === cedula){
-                cedula_1.push(formularioListado[servicio][0]) //Agarramos servicios asociados
-            }
-        }
-        setRegistros(cedula_1)
+        console.log("Dummy")
 
     }, [cedula])
 

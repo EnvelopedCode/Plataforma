@@ -10,11 +10,16 @@
     - Añadir IDs para hijos de la lista de registros en ServiciosGestion (Sprint #5)
     - Realizar validaciones de Facturacion y generar JSONs
 
-13/11/2021
+12/11/2021
 
     - Añadir autoComplete="off" a todos los input
     - Añadir margin-bottom: 0px; a los label que necesiten
-    - Organizar fecha a horario Colombia
+
+12/12/2021
+
+    - Limitar fecha en ServiciosGestion
+    - Realizar Gestion de Usuarios
+    - Realizar Login y Signup
 
         
 Realizadas:
@@ -23,3 +28,4 @@ Realizadas:
     - Capturar fechas (ServiciosGestion, ServiciosRegistro, GestionMedidas)
     - Retificar que los readOnly sean readonly=""
     - Realizar Correcion de label "barrio" sobre campo "cedula"
+    - Organizar fecha a horario Colombia
