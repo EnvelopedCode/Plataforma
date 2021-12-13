@@ -5,9 +5,9 @@ import { cedulaRegistro } from '../Validacion/Validacion';
 export default function Signup() {
 
     const [cedula, setCedula] = useState(cedulaRegistro);
+    const [nombre, setNombre] = useState("")
+    const [apellido, setApellido] = useState("")
 
-    const nombreRef = useRef("");
-    const apellidoRef = useRef("");
     const contraseñaRef = useRef("");
     const contraseña2Ref = useRef("");
     var host = "http://localhost:8080";
@@ -16,13 +16,9 @@ export default function Signup() {
 
         event.preventDefault();
 
-        let nombre = nombreRef.current.value;
-        let apellido = apellidoRef.current.value;
         let contraseña = contraseñaRef.current.value;
         let contraseña2 = contraseña2Ref.current.value;
 
-        let errorNombre = document.getElementById("errorNombre");
-        let errorApellido = document.getElementById("errorApellido");
         let errorContraseña = document.getElementById("errorContraseña");
         let errorContraseña2 = document.getElementById("errorContraseña2");
     
@@ -42,29 +38,6 @@ export default function Signup() {
         
         let flag = false
 
-        //NOMBRE
-        if(nombre === ""){
-            errorN = "Ingrese un nombre";
-            flag = true;
-        }else if(nombre.length < 3 || nombre.length > 20){
-            errorN = "Ingrese un nombre de longitud adecuada";
-            flag = true;
-        }else if (validarTexto(nombre) === false) {
-            errorN = "Por favor no ingrese caracteres especiales ni numericos";
-            flag = true;
-        }
-
-        //APELLIDO
-        if(apellido === ""){
-            errorA = "Ingrese un apellido";
-            flag = true;
-        }else if(apellido.length < 3 || apellido.length > 20){
-            errorA = "Ingrese un nombre de longitud adecuada";
-            flag = true;
-        }else if (validarTexto(apellido) === false) {
-            errorA = "Por favor no ingrese caracteres especiales ni numericos";
-            flag = true;
-        }
 
         //CONTRASEÑA
         if(contraseña === ""){
@@ -87,49 +60,39 @@ export default function Signup() {
 
         if(flag === true){
             console.warn("ENTRA A TRUE")
-            errorNombre.innerHTML = errorN;
-            errorApellido.innerHTML = errorA;
             errorContraseña.innerHTML = errorC;
             errorContraseña2.innerHTML = errorC2;
         } else {
-
-            errorN = "";
-            errorA = "";
             errorC = "";
             errorC2 = "";
-
-            errorNombre.innerHTML = errorN;
-            errorApellido.innerHTML = errorA;
             errorContraseña.innerHTML = errorC;
             errorContraseña2.innerHTML = errorC2;
 
-            nombreRef.current.value = "";
-            apellidoRef.current.value = "";
+            // nombreRef.current.value = "";
+            // apellidoRef.current.value = "";
             contraseñaRef.current.value = "";
             contraseña2Ref.current.value = "";
 
+
+
+            
             let registro = {
                 "cedula": cedula,
-                "nombre": nombre,
-                "apellido": apellido,
-                "contraseña": contraseña,
+                "contrasena": contraseña
             }
 
-            registro = JSON.stringify(registro);
-            console.log(registro);
+            console.log(registro)
             //ENVIAR A BACK END
             fetch(`${host}/signup`, {
-                header:{"content-type":"application/json"},
+                headers:{"content-type": "application/json"},
                 method: "POST",
                 body: JSON.stringify(registro)
             }).then((data) => data.json())
             .then((data) =>{
                 if(data.estado == "ok"){
                     alert(data.msg);
-                    console.log("usuario registrado");
                 } else if(data.estado =="error") {
                     alert(data.msg)
-                    console.log("usuario No registrado")
                 }
 
             })
@@ -145,6 +108,24 @@ export default function Signup() {
         setCedula(cedulaRegistro)
     }, [])
 
+    useEffect(() => {
+
+        console.log("CONSULTA NOMBRES")
+        console.log(cedula)
+
+        fetch(`${host}/usuariosBusqueda`, {
+            headers:{"content-type": "application/json"},
+            method: "POST",
+            body: JSON.stringify({ cedula })
+        })
+            .then((data) => data.json())
+            .then((data) => {
+                setNombre(data.nombre)
+                setApellido(data.apellido)
+            })
+
+    }, [cedula])
+    
     return (
         <React.Fragment>
             <div className="container" style={{ color: "#424B5A;" }}>
@@ -174,16 +155,16 @@ export default function Signup() {
                                         </div>
                                         <div className="mb-3" style={{fontSize: "12px"}}>
                                             <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Nombre</p>
-                                            <input ref={nombreRef}
+                                            <input value={nombre}
                                                 className="form-control form-control-sm" type="text" name="Nombre"
-                                                placeholder="Nombre" style={{fontSize: "14px",marginBottom: "4px"}} required="" />
+                                                placeholder="Nombre" style={{fontSize: "14px",marginBottom: "4px"}} required="" readonly=""/>
                                             <p id="errorNombre" style={{color: 'var(--bs-red)'}} ></p>
                                         </div>
                                         <div className="mb-3" style={{fontSize: "12px"}}>
                                             <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Apellido</p>
-                                            <input ref={apellidoRef}
+                                            <input value={apellido}
                                                 className="form-control form-control-sm" type="text" name="Apellido"
-                                                placeholder="Apellido" style={{fontSize: "14px",marginBottom: "4px"}} required="" />
+                                                placeholder="Apellido" style={{fontSize: "14px",marginBottom: "4px"}} required="" readonly="" />
                                             <p id="errorApellido" style={{color: 'var(--bs-red)'}}></p>
                                         </div>
                                         <div className="mb-3" style={{fontSize: "12px"}}>

@@ -18,9 +18,12 @@
 
 12/12/2021
 
-    - Limitar fecha en ServiciosGestion
     - Realizar Gestion de Usuarios
     - Realizar Login y Signup
+
+12/13/2021
+    
+    - Pasar algoritmo fecha a serviciosRegistro
 
         
 Realizadas:
@@ -30,3 +33,4 @@ Realizadas:
     - Retificar que los readOnly sean readonly=""
     - Realizar Correcion de label "barrio" sobre campo "cedula"
     - Organizar fecha a horario Colombia
+    - Limitar fecha en ServiciosGestion

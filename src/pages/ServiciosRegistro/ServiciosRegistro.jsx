@@ -1,7 +1,7 @@
 import React from 'react'
 import Titulo from '../../components/Titulo'
 import RegistroMasivo from '../../components/RegistroMasivo';
-import { useRef, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import NavbarAnalista from '../../components/NavbarAnalista';
 
 export default function ServiciosRegistro() {
@@ -16,37 +16,60 @@ export default function ServiciosRegistro() {
     const estratoRef = useRef("");
     const fechaInicioRef = useRef("");
 
+    var host = "http://localhost:8080";
+    let flag = false;
+
     console.warn("TEST ZONE")
     //Crear fecha base (fecha de hoy)
-    const respaldo = new Date()
-
     const A = new Date() //Fecha actual
-    const dia = A.getDate()
-    const mes = A.getMonth()+1
-    const year = A.getFullYear()
 
-    const date = year + "-" + mes + "-" + dia
+    const diabase = A.getDate()
+    const mesbase = A.getMonth()+1
+    const yearbase = A.getFullYear()
+
+    const date = yearbase + "-" + mesbase + "-" + diabase
+    const [minimo, setMinimo] = useState("01-01-1999")
+    const [maximo, setMaximo] = useState("01-01-2999")
     console.log(`Actual: ${date}`);
 
-    const objetoRespaldo = respaldo.getDate()
-
     //Establecer minimo
-    A.setDate(objetoRespaldo-29) //No usamos A porque A al final termina parseandose a string, asi que usamos un objeto Date de repuesto
-    let B = A.toISOString();
-    var Min = B.substring(0, 10);
-    console.log(`Minimo: ${Min}`)
+    const newDate = new Date(date)
+    newDate.setMonth(newDate.getMonth() - 1);
+    newDate.setDate(newDate.getDate()+2);
+
+    const Min = newDate
+
+    let dia = Min.getDate()
+    if(dia < 10){
+        dia = "0" + dia
+    }
+    let mes = Min.getMonth()+1
+    if(mes < 10){
+        mes = "0" + mes
+    }
+    let year = Min.getFullYear()
+
+    let fechaMinima = year + "-" + mes + "-" + dia //MINIMO
     
     //Establecer maximo
-    A.setDate(objetoRespaldo+60)
-    B = A.toISOString();
-    var Max = B.substring(0, 10);
-    console.log(`Maximo: ${Max}`)
+    const newDate2 = new Date(date)
+    newDate2.setMonth(newDate2.getMonth() + 1);
+    newDate2.setDate(newDate2.getDate())
 
-    console.warn("TEST ZONE")
+    const Max = newDate2
+    let dia2 = Max.getDate()
+    if(dia2 < 10){
+        dia2 = "0" + dia2
+    }
+    let mes2 = Max.getMonth()+1
+    
+    if(mes2 < 10){
+        mes2 = "0" + mes2
 
-    var host = "http://localhost:8080";
+    }
+    let year2 = Max.getFullYear()
+    let fechaMaxima = year2 + "-" + mes2 + "-" + dia2 //MAXIMO
 
-    let flag = false;
 
     const consultar = (e) => {
 
@@ -302,9 +325,10 @@ export default function ServiciosRegistro() {
     }
 
     useEffect(() => {
-      document.getElementById("datePicker").setAttribute("min", Min);
-      document.getElementById("datePicker").setAttribute("max", Max);
-    },)
+      //SETTEAR LIMITES
+      setMinimo(fechaMinima)
+      setMaximo(fechaMaxima)
+    }, [])
 
     return (
       <React.Fragment>
@@ -388,7 +412,7 @@ export default function ServiciosRegistro() {
                         </div>
                         <div className="mb-3" style={{fontSize: "12px"}}>
                             <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Primera fecha de facturación</p>
-                            <input id="datePicker" defaultValue={date} ref={fechaInicioRef} className="form-control form-control-sm" name="Fecha" placeholder="Fecha inicio" style={{fontSize: "14px",marginBottom: "4px",color: 'rgba(33,37,41,0.7)'}} type="date" required="" /> 
+                            <input id="datePicker" min={minimo} max={maximo} value={date} ref={fechaInicioRef} className="form-control form-control-sm" name="Fecha" placeholder="Fecha inicio" style={{fontSize: "14px",marginBottom: "4px",color: 'rgba(33,37,41,0.7)'}} type="date" required="" /> 
                             <p id="fechaInicioError" value="" style={{color: 'var(--bs-red)'}}></p>
                         </div>
                         <div className="d-xl-flex justify-content-xl-center mb-3" style={{width: "40%",marginLeft: "30%",fontSize: "14px"}}>

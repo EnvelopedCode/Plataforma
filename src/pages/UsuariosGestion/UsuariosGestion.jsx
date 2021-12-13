@@ -51,6 +51,12 @@ export default function UsuariosGestion() {
         if(cedula === ""){
             errorC = "Ingrese una cedula."
             flag = true
+        } else if(cedula.length !== 10){
+            errorC = "Ingrese una cedula valida"
+            flag = true
+        } else if(isNaN(cedula) === true){
+            errorC = "No ingrese caracteres en la cedula"
+            flag = true
         }
         
         console.log("EVALUAR:")
@@ -118,8 +124,23 @@ export default function UsuariosGestion() {
             apellidoRef.current.value = "";
             contraseñaRef.current.value = "";
             contraseña2Ref.current.value = "";
+
+            var ceduladata = "";
+            console.log(cedula)
+            switch(perfil) {
+                case "Analista":
+                    ceduladata = cedula + "-A"
+                    break;
+                case "Tecnico":
+                    ceduladata = cedula + "-T"
+                    break;
+                default:
+                  ceduladata = cedula
+              }
+            console.log(ceduladata)
+
             let usuario = {
-                "cedula": cedula,
+                "cedula": ceduladata,
                 "nombre": nombre,
                 "apellido": apellido,
                 "rol": perfil,
