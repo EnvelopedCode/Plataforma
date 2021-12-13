@@ -10,6 +10,7 @@ export default function Signup() {
     const apellidoRef = useRef("");
     const contraseñaRef = useRef("");
     const contraseña2Ref = useRef("");
+    var host = "http://localhost:8080";
 
     const registrar = (event) => {
 
@@ -108,6 +109,7 @@ export default function Signup() {
             contraseña2Ref.current.value = "";
 
             let registro = {
+                "cedula": cedula,
                 "nombre": nombre,
                 "apellido": apellido,
                 "contraseña": contraseña,
@@ -116,6 +118,25 @@ export default function Signup() {
             registro = JSON.stringify(registro);
             console.log(registro);
             //ENVIAR A BACK END
+            fetch(`${host}/signup`, {
+                header:{"content-type":"application/json"},
+                method: "POST",
+                body: JSON.stringify(registro)
+            }).then((data) => data.json())
+            .then((data) =>{
+                if(data.estado == "ok"){
+                    alert(data.msg);
+                    console.log("usuario registrado");
+                } else if(data.estado =="error") {
+                    alert(data.msg)
+                    console.log("usuario No registrado")
+                }
+
+            })
+            .catch((error)=>{
+                console.log("error en el servidor")
+                alert(error)
+            })
         }
 
     }

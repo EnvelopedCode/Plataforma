@@ -12,6 +12,7 @@ export default function UsuariosGestion() {
     let contraseña2Ref = useRef("");
     let perfilRef = useRef("");
     let cedulaEliminarRef = useRef("");
+    var host = "http://localhost:8080";
 
     function validarTexto(parametro) {
         var patron = /^[a-zA-Z\s]*$/;
@@ -101,6 +102,7 @@ export default function UsuariosGestion() {
             errorPass.innerHTML = errorP;
             errorPass2.innerHTML = errorP2;
         } else{
+            console.log("Sin problemas")
             errorN = "";
             errorA = "";
             errorC = "";
@@ -111,16 +113,41 @@ export default function UsuariosGestion() {
             errorCedula.innerHTML = errorC;
             errorPass.innerHTML = errorP;
             errorPass2.innerHTML = errorP2;
+            cedulaRef.current.value = "";
+            nombreRef.current.value = "";
+            apellidoRef.current.value = "";
+            contraseñaRef.current.value = "";
+            contraseña2Ref.current.value = "";
             let usuario = {
                 "cedula": cedula,
                 "nombre": nombre,
                 "apellido": apellido,
-                "perfil": perfil,
-                "contraseña": contraseña 
+                "rol": perfil,
+                "contrasena": contraseña 
             }
-            JSON.stringify(usuario)
-            console.log(usuario)
+
+            fetch(`${host}/usuariosGestion`,{
+                headers:{"content-type": "application/json"},
+                method: "POST",
+                body: JSON.stringify(usuario)
+            })
+            .then((data) => data.json())
+            .then((data) =>{
+                if(data.estado ==="ok"){
+                    alert(data.msg)
+                    console.log("usuario guardado")
+                } else if(data.estado ==="error") {
+                    alert(data.msg)
+                    console.log("usuario no guardado")
+
+                }
+            })
+            .catch((error)=>{
+                console.log("error en el servidor")
+                alert(error)
+            })
             //HACER POST A LA RUTA
+            
         }
 
     }
@@ -151,6 +178,31 @@ export default function UsuariosGestion() {
             errorCedulaEliminar.innerHTML = errorCE;
               
         }
+
+        let eliminar = {
+            "cedula" : cedulaEliminar
+        }
+
+        fetch(`${host}/eliminar`, {
+          headers: { "content-type": "application/json" },
+          method: "POST",
+          body: JSON.stringify(eliminar),
+        })
+          .then((data) => data.json())
+          .then((data) => {
+            if (data.estado == "ok") {
+              alert(data.msg);
+              console.log("usuario Eliminado satisfactoriamente");
+            } else if (data.estado == "error") {
+              alert(data.msg);
+              console.log("error en eliminar");
+            }
+          })
+          .catch((error) => {
+            console.log("error en el servidor");
+            alert(error);
+          });
+
         
         
     }
