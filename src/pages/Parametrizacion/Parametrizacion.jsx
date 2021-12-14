@@ -6,6 +6,7 @@ import NavbarAnalista from '../../components/NavbarAnalista';
 export default function Parametrizacion() {
 
     let flag = false;
+    var host = "http://localhost:8080";
 
     const valorUnidadRef = useRef("");
     const impuestoRef = useRef("");
@@ -84,9 +85,27 @@ export default function Parametrizacion() {
                 "subsidio": subsidio
             }
 
-            estratoP = JSON.stringify(estratoP)
-            console.log(estratoP)
             //HACER POST A LA RUTA
+            console.log(estratoP)
+            fetch(`${host}/parametrizacion`,{
+                headers: { "content-type":"application/json" },
+                method: "POST",
+                body: JSON.stringify(estratoP)
+            })
+            .then((data)=> data.json())
+            .then((data) =>{
+                if(data.estado === "ok"){
+                    alert(data.msg)
+                } else if(data.estado==="error"){
+                    alert(data.msg)
+
+                }
+            })
+            .catch((error)=>{
+                console.log("error del servidor")
+                console.log(error)
+                alert(error)
+            })
         }
 
     }

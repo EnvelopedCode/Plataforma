@@ -6,6 +6,7 @@ import NavbarAnalista from '../../components/NavbarAnalista';
 
 export default function ServiciosRegistro() {
 
+
     const cedulaRef = useRef("");
     const nombreRef = useRef("");
     const apellidoRef = useRef("");
@@ -69,6 +70,17 @@ export default function ServiciosRegistro() {
     }
     let year2 = Max.getFullYear()
     let fechaMaxima = year2 + "-" + mes2 + "-" + dia2 //MAXIMO
+
+    //PLACEHOLDER FECHA
+    var _onFocus = (e) => {
+      console.log("DETECTO FOCUS")
+      e.currentTarget.type = "date";
+    }
+    var _onBlur = (e) => {
+        console.log("DETECTO BLUR")
+        e.currentTarget.type = "text";
+        e.currentTarget.placeholder = date;
+    }
 
 
     const consultar = (e) => {
@@ -412,7 +424,7 @@ export default function ServiciosRegistro() {
                         </div>
                         <div className="mb-3" style={{fontSize: "12px"}}>
                             <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Primera fecha de facturación</p>
-                            <input id="datePicker" min={minimo} max={maximo} value={date} ref={fechaInicioRef} className="form-control form-control-sm" name="Fecha" placeholder="Fecha inicio" style={{fontSize: "14px",marginBottom: "4px",color: 'rgba(33,37,41,0.7)'}} type="date" required="" /> 
+                            <input id="datePicker" min={minimo} max={maximo} placeholder={date} onFocus={_onFocus} onBlur={_onBlur} ref={fechaInicioRef} className="form-control form-control-sm" name="Fecha" style={{fontSize: "14px",marginBottom: "4px",color: 'rgba(33,37,41,0.7)'}} type="text" required="" /> 
                             <p id="fechaInicioError" value="" style={{color: 'var(--bs-red)'}}></p>
                         </div>
                         <div className="d-xl-flex justify-content-xl-center mb-3" style={{width: "40%",marginLeft: "30%",fontSize: "14px"}}>

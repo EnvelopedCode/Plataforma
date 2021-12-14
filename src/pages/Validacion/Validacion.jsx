@@ -27,9 +27,9 @@ export default function Validacion() {
         if(cedula === ""){
             errorC = "Ingrese una cedula";
             flag = true;
-        } else if (cedula.length !== 10){
+        } else if (cedula.length > 12 || cedula.length < 10 || cedula.length === 11){
             errorC = "Ingrese una cedula de tamaño adecuado"
-            flag = true;
+            flag = true;       
         }
 
         if(flag === true){

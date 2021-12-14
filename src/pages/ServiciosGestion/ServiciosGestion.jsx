@@ -17,6 +17,17 @@ export default function ServiciosGestion() {
     const [informacion, setInformacion] = useState(false) //Despliegue del formulario
     const [titulo, setTitulo] = useState("") //Titulo del formulario
     const [cedula, setCedula] = useState("") //Cedula a buscar
+
+    //PLACEHOLDER FECHA
+    var _onFocus = (e) => {
+        console.log("DETECTO FOCUS")
+        e.currentTarget.type = "date";
+        }
+    var _onBlur = (e) => {
+        console.log("DETECTO BLUR")
+        e.currentTarget.type = "text";
+        e.currentTarget.placeholder = date;
+    }
     
 
     var host = "http://localhost:8080";
@@ -611,7 +622,7 @@ export default function ServiciosGestion() {
                                 </div>
                                 <div className="mb-3" style={{fontSize: "12px"}}>
                                     <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Próxima de facturación</p>
-                                    <input id="datePicker" min={minimo} max={maximo} value={date} ref={fechaIngresoRef} className="form-control form-control-sm" id="fechaIngreso" name="Fecha" placeholder="Fecha inicio" style={{fontSize: "14px",marginBottom: "4px",color: "rgba(33,37,41,0.7)"}} type="date" required="" />
+                                    <input id="datePicker" min={minimo} max={maximo} placeholder={date} onFocus={_onFocus} onBlur={_onBlur} ref={fechaIngresoRef} className="form-control form-control-sm" name="Fecha" style={{fontSize: "14px",marginBottom: "4px",color: "rgba(33,37,41,0.7)"}} type="text" required="" />
                                     <p id="fechaIngresoError" value="" style={{color: "var(--bs-red)"}}></p>
                                 </div>
                                 <div className="d-xl-flex justify-content-xl-center mb-3" style={{width: "40%",marginLeft: "30%",fontSize: "14px"}}>
