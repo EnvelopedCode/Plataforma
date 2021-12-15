@@ -8,7 +8,7 @@ import NavbarAnalista from "../../components/NavbarAnalista";
 export default function ServiciosGestion() {
 
     const [formularioListado, setFormularioListado] = useState([])
-    const [date, setDate] = useState("01-01-1999")
+    const [date, setDateEstado] = useState("01-01-1999")
     const [minimo, setMinimo] = useState("01-01-1999")
     const [maximo, setMaximo] = useState("01-01-2999")
 
@@ -19,14 +19,14 @@ export default function ServiciosGestion() {
     const [cedula, setCedula] = useState("") //Cedula a buscar
 
     //PLACEHOLDER FECHA
-    var _onFocus = (e) => {
+    const _onFocus = (e) => {
         console.log("DETECTO FOCUS")
         e.currentTarget.type = "date";
         }
-    var _onBlur = (e) => {
+    const _onBlur = (e) => {
         console.log("DETECTO BLUR")
         e.currentTarget.type = "text";
-        e.currentTarget.placeholder = date;
+
     }
     
 
@@ -202,71 +202,60 @@ export default function ServiciosGestion() {
         for(let dato in formularioListado){
 
             if(formularioListado[dato][0] === event.target.value){
-
-                if(titulo === event.target.value){
-
-                    console.warn("EVALUAAAAAAAAR")
-
-                    console.log(minimo)
-                    console.log(maximo)
-                    console.warn(date)
             
-                    const newDate = new Date(date)
-                    newDate.setMonth(newDate.getMonth() - 1);
-                    newDate.setDate(newDate.getDate()+2);
-            
-                    const Min = newDate
-                    let dia = Min.getDate()
-                    if(dia < 10){
-                        dia = "0" + dia
-                    }
-                    let mes = Min.getMonth()+1
-                    if(mes < 10){
-                        mes = "0" + mes
-                    }
-                    let year = Min.getFullYear()
-            
-                    let fechaMinima = year + "-" + mes + "-" + dia
-            
-                    ////////////////////////////////////////
-            
-                    const newDate2 = new Date(date)
-                    newDate2.setMonth(newDate2.getMonth() + 1);
-                    newDate2.setDate(newDate2.getDate())
-            
-                    const Max = newDate2
-                    let dia2 = Max.getDate()
-                    if(dia2 < 10){
-                        dia2 = "0" + dia2
-                    }
-                    let mes2 = Max.getMonth()+1
-                    
-                    if(mes2 < 10){
-                        mes2 = "0" + mes2
-            
-                    }
-                    let year2 = Max.getFullYear()
-            
-                    let fechaMaxima = year2 + "-" + mes2 + "-" + dia2
-                    console.log(fechaMinima)
-                    console.log(fechaMaxima)
-                    
-                    //Mandar Min a estado
-                    setMinimo(fechaMinima)
-                    // setMaximo(fechaMaxima)
-                    setMaximo(fechaMaxima)
-
-                } else {
-
-                    setFormulario(formularioListado[dato])
-                    setDate(formularioListado[dato][9])
-                    setDepOption(formularioListado[dato][4])
-                    setMunOption(formularioListado[dato][5])
-                    setEstOption(formularioListado[dato][8])
-                    setMinimo("")
-                    setMaximo("")
-
+                const newDate = new Date(date)
+                newDate.setMonth(newDate.getMonth() - 1);
+                newDate.setDate(newDate.getDate()+2);
+        
+                const Min = newDate
+                let dia = Min.getDate()
+                if(dia < 10){
+                    dia = "0" + dia
                 }
+                let mes = Min.getMonth()+1
+                if(mes < 10){
+                    mes = "0" + mes
+                }
+                let year = Min.getFullYear()
+        
+                let fechaMinima = year + "-" + mes + "-" + dia
+        
+                ////////////////////////////////////////
+        
+                const newDate2 = new Date(date)
+                newDate2.setMonth(newDate2.getMonth() + 1);
+                newDate2.setDate(newDate2.getDate())
+        
+                const Max = newDate2
+                let dia2 = Max.getDate()
+                if(dia2 < 10){
+                    dia2 = "0" + dia2
+                }
+                let mes2 = Max.getMonth()+1
+                
+                if(mes2 < 10){
+                    mes2 = "0" + mes2
+        
+                }
+                let year2 = Max.getFullYear()
+        
+                let fechaMaxima = year2 + "-" + mes2 + "-" + dia2
+                
+                //Mandar Min a estado
+                setMinimo(fechaMinima)
+                // setMaximo(fechaMaxima)
+                setMaximo(fechaMaxima)
+
+                // } else {
+
+                setFormulario(formularioListado[dato])  
+                setDateEstado(formularioListado[dato][9])
+                setDepOption(formularioListado[dato][4])
+                setMunOption(formularioListado[dato][5])
+                setEstOption(formularioListado[dato][8])
+                setMinimo("")
+                setMaximo("")
+
             }
         }      
 
@@ -353,10 +342,6 @@ export default function ServiciosGestion() {
 
         
     }
-
-    useEffect(()=>{
-
-    }, [estOption]);
 
     useEffect(()=>{
         
@@ -451,11 +436,6 @@ export default function ServiciosGestion() {
         } 
 
     }, [informacion])
-
-    useEffect(() => {
-        console.log("Dummy")
-
-    }, [cedula])
 
     useEffect(() => {
         console.warn("USEFFECT EN FORMULARIO")
@@ -622,7 +602,7 @@ export default function ServiciosGestion() {
                                 </div>
                                 <div className="mb-3" style={{fontSize: "12px"}}>
                                     <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Próxima de facturación</p>
-                                    <input id="datePicker" min={minimo} max={maximo} placeholder={date} onFocus={_onFocus} onBlur={_onBlur} ref={fechaIngresoRef} className="form-control form-control-sm" name="Fecha" style={{fontSize: "14px",marginBottom: "4px",color: "rgba(33,37,41,0.7)"}} type="text" required="" />
+                                    <input id="datePicker" min={minimo} max={maximo} onFocus={_onFocus} onBlur={_onBlur} ref={fechaIngresoRef} placeholder={date} className="form-control form-control-sm" name="Fecha" style={{fontSize: "14px",marginBottom: "4px",color: "rgba(33,37,41,0.7)"}} type="text" required="" />
                                     <p id="fechaIngresoError" value="" style={{color: "var(--bs-red)"}}></p>
                                 </div>
                                 <div className="d-xl-flex justify-content-xl-center mb-3" style={{width: "40%",marginLeft: "30%",fontSize: "14px"}}>

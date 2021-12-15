@@ -8,6 +8,8 @@ export default function Signup() {
     const [nombre, setNombre] = useState("")
     const [apellido, setApellido] = useState("")
 
+    const nombreRef = useRef("");
+    const apellidoRef = useRef("");
     const contraseñaRef = useRef("");
     const contraseña2Ref = useRef("");
     var host = "http://localhost:8080";
@@ -16,14 +18,16 @@ export default function Signup() {
 
         event.preventDefault();
 
+        let nombre = nombreRef.current.value;
+        let apellido = apellidoRef.current.value;
         let contraseña = contraseñaRef.current.value;
         let contraseña2 = contraseña2Ref.current.value;
 
         let errorContraseña = document.getElementById("errorContraseña");
         let errorContraseña2 = document.getElementById("errorContraseña2");
     
-        let errorN = "";
-        let errorA = "";
+        // let errorN = "";
+        // let errorA = "";
         let errorC = "";
         let errorC2 = "";
 
@@ -68,8 +72,8 @@ export default function Signup() {
             errorContraseña.innerHTML = errorC;
             errorContraseña2.innerHTML = errorC2;
 
-            // nombreRef.current.value = "";
-            // apellidoRef.current.value = "";
+            nombreRef.current.value = "";
+            apellidoRef.current.value = "";
             contraseñaRef.current.value = "";
             contraseña2Ref.current.value = "";
 
@@ -77,9 +81,12 @@ export default function Signup() {
 
             
             let registro = {
-                "cedula": cedula,
-                "contrasena": contraseña
-            }
+              "cedula" : cedula,
+              "nombre" : nombre,
+              "apellido" : apellido,
+              "contrasena" : contraseña,
+              "estado" : "1",
+            };
 
             console.log(registro)
             //ENVIAR A BACK END
@@ -155,14 +162,14 @@ export default function Signup() {
                                         </div>
                                         <div className="mb-3" style={{fontSize: "12px"}}>
                                             <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Nombre</p>
-                                            <input value={nombre}
+                                            <input ref={nombreRef} value={nombre}
                                                 className="form-control form-control-sm" type="text" name="Nombre"
                                                 placeholder="Nombre" style={{fontSize: "14px",marginBottom: "4px"}} required="" readonly=""/>
                                             <p id="errorNombre" style={{color: 'var(--bs-red)'}} ></p>
                                         </div>
                                         <div className="mb-3" style={{fontSize: "12px"}}>
                                             <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Apellido</p>
-                                            <input value={apellido}
+                                            <input ref={apellidoRef} value={apellido}
                                                 className="form-control form-control-sm" type="text" name="Apellido"
                                                 placeholder="Apellido" style={{fontSize: "14px",marginBottom: "4px"}} required="" readonly="" />
                                             <p id="errorApellido" style={{color: 'var(--bs-red)'}}></p>

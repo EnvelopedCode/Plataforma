@@ -1,10 +1,66 @@
-import React from 'react'
+import React, {useRef} from 'react'
 import { cedulaLogin } from '../Validacion/Validacion'
 import { useState, useEffect } from 'react';
 
 export default function Login() {
 
     const [cedula, setCedula] = useState(cedulaLogin);
+    const contrasenaRef= useRef("");
+    const cedulaRef = useRef("")
+    var host = "http://localhost:8080";
+
+    const login = (event) =>{
+        event.preventDefault();
+        let contrasena = contrasenaRef.current.value;
+        let errorContrasena = document.getElementById("errorPass-1");
+        let errorC = "";
+
+        let flag = false;
+
+        if(contrasena === ""){
+            errorC = "Digite una contraseña"
+            flag = true;
+        }
+
+        if(flag === true){
+            errorContrasena.innerHTML = errorC;
+        }else {
+            errorC ="";
+            errorContrasena = errorC;
+
+            contrasenaRef.current.value = "";
+            cedulaRef.current.value="";
+        }
+
+        let ingreso={
+            "cedula" : cedula,
+            "contrasena" : contrasena
+        }
+
+        fetch(`${host}/login`, {
+            headers:{"content-type": "application/json"},
+            method: "POST",
+            body: JSON.stringify(ingreso)
+        }).then((data) => data.json())
+          .then((data) =>{
+            if(data.estado === "ok"){
+                if(data.rol === "cliente"){
+                    window.location.href ="/Facturacion"
+                } else if(data.rol === "Tecnico"){
+                    window.location.href="/GestionInspeccion"
+                } else if(data.rol === "Analista"){
+                    console.log("Analista")
+                    window.location.href="/ServiciosGestion"
+                }  
+            } else if(data.estado ==="error") {
+                alert(data.msg)
+            }
+            }).catch((error)=>{
+                console.log("error en el servidor")
+                alert(error)
+            })
+    }
+
 
     useEffect(() => {
         setCedula(cedulaLogin);
@@ -23,15 +79,15 @@ export default function Login() {
                                 <form method="post" style={{ width: "260px" }}>
                                     <div className="mb-3" style={{ fontSize: "12px" }}>
                                         <p style={{ color: "#A1AEB7", marginBottom: "0px", paddingBottom: "4px" }}>Cédula</p>
-                                        <input value={cedula} className="form-control form-control-sm" type="text" name="Cedula" placeholder="Cédula" style={{ fontSize: "14px", marginBottom: "4px" }} required="" readonly="" />
+                                        <input ref={cedulaRef} value={cedula} className="form-control form-control-sm" type="text" name="Cedula" placeholder="Cédula" style={{ fontSize: "14px", marginBottom: "4px" }} required="" readonly="" />
                                     </div>
                                     <div className="mb-3" style={{ fontSize: "12px" }}>
                                         <p style={{ color: "#A1AEB7", marginBottom: "0px", paddingBottom: "4px" }}>Contraseña</p>
-                                        <input className="form-control form-control-sm" type="password" name="pass" style={{ fontSize: "14px", marginBottom: "4px" }} required="" />
+                                        <input ref={ contrasenaRef } className="form-control form-control-sm" type="password" name="pass" style={{ fontSize: "14px", marginBottom: "4px" }} required="" />
                                         <p id="errorPass-1" style={{ color: 'var(--bs-red)' }}></p>
                                     </div>
                                     <div className="d-xl-flex justify-content-xl-center mb-3" style={{ width: "40%", marginLeft: "30%", fontSize: "14px" }}>
-                                        <button className="btn btn-primary d-block w-100" type="button" style={{ background: "#424B5A", borderColor: "#424B5A", fontSize: "14px" }}>Iniciar</button></div>
+                                        <button onClick={login} className="btn btn-primary d-block w-100" type="button" style={{ background: "#424B5A", borderColor: "#424B5A", fontSize: "14px" }}>Iniciar</button></div>
                                 </form>
                             </div>
                         </div>

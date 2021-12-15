@@ -208,8 +208,11 @@ export default function ServiciosRegistro() {
         console.log("valida la cedula en 0");
         errorC = "Ingrese una cedula valida";
         flag = true;
-      } else if (cedula.length < 10) {
+      } else if (cedula.length < 10 && cedula.length > 10) {
         errorC = "Ingrese una longitud valida";
+        flag = true;
+      } else if (isNaN(cedula) === true) {
+        errorC = "No ingrese caracteres en la cedula";
         flag = true;
       }
 
