@@ -32,6 +32,8 @@ export default function ServiciosGestion() {
 
     var host = "http://localhost:8080";
 
+    const nombreRef = useRef("");
+    const apellidoRef = useRef("");
     const departamentoRef = useRef("");
     const municipioRef = useRef("");
     const direccionRef = useRef("");
@@ -265,6 +267,8 @@ export default function ServiciosGestion() {
 
         let flag = false;
 
+        let nombre = nombreRef.current.value;
+        let apellido = apellidoRef.current.value;
         let departamento = departamentoRef.current.value;
         let municipio = municipioRef.current.value;
         let direccion = direccionRef.current.value;
@@ -323,21 +327,32 @@ export default function ServiciosGestion() {
 
             let servicioG = {
                 "cedula": cedula,
-                "nombre": "Nilzon", //Traer de Base de datos
-                "apellido": "Gomez", //Traer de Base de datos
+                "nombre": formulario[2],
+                "apellido": formulario[3], 
                 "departamento": departamento,
                 "municipio": municipio,
                 "direccion": direccion,
                 "barrio": barrio,
                 "estrato": estrato,
-                "fecha": fecha
+                "fecha": fecha,
+                "servicio": titulo
             }
-
-            servicioG = JSON.stringify(servicioG)
-            console.log(servicioG)
             setInformacion(false)
-            //HACER POST A LA RUTA
+            console.log(servicioG)
 
+            fetch(`${host}/updateServicio`, {
+                headers: { "content-type": "application/json" },
+                method: "POST",
+                body: JSON.stringify(servicioG)
+            })
+                .then((data) => data.json())
+                .then((data) => {
+                    alert(data.msg)
+                })
+                .catch((data) => {
+                    alert(data.msg)
+                })
+            
         }
 
         
@@ -547,11 +562,13 @@ export default function ServiciosGestion() {
                                 </div>
                                 <div className="mb-3" style={{fontSize: "12px"}}>
                                     <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Nombre</p>
-                                    <input className="form-control form-control-sm" type="text" name="Nombre" placeholder={formulario[2]} style={{marginBottom: "4px"}} readonly="" />
+                                    <input className="form-control form-control-sm"
+                                    ref={nombreRef} type="text" name="Nombre" placeholder={formulario[2]} style={{marginBottom: "4px"}} readonly="" />
                                 </div>
                                 <div className="mb-3" style={{fontSize: "12px"}}>
                                     <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Apellido</p>
-                                    <input className="form-control form-control-sm" type="text" name="Apellido" placeholder={formulario[3]} style={{marginBottom: "4px"}} readonly="" />
+                                    <input className="form-control form-control-sm"
+                                    ref={apellidoRef} type="text" name="Apellido" placeholder={formulario[3]} style={{marginBottom: "4px"}} readonly="" />
                                 </div>
                                 <div className="d-xl-flex justify-content-xl-center mb-3" style={{width: "50%",marginLeft: "25%",fontSize: "14px"}}>
                                     <button className="btn btn-primary d-block w-100" type="button" style={{background: "#424B5A",borderColor: "#424B5A",fontSize: "14px"}} data-bs-target="#modal-1" data-bs-toggle="modal">Ver facturación</button>
