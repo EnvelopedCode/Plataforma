@@ -2,6 +2,14 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 export default function NavbarUsuario() {
+
+    function logout() {
+        localStorage.removeItem("token");
+        // const navigate = useNavigate()
+        // navigate('/');
+        // window.location.href = "/Validacion";
+    }
+
     return (
         <React.Fragment>
             <nav className="navbar navbar-light navbar-expand-lg navigation-clean-button" style={{color: "#424B5A",background: "#F2F5F7",marginBottom: "36px"}}>
@@ -16,7 +24,7 @@ export default function NavbarUsuario() {
                                     <a className="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" style={{fontSize: "12PX"}}>PERFIL</a>
                                     <div className="dropdown-menu shadow-none" style={{fontSize: "12PX"}}>
                                         <Link to='/PerfilGestion' className="dropdown-item" style={{fontSize: "12PX"}}>Administración</Link>
-                                        <Link to='/Validacion' className="dropdown-item" style={{fontSize: "12PX"}}>Cerrar sesión</Link>
+                                        <Link to='/Validacion' onClick={logout} className="dropdown-item" style={{fontSize: "12PX"}}>Cerrar sesión</Link>
                                     </div>
                                 </li>
                             </ul>

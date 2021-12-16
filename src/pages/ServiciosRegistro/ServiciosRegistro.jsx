@@ -3,8 +3,27 @@ import Titulo from '../../components/Titulo'
 import RegistroMasivo from '../../components/RegistroMasivo';
 import { useRef, useState, useEffect } from 'react';
 import NavbarAnalista from '../../components/NavbarAnalista';
+import { auth } from "../../auth/auth";
+import { Link } from 'react-router-dom';
 
 export default function ServiciosRegistro() {
+
+      const token = localStorage.getItem("token");
+      var host = "http://localhost:8080";
+
+      fetch(`${host}/servicioRegistro`, {
+        headers: {
+          "content-type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
+        method: "POST",
+      })
+        .then((data) => data.json())
+        .then((data) => {
+          console.log(data);
+          // var decoded = jwt_decode(data.token);
+          // console.log(data.url)
+        });
 
 
     const cedulaRef = useRef("");
@@ -347,7 +366,9 @@ export default function ServiciosRegistro() {
 
     return (
       <React.Fragment>
-        <NavbarAnalista />
+        {auth() ?
+        <div>
+        <NavbarAnalista />       
         <div className="container" style={{ color: "#424B5A;" }}>
           <Titulo
             titulo="REGISTRO DE SERVICIO"
@@ -438,7 +459,11 @@ export default function ServiciosRegistro() {
             </div>
           </div>
           {/*CONTENIDO*/}
+        </div>    
         </div>
+        :
+        <Link to="/Validacion">No autorizado. Vaya a validar</Link>
+        }
       </React.Fragment>
     );
   }

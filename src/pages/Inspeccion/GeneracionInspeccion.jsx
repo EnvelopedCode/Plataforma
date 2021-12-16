@@ -18,65 +18,60 @@ export default function GeneracionInspeccion() {
 
     const buscarServicio = (event) => { //Usuario ingresa servicio
 
+        let servicioError = document.getElementById("errorServicio");
+        
         if (event.key === 'Enter') {
 
             event.preventDefault();
-            let servicio = servicioRef.current.value;
-            setBtnGenerar(true);
 
-            let flag = false;
-            if(servicio === ""){
-                let servicioError = document.getElementById("errorServicio");
-                let errorS = "Ingrese un servicio";
-                servicioError.innerHTML = errorS;
+            let servicio = servicioRef.current.value;
+            let errorS = "";
+            let flag = false; 
+
+            setBtnGenerar(true);
+            
+            if(servicio === ""){         
+                errorS = "Ingrese un servicio";
                 flag = true;
                 setServicioEncontrado(false);
                 setFormInspeccion(false);
-
-            } 
+            } else if(servicio.length < 12 || servicio.length > 12){
+                errorS = "Ingrese un servicio valido";
+                flag = true;
+                setServicioEncontrado(false);
+                setFormInspeccion(false);
+            }
             
             let generacion={
                 "servicio" : servicio
             }
-            
-            fetch(`${host}/GeneracionInspeccion`, {
-              headers: { "content-type": "application/json" },
-              method: "POST",
-              body: JSON.stringify(generacion)
-            })
-              .then((data) => data.json()) // Obtener los datos
-              .then((data) => {
-                if(data.estado==="ok"){
-                  alert(data.msg);
-                //   servicioError.innerHTML = errorS;
-                  setServicioEncontrado(true);
-                } else {
-                  alert(data.msg);
-                //   servicioError.innerHTML = errorS;
-                  setServicioEncontrado(false);
-                  setFormInspeccion(false);
-                }
-              }).catch((error) => alert(error));
 
+            if(flag === false){
 
-            // else { //Se escribio un servicio correctamente
+                fetch(`${host}/BuscarInspeccion`, { //Valida si existe el servicio ingresado
+                    headers: { "content-type": "application/json" },
+                    method: "POST",
+                    body: JSON.stringify(generacion)
+                  })
+                    .then((data) => data.json()) // Obtener los datos
+                    .then((data) => {
+      
+                      if(data.estado==="ok"){
+                          errorS = "";
+                          servicioError.innerHTML = errorS;
+                          setServicioEncontrado(true);
+                      } else {
+      
+                          errorS = data.msg
+                          servicioError.innerHTML = errorS;
+                          setServicioEncontrado(false);
+                          setFormInspeccion(false);
+                      }
+                    }).catch((error) => alert(error));
 
-
-            //     //Buscamos el servicio
-            //     if(ser === "1000403193"){ //Encontro el servicio
-            //         let servicioError = document.getElementById("errorServicio");
-            //         let errorS = "";
-            //         servicioError.innerHTML = errorS;
-            //         setServicioEncontrado(true);
-
-            //     }else{ //No encontro el servicio
-            //         let servicioError = document.getElementById("errorServicio");
-            //         let errorS = "No se encontro el servicio."
-            //         servicioError.innerHTML = errorS;
-            //         setServicioEncontrado(false);
-            //         setFormInspeccion(false);
-            //     }      
-            // }
+            } else {
+                servicioError.innerHTML = errorS;
+            }
 
         }
     }
@@ -156,11 +151,13 @@ export default function GeneracionInspeccion() {
             console.log(inspeccionG)
             //HACER POST A LA RUTA
 
+            //Hacer Fetch a servicios y traerse la cedula, luego hacer busqueda de los datos de esa cedula en Usuarios y luego armar el objeto con todos los datos para asi mandarlo a Inspeccion
+
         }
 
     }
 
-    useEffect(()=>{
+    useEffect(()=>{ //Efectos visuales
 
         if(servicioEncontrado === true && noServicio.length > 0 && formInspeccion === true){
                   
@@ -189,7 +186,7 @@ export default function GeneracionInspeccion() {
                             <form style={{ width: "260px" }}>
                                 <div className="mb-3" style={{ fontSize: "12px" }}>
                                     <p style={{ color: "#A1AEB7", marginBottom: "0px", paddingBottom: "4px" }}>Número del servicio</p>
-                                    <input ref={servicioRef} onKeyDown={buscarServicio} className="form-control form-control-sm" type="text" name="Servicio" placeholder="No. Servicio" style={{ fontSize: "14px", marginBottom: "4px" }} required="" />
+                                    <input autoComplete="off" ref={servicioRef} onKeyDown={buscarServicio} className="form-control form-control-sm" type="text" name="Servicio" placeholder="No. Servicio" style={{ fontSize: "14px", marginBottom: "4px" }} required="" />
                                     <p id="errorServicio" style={{ color: 'var(--bs-red)' }}></p>
                                     {servicioEncontrado && 
                                     <div>

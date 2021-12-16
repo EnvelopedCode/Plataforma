@@ -285,34 +285,31 @@ export default function ServiciosGestion() {
         let errorF = "";
 
         /*DIRECCION*/
-        if (direccion === "") {
-            errorDir = "Ingrese una direccion";
-            flag = true;
-          } else if (direccion.length < 5) {
+        if (direccion.length < 5) {
             errorDir = "Ingrese una direccion valida";
             flag = true;
         }
 
         /*BARRIO*/
-        if (barrio === "") {
-            errorB = "Ingrese un barrio";
-            flag = true;
-          } else if (barrio.length < 5) {
+        if (barrio.length < 5) {
             errorB = "Ingrese un barrio valido";
             flag = true;
           }
 
-        /*FECHA*/
-        if (fecha === ""){
-            errorF = "Ingrese una fecha";
-            flag = true;
-        }
+        // /*FECHA*/
+        // if (fecha === ""){
+        //     errorF = "Ingrese una fecha";
+        //     flag = true;
+        // }
 
         if(flag === true){
             direccionError.innerHTML = errorDir;
             barrioError.innerHTML = errorB;
             fechaIngresoError.innerHTML = errorF;
         }else{
+            if(barrio === "" && direccion === ""){
+                window.confirm("No has aplicado cambios, deseas continuar de igual forma?")
+            }
             console.warn("FLAG === FALSE")
             errorDir = "";
             errorB = "";

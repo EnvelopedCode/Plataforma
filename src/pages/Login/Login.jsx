@@ -1,13 +1,22 @@
 import React, {useRef} from 'react'
 import { cedulaLogin } from '../Validacion/Validacion'
 import { useState, useEffect } from 'react';
+import jwt_decode from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
 
     const [cedula, setCedula] = useState(cedulaLogin);
+    
+    const navigate = useNavigate();
     const contrasenaRef= useRef("");
     const cedulaRef = useRef("")
     var host = "http://localhost:8080";
+
+
+    const navegar = (url) => {
+        navigate(url);
+    }
 
     const login = (event) =>{
         event.preventDefault();
@@ -43,22 +52,32 @@ export default function Login() {
             body: JSON.stringify(ingreso)
         }).then((data) => data.json())
           .then((data) =>{
-            if(data.estado === "ok"){
-                if(data.rol === "cliente"){
-                    window.location.href ="/Facturacion"
-                } else if(data.rol === "Tecnico"){
-                    window.location.href="/GestionInspeccion"
-                } else if(data.rol === "Analista"){
-                    console.log("Analista")
-                    window.location.href="/ServiciosGestion"
-                }  
-            } else if(data.estado ==="error") {
-                alert(data.msg)
+            var decoded = jwt_decode(data.token);
+            console.log(data.url)
+            alert("REVISAR CONSOLA")
+            
+            if(decoded.rol === "cliente"){
+                localStorage.setItem("token", data.token); //Sube el token al localStorage
+                navegar(data.url)
+
+            } else if(decoded.rol === "Tecnico"){
+                localStorage.setItem("token", data.token);
+                navegar(data.url) 
+
+            } else if(data.rol === "Analista"){
+                localStorage.setItem("token", data.token);
+                navegar(data.url)
+
+            } else if (data.estado === "error") {
+                    alert(data.msg)
+                    window.location.href = "/Validacion";
+                    localStorage.removeItem("token");
             }
-            }).catch((error)=>{
-                console.log("error en el servidor")
-                alert(error)
-            })
+            
+        }).catch((error)=>{
+            console.log("error en el servidor")
+            alert(error)
+        })
     }
 
 
