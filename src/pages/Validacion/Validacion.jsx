@@ -7,6 +7,8 @@ export var cedulaRegistro = "";
 
 export default function Validacion() {
 
+    localStorage.removeItem("token");
+
     const validarRef = useRef("");
     const navigate = useNavigate();
     var host = "http://localhost:8080";
@@ -56,9 +58,8 @@ export default function Validacion() {
                     cedulaLogin = data.cedula;
                     cedulaRegistro = data.cedula;
                 } else {
-                    alert(data.msg);
                 }
-              }).catch((error) => alert(error));
+              }).catch((error) => console.log(error));
                     
 
         }
@@ -85,7 +86,7 @@ export default function Validacion() {
                                 <form id="formTest" method="post" style={{width: "260px"}}>
                                     <div className="mb-3" style={{fontSize: "12px"}}>
                                         <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Cédula</p>
-                                        <input ref={validarRef} className="form-control form-control-sm" type="text" name="Cedula" placeholder="Cédula" style={{fontSize: "14px",marginBottom: "4px"}} required="" />
+                                        <input autoComplete="off" ref={validarRef} className="form-control form-control-sm" type="text" name="Cedula" placeholder="Cédula" style={{fontSize: "14px",marginBottom: "4px"}} required="" />
                                         <p id="errorCedula-1" style={{color: 'var(--bs-red)'}}></p>
                                     </div>
                                     <div className="d-xl-flex justify-content-xl-center mb-3"

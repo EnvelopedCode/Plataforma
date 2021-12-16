@@ -54,7 +54,6 @@ export default function Login() {
           .then((data) =>{
             var decoded = jwt_decode(data.token);
             console.log(data.url)
-            alert("REVISAR CONSOLA")
             
             if(decoded.rol === "cliente"){
                 localStorage.setItem("token", data.token); //Sube el token al localStorage
@@ -68,7 +67,11 @@ export default function Login() {
                 localStorage.setItem("token", data.token);
                 navegar(data.url)
 
-            } else if (data.estado === "error") {
+            }else if(data.rol === "Admin"){
+                localStorage.setItem("token", data.token);
+                navegar(data.url)
+            
+            }else if (data.estado === "error"){
                     alert(data.msg)
                     window.location.href = "/Validacion";
                     localStorage.removeItem("token");

@@ -2,6 +2,9 @@ import React from 'react';
 import Titulo from '../../components/Titulo'
 import { useRef, useState, useEffect } from 'react';
 import NavbarAnalista from '../../components/NavbarAnalista';
+import NavbarAdmin from '../../components/NavbarAdmin';
+import { authAnalista } from '../../auth/authAnalista'; 
+import { authAdmin } from '../../auth/authAdmin';
 
 export default function GeneracionInspeccion() {
 
@@ -169,118 +172,424 @@ export default function GeneracionInspeccion() {
     }, [noServicio, formInspeccion, servicioEncontrado])
 
     return (
-        <React.Fragment>
-            <NavbarAnalista/>
+      <React.Fragment>
+        {authAnalista() || authAdmin() ? (
+          <div>
+            {authAdmin() && <NavbarAdmin />}
+            {authAnalista() && <NavbarAnalista />}
             <div className="container" style={{ color: "#424B5A" }}>
-                <Titulo
-                    titulo="GESTIÓN INSPECCIÓN"
-                    subTitulo1="A continuación, podrás consultar y generar las órdenes de servicio de inspección asociadas a los servicios."
+              <Titulo
+                titulo="GESTIÓN INSPECCIÓN"
+                subTitulo1="A continuación, podrás consultar y generar las órdenes de servicio de inspección asociadas a los servicios."
                 // subTitulo2="como masiva los nuevos servicios de clientes"
-                />
-                {/*CONSULTA*/}
-                <div className="d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-center justify-content-sm-center justify-content-lg-center justify-content-xl-center" style={{ marginBottom: "36px" }}>
-                    <div style={{ background: "#FFFFFF", width: "386px", borderTopLeftRadius: "8px", borderTopRightRadius: "8px", borderBottomRightRadius: "8px", borderBottomLeftRadius: "8px" }}>
-                        <h2 className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{ fontSize: "20px", textAlign: "center", fontWeight: "bold", marginBottom: "12px", marginTop: "32px" }}>Inspección</h2>
-                        <p className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{ textAlign: "center", fontSize: "12px", color: "#A1AEB7", marginBottom: "0px", paddingRight: "32px", paddingLeft: "32px" }}>Ingresa el servicio base al cual deseas consultar las inspecciones históricas o bien generar inspecciones.<br /></p>
-                        <div className="d-flex d-xl-flex justify-content-center justify-content-xl-center" style={{ marginTop: "24px", marginBottom: "24px" }}>
-                            <form style={{ width: "260px" }}>
-                                <div className="mb-3" style={{ fontSize: "12px" }}>
-                                    <p style={{ color: "#A1AEB7", marginBottom: "0px", paddingBottom: "4px" }}>Número del servicio</p>
-                                    <input autoComplete="off" ref={servicioRef} onKeyDown={buscarServicio} className="form-control form-control-sm" type="text" name="Servicio" placeholder="No. Servicio" style={{ fontSize: "14px", marginBottom: "4px" }} required="" />
-                                    <p id="errorServicio" style={{ color: 'var(--bs-red)' }}></p>
-                                    {servicioEncontrado && 
-                                    <div>
-                                        <div className="d-xl-flex justify-content-xl-center mb-3" style={{ width: "40%", marginLeft: "30%", fontSize: "14px" }}>
-                                            <button className="btn btn-primary d-block w-100" type="button" style={{ background: "#424B5A", borderColor: "#424B5A", fontSize: "14px" }} data-bs-target="#modal-1" data-bs-toggle="modal">Consultar</button>
-                                        </div>
-                                        {btnGenerar && <div className="d-xl-flex justify-content-xl-center mb-3" style={{ width: "40%", marginLeft: "30%", fontSize: "14px" }}>
-                                            <button onClick={generar} className="btn btn-primary d-block w-100" type="button" style={{ background: "#424B5A", borderColor: "#424B5A", fontSize: "14px" }}>Generar</button>
-                                        </div>
-                                        }
-                                        <p className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{ textAlign: "center", fontSize: "12px", color: "#A1AEB7", marginBottom: "24px", paddingRight: "32px", paddingLeft: "32px", borderColor: "#A1AEB7" }}>Descarga histórico anual de inspección de servicios.<br /></p>
-                                        <div className="d-xl-flex justify-content-xl-center mb-3" style={{ width: "40%", marginLeft: "30%", fontSize: "14px" }}>
-                                            <button className="btn btn-primary d-block w-100" type="button" style={{ background: "#F2F5F7", fontSize: "14px", borderColor: "#F2F5F7", color: "#505D68" }}>Descargar</button>
-                                        </div>
-                                    </div>
-                                    }
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                {/*CONSULTA*/}
-                {/*INFORMACION*/}
-                {formInspeccion && <div className="d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-center justify-content-sm-center justify-content-lg-center justify-content-xl-center" style={{ marginBottom: "36px" }}>
-                    <div style={{ background: "#FFFFFF", width: "386px", borderTopLeftRadius: "8px", borderTopRightRadius: "8px", borderBottomRightRadius: "8px", borderBottomLeftRadius: "8px" }}>
-                        <h2 className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{ fontSize: "20px", textAlign: "center", fontWeight: "bold", marginBottom: "12px", marginTop: "32px" }}>Generar inspección</h2>
-                        <p className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{ textAlign: "center", fontSize: "12px", color: "#A1AEB7", marginBottom: "0px", paddingRight: "32px", paddingLeft: "32px" }}>Ingresa la información básica requerida para generar inspección.<br /></p>
-                        <div className="d-flex d-xl-flex justify-content-center justify-content-xl-center" style={{ marginTop: "24px", marginBottom: "24px" }}>
-                            <form method="post" style={{ width: "260px" }}>
-                                <div id="focus" className="mb-3" style={{ fontSize: "12px" }}>
-                                    <p style={{ color: "#A1AEB7", marginBottom: "0px", paddingBottom: "4px" }}>Número del servicio</p>
-                                    <input value={noServicio} id="servicio" className="form-control form-control-sm" type="text" name="Servicio" placeholder="No. Servicio" style={{ fontSize: "14px", marginBottom: "4px" }} required="" readonly="" />
-                                </div>
-                                <div className="mb-3" style={{ fontSize: "12px" }}>
-                                    <p style={{ color: "#A1AEB7", marginBottom: "0px", paddingBottom: "4px" }}>ID Técnico</p>
-                                    <input ref={tecnicoInput} id="tecnico" className="form-control form-control-sm" type="text" name="Tecnico" placeholder="ID Técnico" style={{ fontSize: "14px", marginBottom: "4px" }} required="" />
-                                    <p id="errorTecnico-1" value="" style={{ color: 'var(--bs-red)' }}></p>
-                                </div>
-                                <div className="mb-3" style={{ fontSize: "12px" }}>
-                                    <p style={{ color: "#A1AEB7", marginBottom: "0px", paddingBottom: "4px" }}>Fecha de inspección</p>
-                                    <input ref={fechaInput} id="fecha" className="form-control form-control-sm" name="Fecha" placeholder="Fecha inicio" style={{ fontSize: "14px", marginBottom: "4px", color: 'rgba(33,37,41,0.7)' }} type="date" required="" />
-                                    <p id="errorFecha-1" value="" style={{ color: 'var(--bs-red)' }}></p>
-                                </div>
-                                <div className="mb-3" style={{ fontSize: '12px' }}>
-                                    <p style={{ color: "#A1AEB7", marginBottom: "0px", paddingBottom: "4px" }}>Hora de inspección</p>
-                                    <input ref={horaInput} id="hora" className="form-control form-control-sm" name="Hora" placeholder="Hora" style={{ fontSize: "14px", marginBottom: "4px", color: 'rgba(33,37,41,0.7)' }} type="time" required="" />
-                                    <p id="errorHora-1" value="" style={{ color: 'var(--bs-red)' }}></p>
-                                </div>
-                                <div className="d-xl-flex justify-content-xl-center mb-3" style={{ width: "40%", marginLeft: "30%", fontSize: "14px" }}>
-                                    <button onClick={inspeccionar} className="btn btn-primary d-block w-100" type="button" style={{ background: "#424B5A", borderColor: "#424B5A", fontSize: "14px" }}>Generar</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                }
-                {/*INFORMACION*/}
-                {/*MODAL*/}
-                <div className="modal fade" role="dialog" tabIndex="-1" id="modal-1">
-                    <div className="modal-dialog" role="document">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h4 className="modal-title" style={{ fontSize: "16px" }}>Inspecciones históricas</h4><button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              />
+              {/*CONSULTA*/}
+              <div
+                className="d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-center justify-content-sm-center justify-content-lg-center justify-content-xl-center"
+                style={{ marginBottom: "36px" }}
+              >
+                <div
+                  style={{
+                    background: "#FFFFFF",
+                    width: "386px",
+                    borderTopLeftRadius: "8px",
+                    borderTopRightRadius: "8px",
+                    borderBottomRightRadius: "8px",
+                    borderBottomLeftRadius: "8px",
+                  }}
+                >
+                  <h2
+                    className="d-xl-flex justify-content-xl-center align-items-xl-center"
+                    style={{
+                      fontSize: "20px",
+                      textAlign: "center",
+                      fontWeight: "bold",
+                      marginBottom: "12px",
+                      marginTop: "32px",
+                    }}
+                  >
+                    Inspección
+                  </h2>
+                  <p
+                    className="d-xl-flex justify-content-xl-center align-items-xl-center"
+                    style={{
+                      textAlign: "center",
+                      fontSize: "12px",
+                      color: "#A1AEB7",
+                      marginBottom: "0px",
+                      paddingRight: "32px",
+                      paddingLeft: "32px",
+                    }}
+                  >
+                    Ingresa el servicio base al cual deseas consultar las
+                    inspecciones históricas o bien generar inspecciones.
+                    <br />
+                  </p>
+                  <div
+                    className="d-flex d-xl-flex justify-content-center justify-content-xl-center"
+                    style={{ marginTop: "24px", marginBottom: "24px" }}
+                  >
+                    <form style={{ width: "260px" }}>
+                      <div className="mb-3" style={{ fontSize: "12px" }}>
+                        <p
+                          style={{
+                            color: "#A1AEB7",
+                            marginBottom: "0px",
+                            paddingBottom: "4px",
+                          }}
+                        >
+                          Número del servicio
+                        </p>
+                        <input
+                          autoComplete="off"
+                          ref={servicioRef}
+                          onKeyDown={buscarServicio}
+                          className="form-control form-control-sm"
+                          type="text"
+                          name="Servicio"
+                          placeholder="No. Servicio"
+                          style={{ fontSize: "14px", marginBottom: "4px" }}
+                          required=""
+                        />
+                        <p
+                          id="errorServicio"
+                          style={{ color: "var(--bs-red)" }}
+                        ></p>
+                        {servicioEncontrado && (
+                          <div>
+                            <div
+                              className="d-xl-flex justify-content-xl-center mb-3"
+                              style={{
+                                width: "40%",
+                                marginLeft: "30%",
+                                fontSize: "14px",
+                              }}
+                            >
+                              <button
+                                className="btn btn-primary d-block w-100"
+                                type="button"
+                                style={{
+                                  background: "#424B5A",
+                                  borderColor: "#424B5A",
+                                  fontSize: "14px",
+                                }}
+                                data-bs-target="#modal-1"
+                                data-bs-toggle="modal"
+                              >
+                                Consultar
+                              </button>
                             </div>
-                            <div className="modal-body">
-                                <div className="table-responsive" style={{ fontSize: "14px" }}>
-                                    <table className="table">
-                                        <thead>
-                                            <tr>
-                                                <th>Fecha</th>
-                                                <th>Técnico</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>01/11/2021 08:00 a.m.</td>
-                                                <td>Juan Pérez</td>
-                                            </tr>
-                                            <tr>
-                                                <td>17/10/2021 10:00 a.m.</td>
-                                                <td>Jorge López</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+                            {btnGenerar && (
+                              <div
+                                className="d-xl-flex justify-content-xl-center mb-3"
+                                style={{
+                                  width: "40%",
+                                  marginLeft: "30%",
+                                  fontSize: "14px",
+                                }}
+                              >
+                                <button
+                                  onClick={generar}
+                                  className="btn btn-primary d-block w-100"
+                                  type="button"
+                                  style={{
+                                    background: "#424B5A",
+                                    borderColor: "#424B5A",
+                                    fontSize: "14px",
+                                  }}
+                                >
+                                  Generar
+                                </button>
+                              </div>
+                            )}
+                            <p
+                              className="d-xl-flex justify-content-xl-center align-items-xl-center"
+                              style={{
+                                textAlign: "center",
+                                fontSize: "12px",
+                                color: "#A1AEB7",
+                                marginBottom: "24px",
+                                paddingRight: "32px",
+                                paddingLeft: "32px",
+                                borderColor: "#A1AEB7",
+                              }}
+                            >
+                              Descarga histórico anual de inspección de
+                              servicios.
+                              <br />
+                            </p>
+                            <div
+                              className="d-xl-flex justify-content-xl-center mb-3"
+                              style={{
+                                width: "40%",
+                                marginLeft: "30%",
+                                fontSize: "14px",
+                              }}
+                            >
+                              <button
+                                className="btn btn-primary d-block w-100"
+                                type="button"
+                                style={{
+                                  background: "#F2F5F7",
+                                  fontSize: "14px",
+                                  borderColor: "#F2F5F7",
+                                  color: "#505D68",
+                                }}
+                              >
+                                Descargar
+                              </button>
                             </div>
-                        </div>
-                    </div>
+                          </div>
+                        )}
+                      </div>
+                    </form>
+                  </div>
                 </div>
-                {/*MODAL*/}
+              </div>
+              {/*CONSULTA*/}
+              {/*INFORMACION*/}
+              {formInspeccion && (
+                <div
+                  className="d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-center justify-content-sm-center justify-content-lg-center justify-content-xl-center"
+                  style={{ marginBottom: "36px" }}
+                >
+                  <div
+                    style={{
+                      background: "#FFFFFF",
+                      width: "386px",
+                      borderTopLeftRadius: "8px",
+                      borderTopRightRadius: "8px",
+                      borderBottomRightRadius: "8px",
+                      borderBottomLeftRadius: "8px",
+                    }}
+                  >
+                    <h2
+                      className="d-xl-flex justify-content-xl-center align-items-xl-center"
+                      style={{
+                        fontSize: "20px",
+                        textAlign: "center",
+                        fontWeight: "bold",
+                        marginBottom: "12px",
+                        marginTop: "32px",
+                      }}
+                    >
+                      Generar inspección
+                    </h2>
+                    <p
+                      className="d-xl-flex justify-content-xl-center align-items-xl-center"
+                      style={{
+                        textAlign: "center",
+                        fontSize: "12px",
+                        color: "#A1AEB7",
+                        marginBottom: "0px",
+                        paddingRight: "32px",
+                        paddingLeft: "32px",
+                      }}
+                    >
+                      Ingresa la información básica requerida para generar
+                      inspección.
+                      <br />
+                    </p>
+                    <div
+                      className="d-flex d-xl-flex justify-content-center justify-content-xl-center"
+                      style={{ marginTop: "24px", marginBottom: "24px" }}
+                    >
+                      <form method="post" style={{ width: "260px" }}>
+                        <div
+                          id="focus"
+                          className="mb-3"
+                          style={{ fontSize: "12px" }}
+                        >
+                          <p
+                            style={{
+                              color: "#A1AEB7",
+                              marginBottom: "0px",
+                              paddingBottom: "4px",
+                            }}
+                          >
+                            Número del servicio
+                          </p>
+                          <input
+                            value={noServicio}
+                            id="servicio"
+                            className="form-control form-control-sm"
+                            type="text"
+                            name="Servicio"
+                            placeholder="No. Servicio"
+                            style={{ fontSize: "14px", marginBottom: "4px" }}
+                            required=""
+                            readonly=""
+                          />
+                        </div>
+                        <div className="mb-3" style={{ fontSize: "12px" }}>
+                          <p
+                            style={{
+                              color: "#A1AEB7",
+                              marginBottom: "0px",
+                              paddingBottom: "4px",
+                            }}
+                          >
+                            ID Técnico
+                          </p>
+                          <input
+                            ref={tecnicoInput}
+                            id="tecnico"
+                            className="form-control form-control-sm"
+                            type="text"
+                            name="Tecnico"
+                            placeholder="ID Técnico"
+                            style={{ fontSize: "14px", marginBottom: "4px" }}
+                            required=""
+                          />
+                          <p
+                            id="errorTecnico-1"
+                            value=""
+                            style={{ color: "var(--bs-red)" }}
+                          ></p>
+                        </div>
+                        <div className="mb-3" style={{ fontSize: "12px" }}>
+                          <p
+                            style={{
+                              color: "#A1AEB7",
+                              marginBottom: "0px",
+                              paddingBottom: "4px",
+                            }}
+                          >
+                            Fecha de inspección
+                          </p>
+                          <input
+                            ref={fechaInput}
+                            id="fecha"
+                            className="form-control form-control-sm"
+                            name="Fecha"
+                            placeholder="Fecha inicio"
+                            style={{
+                              fontSize: "14px",
+                              marginBottom: "4px",
+                              color: "rgba(33,37,41,0.7)",
+                            }}
+                            type="date"
+                            required=""
+                          />
+                          <p
+                            id="errorFecha-1"
+                            value=""
+                            style={{ color: "var(--bs-red)" }}
+                          ></p>
+                        </div>
+                        <div className="mb-3" style={{ fontSize: "12px" }}>
+                          <p
+                            style={{
+                              color: "#A1AEB7",
+                              marginBottom: "0px",
+                              paddingBottom: "4px",
+                            }}
+                          >
+                            Hora de inspección
+                          </p>
+                          <input
+                            ref={horaInput}
+                            id="hora"
+                            className="form-control form-control-sm"
+                            name="Hora"
+                            placeholder="Hora"
+                            style={{
+                              fontSize: "14px",
+                              marginBottom: "4px",
+                              color: "rgba(33,37,41,0.7)",
+                            }}
+                            type="time"
+                            required=""
+                          />
+                          <p
+                            id="errorHora-1"
+                            value=""
+                            style={{ color: "var(--bs-red)" }}
+                          ></p>
+                        </div>
+                        <div
+                          className="d-xl-flex justify-content-xl-center mb-3"
+                          style={{
+                            width: "40%",
+                            marginLeft: "30%",
+                            fontSize: "14px",
+                          }}
+                        >
+                          <button
+                            onClick={inspeccionar}
+                            className="btn btn-primary d-block w-100"
+                            type="button"
+                            style={{
+                              background: "#424B5A",
+                              borderColor: "#424B5A",
+                              fontSize: "14px",
+                            }}
+                          >
+                            Generar
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {/*INFORMACION*/}
+              {/*MODAL*/}
+              <div
+                className="modal fade"
+                role="dialog"
+                tabIndex="-1"
+                id="modal-1"
+              >
+                <div className="modal-dialog" role="document">
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <h4 className="modal-title" style={{ fontSize: "16px" }}>
+                        Inspecciones históricas
+                      </h4>
+                      <button
+                        type="button"
+                        className="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                      ></button>
+                    </div>
+                    <div className="modal-body">
+                      <div
+                        className="table-responsive"
+                        style={{ fontSize: "14px" }}
+                      >
+                        <table className="table">
+                          <thead>
+                            <tr>
+                              <th>Fecha</th>
+                              <th>Técnico</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>01/11/2021 08:00 a.m.</td>
+                              <td>Juan Pérez</td>
+                            </tr>
+                            <tr>
+                              <td>17/10/2021 10:00 a.m.</td>
+                              <td>Jorge López</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/*MODAL*/}
             </div>
-        </React.Fragment>
-
-    )
+          </div>
+        ) : (
+          (window.location.href = "/Validacion")
+        )}
+      </React.Fragment>
+    );
 }
 
 

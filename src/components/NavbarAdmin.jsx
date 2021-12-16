@@ -1,9 +1,10 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
+
 export default function NavbarAdmin() {
     
-    return (
+    return (      
         <React.Fragment>
                 <nav className="navbar navbar-light navbar-expand-lg navigation-clean-button" style={{color: "#424B5A",background: "#F2F5F7",marginBottom: "36px"}}>
                     <div className="container"><a className="navbar-brand" style={{color: "#424B5A"}}>GASES DEL CARIBE</a>
@@ -13,8 +14,8 @@ export default function NavbarAdmin() {
                                     <li className="nav-item dropdown">
                                         <a className="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" style={{fontSize: "12PX"}}>SERVICIOS</a>
                                         <div className="dropdown-menu shadow-none" style={{fontSize: "12PX"}}>
-                                            <Link to='/' className="dropdown-item" style={{fontSize: "12PX"}}>Registro</Link>
-                                            <Link to='/' className="dropdown-item" style={{fontSize: "12PX"}}>Gestión</Link>
+                                            <Link to='/ServiciosRegistro' className="dropdown-item" style={{fontSize: "12PX"}}>Registro</Link>
+                                            <Link to='/ServiciosGestion' className="dropdown-item" style={{fontSize: "12PX"}}>Gestión</Link>
                                         </div>
                                     </li>
                                     <li className="nav-item" style={{fontSize: "12PX"}}>

@@ -14,12 +14,12 @@ export default function NavbarTecnico() {
                                 <li className="nav-item" style={{fontSize: "12PX"}}>
                                     <Link to='/GestionInspeccion' className="nav-link" style={{fontSize: "12PX"}}>INSPECCIÓN</Link>
                                 </li>
-                                <li className="nav-item" style={{fontSize: "12PX"}}>
+                                {/* <li className="nav-item" style={{fontSize: "12PX"}}>
                                     <Link to='/RegistroMedidas' className="nav-link" style={{fontSize: "12PX"}}>MEDICIÓN</Link>
                                 </li>
                                 <li className="nav-item" style={{fontSize: "12PX"}}>
                                     <Link to='/RegistroAnomalias' className="nav-link" style={{fontSize: "12PX"}}>ANOMALÍAS</Link>
-                                </li>
+                                </li> */}
                                 <li className="nav-item dropdown">
                                     <a className="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" style={{fontSize: "12PX"}}>PERFIL</a>
                                     <div className="dropdown-menu shadow-none" style={{fontSize: "12PX"}}>
