@@ -2,49 +2,42 @@ import React from 'react'
 import NavbarUsuario from '../../components/NavbarUsuario';
 import Titulo from '../../components/Titulo';
 import { useState, useEffect } from 'react';
-import existencias from '../../mocks/Facturacion/facturas';
 import { authCliente } from '../../auth/authCliente';
+import jwt_decode from "jwt-decode";
 
 export default function GestionFacturacion() {
-  const facturas = [];
 
-  for (let indice in existencias) {
-    //PENDIENTE: Revisar parseo de abajo
+  var host = "http://localhost:8080";
+  const [usuario, setUsuario] = useState("")
+  const [facturas, setFacturas] = useState([]); //Este estado representa los registros del usuario en cuanto se carga la pagina (se manda un GET)
+  const [informacion, setInformacion] = useState([]);
+  const [formulario, setFormulario] = useState(false); //Una vez se encuentra el registro despliega el formulario
+  const [titulo, setTItulo] = useState("") //Titulo del formulario
 
-    let servicio = [];
 
-    servicio.push(existencias[indice].servicio);
-    servicio.push(existencias[indice].cedula);
-    servicio.push(existencias[indice].nombre);
-    servicio.push(existencias[indice].apellido);
-    servicio.push(existencias[indice].departamento);
-    servicio.push(existencias[indice].municipio);
-    servicio.push(existencias[indice].direccion);
-    servicio.push(existencias[indice].barrio);
-    servicio.push(existencias[indice].estrato);
-    servicio.push(existencias[indice].fecha);
 
-    facturas.push(servicio);
+  var token = localStorage.getItem("token");
+  var decoded = jwt_decode(token);
+  console.log(decoded.cedula)
+  console.log(typeof decoded.cedula)
+  const cedula = {
+    "cedula": decoded.cedula
   }
 
-  const [getFacturas, setGetFacturas] = useState(facturas); //Este estado representa los registros del usuario en cuanto se carga la pagina (se manda un GET)
-  const [formulario, setFormulario] = useState(false);
-  const [titulo, setTitulo] = useState("");
-  const [informacion, setInformacion] = useState([]);
+  fetch(`${host}/facServicio`, { //Me traigo nombre
+    headers: { "content-type": "application/json" },
+    method: "POST",
+    body: JSON.stringify(cedula)
+  })
+    .then((data) => data.json())
+    .then((data) => {
+        setUsuario(data.servicio.nombre + " " + data.servicio.apellido)
+    })
 
-  const Informacion = (servicio) => {
-    for (let registro in facturas) {
-      if (facturas[registro][0] === servicio) {
-        setInformacion(facturas[registro]);
-      }
-    }
-  };
 
   const buscarRegistro = (event) => {
     event.preventDefault();
-    setTitulo(event.target.value);
-    Informacion(event.target.value);
-    setFormulario(true);
+
   };
 
   return (
@@ -81,7 +74,7 @@ export default function GestionFacturacion() {
                   marginTop: "32px",
                 }}
               >
-                Jorge Pérez
+                {usuario}
               </h2>
               <p
                 className="d-xl-flex justify-content-xl-center align-items-xl-center"
@@ -102,7 +95,7 @@ export default function GestionFacturacion() {
                 style={{ marginTop: "24px", marginBottom: "24px" }}
               >
                 <form method="post" style={{ width: "260px" }}>
-                  {getFacturas.map((registro) => (
+                  {facturas.map((registro) => (
                     <div
                       className="d-xl-flex justify-content-xl-center mb-3"
                       style={{ width: "55%", marginLeft: "22%" }}

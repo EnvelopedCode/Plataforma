@@ -328,6 +328,8 @@ export default function ServiciosRegistro() {
         barrioRef.current.value="";
         fechaInicioRef.current.value="";
 
+        console.log(fecha)
+
         const servicio = {
           "cedula": cedula,
           "nombre": nombre,

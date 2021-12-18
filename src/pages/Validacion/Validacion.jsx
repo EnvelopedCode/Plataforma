@@ -19,6 +19,7 @@ export default function Validacion() {
 
     const validar = (event) => {
         event.preventDefault();
+        console.warn("ENTRO A VALIDAR")
 
         let cedula = validarRef.current.value;
         let errorCedula = document.getElementById("errorCedula-1");
@@ -83,7 +84,7 @@ export default function Validacion() {
                                 perfil.<br /></p>
                             <div className="d-flex d-xl-flex justify-content-center justify-content-xl-center"
                                 style={{marginTop: "24px",marginBottom: "24px"}}>
-                                <form id="formTest" method="post" style={{width: "260px"}}>
+                                <form id="formTest" onSubmit={validar} style={{width: "260px"}}>
                                     <div className="mb-3" style={{fontSize: "12px"}}>
                                         <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4px"}}>Cédula</p>
                                         <input autoComplete="off" ref={validarRef} className="form-control form-control-sm" type="text" name="Cedula" placeholder="Cédula" style={{fontSize: "14px",marginBottom: "4px"}} required="" />

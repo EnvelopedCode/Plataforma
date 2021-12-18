@@ -1,7 +1,7 @@
 import React from 'react'
 import Titulo from '../../components/Titulo';
 import RegistroMasivo from '../../components/RegistroMasivo';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import NavbarAnalista from '../../components/NavbarAnalista';
 import NavbarAdmin from '../../components/NavbarAdmin';
 import { authAnalista } from '../../auth/authAnalista';
@@ -9,15 +9,93 @@ import { authAdmin } from '../../auth/authAdmin';
 
 export default function GestionMedidas() {
 
+    const [formulario, setFormulario] = useState(false)
+
     var host = "http://localhost:8080";
 
     const servicioRef = useRef("");
     const medicionRef = useRef("");
-    const fechaMedicionRef = useRef("");
     const unidadesRef = useRef("");
     const anomaliasRef = useRef("");
 
     let flag = false;
+    
+    const validar = (event) => {
+
+        let servicio = servicioRef.current.value
+        let errorServicio = document.getElementById("errorServicio");
+        errorServicio.innerHTML = "";
+        setFormulario(false)
+      
+        if (event.key === 'Enter') {
+
+          event.preventDefault()
+
+          let fechaHoy = new Date()
+          fechaHoy.setDate(fechaHoy.getDate()-1)
+          fechaHoy = fechaHoy.toISOString();
+          fechaHoy = fechaHoy.substring(0, 10);
+          console.log(fechaHoy)
+
+          let servicioEnviar = {
+            "servicio": servicio,
+            "fecha": fechaHoy
+          }
+
+          fetch(`${host}/busquedaServicio`, {
+            headers: { "content-type": "application/json" },
+            method: "POST",
+            body: JSON.stringify(servicioEnviar)
+          })
+            .then((data) => data.json())
+            .then((data) => {
+              if(data.servicio){
+                //Desarmar fecha
+                let fechaFactura = new Date(data.servicio.fecha) //Facturacion
+                let fechaActual = new Date() //Hoy
+
+                let diaFactura = fechaFactura.getDate()+1 //Dia facturacion
+                let diaActual = fechaActual.getDate() //Dia hoy
+
+                console.log(diaFactura) //16
+                console.log(diaActual) //17
+
+                if(diaFactura === diaActual){ //Las fechas coinciden
+                  errorServicio.innerHTML = ""
+                  console.warn(servicioEnviar)
+
+                  //FETCH DOS VECES MISMO DIA
+
+                  fetch(`${host}/fechaValidar`, {
+                    headers: { "content-type": "application/json" },
+                    method: "POST",
+                    body: JSON.stringify(servicioEnviar)
+                  })
+                    .then((data) => data.json())
+                    .then((data) => {
+                      console.log(data.medida) //Nos trae las medidas de hoy
+                      if(data.medida.length > 0){
+                        //Ya se registro una medida hoy
+                        errorServicio.innerHTML = "Ya se ha registrado una medida hoy"
+                      } else {
+                        setFormulario(true)
+                        //No se registraron medidas hoy
+                      }
+                    })
+
+                  //FETCH NO INGRESAR DOS VECES MISMO DIA
+
+                }else{
+                  errorServicio.innerHTML = `Este servicio solo puede facturarse los dias ${diaFactura}`
+                }
+              
+              } else{
+                errorServicio.innerHTML = "Servicio no encontrado"
+              }
+            })
+        }
+    }
+    
 
     const registrar = () => {
         
@@ -25,26 +103,12 @@ export default function GestionMedidas() {
 
         let servicio = servicioRef.current.value;
         let medicion = medicionRef.current.value;
-        let fechaMedicion = fechaMedicionRef.current.value;
         let unidades = unidadesRef.current.value;
         let anomalia = anomaliasRef.current.value;
 
-        const errorServicio = document.getElementById("errorServicio");
         const errorMedicion = document.getElementById("errorMedicion");
-        const errorFecha = document.getElementById("errorFecha");
 
-        let errorS = "";
         let errorM = "";
-        let errorF = "";
-
-
-        if(servicio === ""){
-            errorS = "Digite un servicio";
-            flag = true;
-        } else if (servicio.length < 12 || servicio.length > 12) {
-            errorS = "Ingrese un servicio de longitud adecuada";
-            flag = true;
-        }
 
         if(medicion === ""){
             errorM= "Digite una medición";
@@ -57,31 +121,19 @@ export default function GestionMedidas() {
             flag = true;
         }
 
-        if(fechaMedicion === ""){
-            errorF = "Ingrese una fecha";
-            flag = true;
-        }
 
         if (flag === true) {
-            errorServicio.innerHTML = errorS;
             errorMedicion.innerHTML = errorM;
-            errorFecha.innerHTML = errorF;
         }else{
             console.warn("FLAG === FALSE");
-            errorS = "";
             errorM = "";
-            errorF = "";
-            errorServicio.innerHTML = errorS;
             errorMedicion.innerHTML = errorM;
-            errorFecha.inner = errorF;
 
             servicioRef.current.value = "";
             medicionRef.current.value = "";
-            fechaMedicionRef.current.value = "";
 
             var flag2 = false;
             var errorConsultaM = "";
-            var errorConsultaS = "";
 
             let servicioEnviar = {
                 "servicio": servicio,
@@ -104,41 +156,40 @@ export default function GestionMedidas() {
                             }
                         }
 
-                    } else { //No encontro mediciones anteriores (No hubo registro de servicio)
-                        errorConsultaS = "Servicio no registrado"
-                        errorServicio.innerHTML = errorConsultaS
-                        flag2 = true
-                    }
+                        if(flag2 === true){
+                          errorMedicion.innerHTML = errorConsultaM;
+                        } else{
+                          //FETCH ENVIO
 
-                    if(flag2 === false){ // El servicio existe y la medicion no es anomala
+                          let fechaHoy = new Date()
+                          fechaHoy.setDate(fechaHoy.getDate()-1)
+                          fechaHoy = fechaHoy.toISOString();
+                          fechaHoy = fechaHoy.substring(0, 10);
 
-                        //FETCH ENVIO
-                        alert("Insercion exitosa")
-
-                        let medida = {
+                          let Medida = {
                             "servicio": servicio,
                             "lectura": medicion,
-                            "fechaLectura": fechaMedicion,
+                            "fechaLectura": fechaHoy,
                             "consumo": medicion,
                             "unidad": unidades,
-                            "anomalia": anomalia
-                        }
-
-                        fetch(`${host}/medidasServicio`, { //Insercion de  medida
+                            "anomalia": anomalia,
+                          }
+                          fetch(`${host}/medidasServicio`, { //Validar que la medicion no sea anomala
                             headers: { "content-type": "application/json" },
                             method: "POST",
-                            body: JSON.stringify(medida)
+                            body: JSON.stringify(Medida)
                           })
                             .then((data) => data.json())
                             .then((data) => {
-                                alert("Data recibida")
+                              setFormulario(false)
                             })
+                            .catch((data) => {
+                              alert(data.estado)
+                            })
+                          //FETCH ENVIO
+                        }
 
-                        //FETCH ENVIO
-
-                    } else if(flag2 === true){
-                        errorMedicion.innerHTML = errorConsultaM;
-                    }
+                    } 
 
                 })
                 .catch((error) => {
@@ -207,184 +258,169 @@ export default function GestionMedidas() {
                     servicio.
                     <br />
                   </p>
+                  {/*DUPLICADO*/}
+                  <div
+                    className="d-flex d-xl-flex justify-content-center justify-content-xl-center"
+                    style={{ marginTop: "24px", marginBottom: "24px" }}
+                  >
+                    <form style={{ width: "260px" }}>
+                      <div className="mb-3" style={{ fontSize: "12px" }}>
+                      <p
+                        style={{
+                          color: "#A1AEB7",
+                          marginBottom: "0px",
+                          paddingBottom: "4px",
+                        }}
+                      >
+                        Número del servicio
+                      </p>
+                      <input
+                        ref={servicioRef}
+                        onKeyDown={validar}
+                        className="form-control form-control-sm"
+                        type="text"
+                        name="Servicio"
+                        placeholder="No. Servicio"
+                        style={{ fontSize: "14px", marginBottom: "4px" }}
+                        required=""
+                      />
+                      <p
+                        id="errorServicio"
+                        value=""
+                        style={{ color: "var(--bs-red)" }}
+                      ></p>       
+                      </div>
+                    </form>
+                  </div>
+                  {/*DUPLICADO*/}
                   <div
                     className="d-flex d-xl-flex justify-content-center justify-content-xl-center"
                     style={{ marginTop: "24px", marginBottom: "24px" }}
                   >
                     <form method="post" style={{ width: "260px" }}>
-                      <div className="mb-3" style={{ fontSize: "12px" }}>
-                        <p
+                      {formulario && 
+                      <div>
+                        <div className="mb-3" style={{ fontSize: "12px" }}>
+                          <p
+                            style={{
+                              color: "#A1AEB7",
+                              marginBottom: "0px",
+                              paddingBottom: "4px",
+                            }}
+                          >
+                            Medición
+                          </p>
+                          <input
+                            ref={medicionRef}
+                            className="form-control form-control-sm"
+                            type="text"
+                            name="Medicion"
+                            placeholder="Medición"
+                            style={{ fontSize: "14px", marginBottom: "4px" }}
+                            required=""
+                          />
+                          <p
+                            id="errorMedicion"
+                            value=""
+                            style={{ color: "var(--bs-red)" }}
+                          ></p>
+                        </div>
+                        <div className="mb-3" style={{ fontSize: "12px" }}>
+                          <p
+                            style={{
+                              color: "#A1AEB7",
+                              marginBottom: "0px",
+                              paddingBottom: "4px",
+                            }}
+                          >
+                            Unidades
+                          </p>
+                          <select
+                            ref={unidadesRef}
+                            className="form-select form-select-sm"
+                            style={{
+                              fontSize: "14px",
+                              color: "rgba(33,37,41,0.7)",
+                              marginBottom: "4px",
+                            }}
+                            required=""
+                            name="Unidad"
+                          >
+                            <optgroup label="Unidad">
+                              <option value="mc" selected="">
+                                mc
+                              </option>
+                              <option value="cc">cc</option>
+                            </optgroup>
+                          </select>
+                          <p
+                            id="errorUnidad"
+                            value=""
+                            style={{ color: "var(--bs-red)" }}
+                          ></p>
+                        </div>
+                        <div className="mb-3" style={{ fontSize: "12px" }}>
+                          <p
+                            style={{
+                              color: "#A1AEB7",
+                              marginBottom: "0px",
+                              paddingBottom: "4px",
+                            }}
+                          >
+                            Anomalía
+                          </p>
+                          <select
+                            ref={anomaliasRef}
+                            className="form-select form-select-sm"
+                            style={{
+                              fontSize: "14px",
+                              color: "rgba(33,37,41,0.7)",
+                              marginBottom: "4px",
+                            }}
+                            name="Anomalia"
+                          >
+                            <optgroup label="Anomalías">
+                              <option value="Sin anomalias">Sin anomalias</option>
+                              <option value="Medidor dañado">
+                                Medidor dañado
+                              </option>
+                              <option value="Medidor directo">
+                                Medidor directo
+                              </option>
+                              <option value="Medidor desprogramado">
+                                Medidor desprogramado
+                              </option>
+                            </optgroup>
+                          </select>
+                          <p
+                            id="errorAnomalia"
+                            value=""
+                            style={{ color: "var(--bs-red)" }}
+                          ></p>
+                        </div>
+                        <div
+                          className="d-xl-flex justify-content-xl-center mb-3"
                           style={{
-                            color: "#A1AEB7",
-                            marginBottom: "0px",
-                            paddingBottom: "4px",
-                          }}
-                        >
-                          Número del servicio
-                        </p>
-                        <input
-                          ref={servicioRef}
-                          className="form-control form-control-sm"
-                          type="text"
-                          name="Servicio"
-                          placeholder="No. Servicio"
-                          style={{ fontSize: "14px", marginBottom: "4px" }}
-                          required=""
-                        />
-                        <p
-                          id="errorServicio"
-                          value=""
-                          style={{ color: "var(--bs-red)" }}
-                        ></p>
-                      </div>
-                      <div className="mb-3" style={{ fontSize: "12px" }}>
-                        <p
-                          style={{
-                            color: "#A1AEB7",
-                            marginBottom: "0px",
-                            paddingBottom: "4px",
-                          }}
-                        >
-                          Medición
-                        </p>
-                        <input
-                          ref={medicionRef}
-                          className="form-control form-control-sm"
-                          type="text"
-                          name="Medicion"
-                          placeholder="Medición"
-                          style={{ fontSize: "14px", marginBottom: "4px" }}
-                          required=""
-                        />
-                        <p
-                          id="errorMedicion"
-                          value=""
-                          style={{ color: "var(--bs-red)" }}
-                        ></p>
-                      </div>
-                      <div className="mb-3" style={{ fontSize: "12px" }}>
-                        <p
-                          style={{
-                            color: "#A1AEB7",
-                            marginBottom: "0px",
-                            paddingBottom: "4px",
-                          }}
-                        >
-                          Unidades
-                        </p>
-                        <select
-                          ref={unidadesRef}
-                          className="form-select form-select-sm"
-                          style={{
-                            fontSize: "14px",
-                            color: "rgba(33,37,41,0.7)",
-                            marginBottom: "4px",
-                          }}
-                          required=""
-                          name="Unidad"
-                        >
-                          <optgroup label="Unidad">
-                            <option value="mc" selected="">
-                              mc
-                            </option>
-                            <option value="cc">cc</option>
-                          </optgroup>
-                        </select>
-                        <p
-                          id="errorUnidad"
-                          value=""
-                          style={{ color: "var(--bs-red)" }}
-                        ></p>
-                      </div>
-                      <div className="mb-3" style={{ fontSize: "12px" }}>
-                        <p
-                          style={{
-                            color: "#A1AEB7",
-                            marginBottom: "0px",
-                            paddingBottom: "4px",
-                          }}
-                        >
-                          Fecha de la medición
-                        </p>
-                        <input
-                          ref={fechaMedicionRef}
-                          className="form-control form-control-sm"
-                          name="Fecha"
-                          placeholder="Fecha inicio"
-                          style={{
-                            fontSize: "14px",
-                            marginBottom: "4px",
-                            color: "rgba(33,37,41,0.7)",
-                          }}
-                          type="date"
-                          required=""
-                        />
-                        <p
-                          id="errorFecha"
-                          value=""
-                          style={{ color: "var(--bs-red)" }}
-                        ></p>
-                      </div>
-                      <div className="mb-3" style={{ fontSize: "12px" }}>
-                        <p
-                          style={{
-                            color: "#A1AEB7",
-                            marginBottom: "0px",
-                            paddingBottom: "4px",
-                          }}
-                        >
-                          Anomalía
-                        </p>
-                        <select
-                          ref={anomaliasRef}
-                          className="form-select form-select-sm"
-                          style={{
-                            fontSize: "14px",
-                            color: "rgba(33,37,41,0.7)",
-                            marginBottom: "4px",
-                          }}
-                          name="Anomalia"
-                        >
-                          <optgroup label="Anomalías">
-                            <option value="Sin anomalias">Sin anomalias</option>
-                            <option value="Medidor dañado">
-                              Medidor dañado
-                            </option>
-                            <option value="Medidor directo">
-                              Medidor directo
-                            </option>
-                            <option value="Medidor desprogramado">
-                              Medidor desprogramado
-                            </option>
-                          </optgroup>
-                        </select>
-                        <p
-                          id="errorAnomalia"
-                          value=""
-                          style={{ color: "var(--bs-red)" }}
-                        ></p>
-                      </div>
-                      <div
-                        className="d-xl-flex justify-content-xl-center mb-3"
-                        style={{
-                          width: "40%",
-                          marginLeft: "30%",
-                          fontSize: "14px",
-                        }}
-                      >
-                        <button
-                          onClick={registrar}
-                          className="btn btn-primary d-block w-100"
-                          type="button"
-                          style={{
-                            background: "#424B5A",
-                            borderColor: "#424B5A",
+                            width: "40%",
+                            marginLeft: "30%",
                             fontSize: "14px",
                           }}
                         >
-                          Registrar
-                        </button>
+                          <button
+                            onClick={registrar}
+                            className="btn btn-primary d-block w-100"
+                            type="button"
+                            style={{
+                              background: "#424B5A",
+                              borderColor: "#424B5A",
+                              fontSize: "14px",
+                            }}
+                          >
+                            Registrar
+                          </button>
+                        </div>
                       </div>
+                      }
                     </form>
                   </div>
                 </div>
