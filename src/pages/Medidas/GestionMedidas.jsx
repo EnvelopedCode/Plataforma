@@ -31,10 +31,12 @@ export default function GestionMedidas() {
 
           event.preventDefault()
 
-          let fechaHoy = new Date()
-          fechaHoy.setDate(fechaHoy.getDate()-1)
-          fechaHoy = fechaHoy.toISOString();
-          fechaHoy = fechaHoy.substring(0, 10);
+          let s = new Date().toLocaleString();
+
+          let nuevo = s.substring(0, 10)
+          let nuevoArreglo = nuevo.split("/")
+          let fechaHoy = nuevoArreglo[2]+"-"+nuevoArreglo[0]+"-"+nuevoArreglo[1]
+
           console.log(fechaHoy)
 
           let servicioEnviar = {
@@ -76,7 +78,7 @@ export default function GestionMedidas() {
                       console.log(data.medida) //Nos trae las medidas de hoy
                       if(data.medida.length > 0){
                         //Ya se registro una medida hoy
-                        errorServicio.innerHTML = "Ya se ha registrado una medida hoy"
+                        errorServicio.innerHTML = "No es posible registrar una nueva medida ya que en el sistema se encuentra una"
                       } else {
                         setFormulario(true)
                         //No se registraron medidas hoy
@@ -86,7 +88,7 @@ export default function GestionMedidas() {
                   //FETCH NO INGRESAR DOS VECES MISMO DIA
 
                 }else{
-                  errorServicio.innerHTML = `Este servicio solo puede facturarse los dias ${diaFactura}`
+                  errorServicio.innerHTML = `No es posible registrar lectura hasta el dia ${diaFactura}`
                 }
               
               } else{
@@ -159,12 +161,14 @@ export default function GestionMedidas() {
                         if(flag2 === true){
                           errorMedicion.innerHTML = errorConsultaM;
                         } else{
-                          //FETCH ENVIO
+                          //FETCH ENVIO                   
+                          let s = new Date().toLocaleString();
 
-                          let fechaHoy = new Date()
-                          fechaHoy.setDate(fechaHoy.getDate()-1)
-                          fechaHoy = fechaHoy.toISOString();
-                          fechaHoy = fechaHoy.substring(0, 10);
+                          let nuevo = s.substring(0, 10)
+                          let nuevoArreglo = nuevo.split("/")
+                          let fechaHoy = nuevoArreglo[2]+"-"+nuevoArreglo[0]+"-"+nuevoArreglo[1]
+
+                          console.log(fechaHoy)
 
                           let Medida = {
                             "servicio": servicio,

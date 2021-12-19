@@ -13,17 +13,12 @@
 12/11/2021
 
     - Añadir autoComplete="off" a todos los input
-    - Añadir margin-bottom: 0px; a los label que necesiten
-    - Pasar algoritmo de fecha a serviciosRegistro
+    
 
 12/12/2021
 
     - Realizar Gestion de Usuarios
-    - Realizar Login y Signup
 
-12/13/2021
-    
-    - Pasar algoritmo fecha a serviciosRegistro
 
         
 Realizadas:
@@ -34,3 +29,7 @@ Realizadas:
     - Realizar Correcion de label "barrio" sobre campo "cedula"
     - Organizar fecha a horario Colombia
     - Limitar fecha en ServiciosGestion
+    - Realizar Login y Signup
+    - Pasar algoritmo fecha a serviciosRegistro
+    - Añadir margin-bottom: 0px; a los label que necesiten
+    - Pasar algoritmo de fecha a serviciosRegistro

@@ -8,37 +8,98 @@ import jwt_decode from "jwt-decode";
 export default function GestionFacturacion() {
 
   var host = "http://localhost:8080";
-  const [usuario, setUsuario] = useState("")
+  const [usuario, setUsuario] = useState("");
   const [facturas, setFacturas] = useState([]); //Este estado representa los registros del usuario en cuanto se carga la pagina (se manda un GET)
-  const [informacion, setInformacion] = useState([]);
+  const [informacion, setInformacion] = useState("");
   const [formulario, setFormulario] = useState(false); //Una vez se encuentra el registro despliega el formulario
-  const [titulo, setTItulo] = useState("") //Titulo del formulario
-
-
-
-  var token = localStorage.getItem("token");
-  var decoded = jwt_decode(token);
-  console.log(decoded.cedula)
-  console.log(typeof decoded.cedula)
-  const cedula = {
-    "cedula": decoded.cedula
-  }
-
-  fetch(`${host}/facServicio`, { //Me traigo nombre
-    headers: { "content-type": "application/json" },
-    method: "POST",
-    body: JSON.stringify(cedula)
-  })
-    .then((data) => data.json())
-    .then((data) => {
-        setUsuario(data.servicio.nombre + " " + data.servicio.apellido)
-    })
-
+  const [lecturas, setLecturas] = useState([]);
+  const [servicioE, setServicioE] = useState("");
 
   const buscarRegistro = (event) => {
+    //Aqui hago setInformacion true
+    //Aqui hago setFormulario = formulario seleccionado
+    //Aqui hago titulo = Titulo del servicio seleccionado
     event.preventDefault();
+    console.log(event.target.outerText)
+
+    let servicioEnviar = {
+      "servicio": event.target.outerText
+    }
+
+    fetch(`${host}/facInfo`, { //Me traigo nombre
+      headers: { "content-type": "application/json" },
+      method: "POST",
+      body: JSON.stringify(servicioEnviar)
+    })//Traer informacion del servicio
+      .then((data) => data.json())
+      .then((data) => {
+        setFormulario(true);
+        setInformacion(data.servicio);
+        setServicioE(data.servicio.servicio);
+      })
 
   };
+
+  const verFacturacion = (event) => {
+
+    console.warn("ENTRO A MODAL")
+    console.log(servicioE)
+    const servicioEnviar = {
+      "servicio": servicioE
+    }
+
+    console.log(servicioEnviar)
+
+    fetch(`${host}/facLecturas`, { //Me traigo las lecturas
+      headers: { "content-type": "application/json" },
+      method: "POST",
+      body: JSON.stringify(servicioEnviar)
+    }) 
+      .then((data) => data.json())
+      .then((data) => {
+        //Lecturas es una matriz
+        console.log(data.lectura)
+        setLecturas(data.lectura)
+      })
+  };
+
+  useEffect(() => {
+    var token = localStorage.getItem("token");
+    var decoded = jwt_decode(token);
+    console.log(decoded.cedula)
+    console.log(typeof decoded.cedula)
+    const cedula = {
+      "cedula": decoded.cedula
+    }
+  
+    console.log(cedula)
+  
+    fetch(`${host}/facData`, { //Me traigo nombre
+      headers: { "content-type": "application/json" },
+      method: "POST",
+      body: JSON.stringify(cedula)
+    })
+      .then((data) => data.json())
+      .then((data) => {
+
+        setUsuario(data.nombre + " " + data.apellido)
+        fetch(`${host}/facServicios`, { //Me traigo los servicios asociados
+          headers: { "content-type": "application/json" },
+          method: "POST",
+          body: JSON.stringify(cedula)
+        })
+          .then((data) => data.json())
+          .then((data) => {
+            console.log(data.servicios)
+            setFacturas(data.servicios)
+          })
+      })
+  
+  }, [])
+
+  useEffect(() => {
+    console.log(lecturas)
+  }, [lecturas])
 
   return (
     <React.Fragment>
@@ -103,7 +164,7 @@ export default function GestionFacturacion() {
                       <button
                         className="btn btn-primary d-block w-100"
                         onClick={buscarRegistro}
-                        value={registro[0]}
+                        value={registro.servicio}
                         type="button"
                         style={{
                           background: "#424B5A",
@@ -111,7 +172,7 @@ export default function GestionFacturacion() {
                           fontSize: "12px",
                         }}
                       >
-                        {registro[0]}
+                        {registro.servicio}
                       </button>
                     </div>
                   ))}
@@ -144,7 +205,7 @@ export default function GestionFacturacion() {
                     marginTop: "32px",
                   }}
                 >
-                  {titulo}
+                  {informacion.servicio}
                 </h2>
                 <p
                   className="d-xl-flex justify-content-xl-center align-items-xl-center"
@@ -158,7 +219,7 @@ export default function GestionFacturacion() {
                   }}
                 >
                   Información básica del cliente asociado al servicio número
-                  1140123567-2.
+                  {informacion.servicio}
                   <br />
                 </p>
                 <div
@@ -180,7 +241,7 @@ export default function GestionFacturacion() {
                         className="form-control form-control-sm"
                         type="text"
                         name="Cedula"
-                        value={informacion[1]}
+                        value={informacion.cedula}
                         style={{ fontSize: "14px", marginBottom: "4px" }}
                         readonly=""
                       />
@@ -199,7 +260,7 @@ export default function GestionFacturacion() {
                         className="form-control form-control-sm"
                         type="text"
                         name="Nombre"
-                        value={informacion[2]}
+                        value={informacion.nombre}
                         style={{ marginBottom: "4px" }}
                         readonly=""
                       />
@@ -218,7 +279,7 @@ export default function GestionFacturacion() {
                         className="form-control form-control-sm"
                         type="text"
                         name="Apellido"
-                        value={informacion[3]}
+                        value={informacion.apellido}
                         style={{ marginBottom: "4px" }}
                         readonly=""
                       />
@@ -234,6 +295,7 @@ export default function GestionFacturacion() {
                       <button
                         className="btn btn-primary d-block w-100"
                         type="button"
+                        onClick={verFacturacion}
                         style={{
                           background: "#424B5A",
                           borderColor: "#424B5A",
@@ -274,7 +336,7 @@ export default function GestionFacturacion() {
                         className="form-control form-control-sm"
                         type="text"
                         name="Departamento"
-                        value={informacion[4]}
+                        value={informacion.departamento}
                         style={{ fontSize: "14px", marginBottom: "4px" }}
                         required=""
                         readonly=""
@@ -294,7 +356,7 @@ export default function GestionFacturacion() {
                         className="form-control form-control-sm"
                         type="text"
                         name="Municipio"
-                        value={informacion[5]}
+                        value={informacion.municipio}
                         style={{ fontSize: "14px", marginBottom: "4px" }}
                         required=""
                         readonly=""
@@ -314,7 +376,7 @@ export default function GestionFacturacion() {
                         className="form-control form-control-sm"
                         type="text"
                         name="Direccion"
-                        value={informacion[6]}
+                        value={informacion.direccion}
                         style={{ fontSize: "14px", marginBottom: "4px" }}
                         required=""
                         readonly=""
@@ -334,7 +396,7 @@ export default function GestionFacturacion() {
                         className="form-control form-control-sm"
                         type="text"
                         name="Barrio"
-                        value={informacion[7]}
+                        value={informacion.barrio}
                         style={{ fontSize: "14px", marginBottom: "4px" }}
                         required=""
                         readonly=""
@@ -354,7 +416,7 @@ export default function GestionFacturacion() {
                         className="form-control form-control-sm"
                         type="text"
                         name="Estrato"
-                        value={informacion[8]}
+                        value={informacion.estrato}
                         style={{ fontSize: "14px", marginBottom: "4px" }}
                         required=""
                         readonly=""
@@ -373,7 +435,7 @@ export default function GestionFacturacion() {
                       <input
                         className="form-control form-control-sm"
                         name="Fecha"
-                        value={informacion[9]}
+                        value={informacion.fecha}
                         style={{
                           fontSize: "14px",
                           marginBottom: "4px",
@@ -410,21 +472,19 @@ export default function GestionFacturacion() {
                           <th>Consumo</th>
                           <th>Lectura</th>
                           <th>Valor</th>
+                          <th>Estado</th>
                         </tr>
                       </thead>
                       <tbody>
+                        {lecturas.map((lectura) =>
                         <tr>
-                          <td>23/11/2021</td>
-                          <td>230</td>
-                          <td>230</td>
-                          <td>$45.000</td>
+                          <td>{lectura[2]}</td>
+                          <td>{lectura[3]}</td>
+                          <td>{lectura[1]}</td>
+                          <td>$0.00</td>
+                          <td>{lectura[6]}</td>
                         </tr>
-                        <tr>
-                          <td>23/10/2021</td>
-                          <td>170</td>
-                          <td>400</td>
-                          <td>$40.000</td>
-                        </tr>
+                        )}
                       </tbody>
                     </table>
                   </div>

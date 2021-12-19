@@ -12,6 +12,7 @@ export default function GeneracionInspeccion() {
     const [formInspeccion, setFormInspeccion] = useState(false);
     const [btnGenerar, setBtnGenerar] = useState(false);
     const [noServicio, setNoServicio] = useState("");
+    const [tecnicoEncontrado, setTecnicoEncontrado] = useState(false);
     
     const servicioRef = useRef("");
     let tecnicoInput = useRef("");
@@ -51,26 +52,25 @@ export default function GeneracionInspeccion() {
 
             if(flag === false){
 
-                fetch(`${host}/BuscarInspeccion`, { //Valida si existe el servicio ingresado
-                    headers: { "content-type": "application/json" },
-                    method: "POST",
-                    body: JSON.stringify(generacion)
+                fetch(`${host}/validarServicio`, {
+                  headers: { "content-type": "application/json" },
+                  method: "POST",
+                  body: JSON.stringify(generacion),
+                })
+                  .then((data) => data.json()) // Obtener los datos
+                  .then((data) => {
+                    if (data.estado === "ok") {
+                      alert(data.msg);
+                      //   servicioError.innerHTML = errorS;
+                      setServicioEncontrado(true);
+                    } else {
+                      alert(data.msg);
+                      //   servicioError.innerHTML = errorS;
+                      setServicioEncontrado(false);
+                      setFormInspeccion(false);
+                    }
                   })
-                    .then((data) => data.json()) // Obtener los datos
-                    .then((data) => {
-      
-                      if(data.estado==="ok"){
-                          errorS = "";
-                          servicioError.innerHTML = errorS;
-                          setServicioEncontrado(true);
-                      } else {
-      
-                          errorS = data.msg
-                          servicioError.innerHTML = errorS;
-                          setServicioEncontrado(false);
-                          setFormInspeccion(false);
-                      }
-                    }).catch((error) => alert(error));
+                  .catch((error) => alert(error));
 
             } else {
                 servicioError.innerHTML = errorS;
@@ -95,69 +95,135 @@ export default function GeneracionInspeccion() {
         }
     }
 
-    const inspeccionar = (event) => { //Usuario genera inspeccion (envia formulario)
 
+    const validar = (event) =>{
+      setBtnGenerar(false);
+      setTecnicoEncontrado(false);
+
+      if(event.key === 'Enter'){
         event.preventDefault();
-        setBtnGenerar(false);
 
         let tec = tecnicoInput.current.value;
-        let fec = fechaInput.current.value;
-        let hor = horaInput.current.value;
-
         let errorTecnico = document.getElementById("errorTecnico-1");
-        let errorFecha = document.getElementById("errorFecha-1");
-        let errorHora = document.getElementById("errorHora-1");
-
         let errorT = "";
-        let errorF = "";
-        let errorH = "";
 
         let flag = false;
 
-        if(tec === ""){
-            errorT = "Asigna un tecnico primero."
+        if (tec === "") {
+            errorT = "Asigna un tecnico primero.";
             flag = true;
         }
-        if(fec === ""){
-            errorF = "Asigna una fecha primero."
-            flag = true;
-        }
-        if(hor === ""){
-            errorH = "Asigna una hora primero."
-            flag = true;
-        }
+
         if(flag === true){
-            errorTecnico.innerHTML = errorT;
-            errorFecha.innerHTML = errorF;
-            errorHora.innerHTML = errorH;
-        } else {
-            errorT = "";
-            errorF = "";
-            errorH = "";
-            errorTecnico.innerHTML = errorT;
-            errorFecha.innerHTML = errorF;
-            errorHora.innerHTML = errorH;
+          errorTecnico.innerHTML = errorT;
+        } else{
+          errorT = "";
+          errorTecnico.innerHTML = errorT;
+          // tecnicoInput.current.value = "";
 
-            servicioRef.current.value = "";
-            tecnicoInput.current.value = "";
-            fechaInput.current.value = "";
-            horaInput.current.value = "";
+          let validarT = {
+            cedula: tec,
+          };
 
-            let inspeccionG = {
-                "servicio": noServicio,
-                "tecnico": tec,
-                "fecha": fec,
-                "hora": hor
-            }
-
-            inspeccionG = JSON.stringify(inspeccionG)
-            console.log(inspeccionG)
-            //HACER POST A LA RUTA
-
-            //Hacer Fetch a servicios y traerse la cedula, luego hacer busqueda de los datos de esa cedula en Usuarios y luego armar el objeto con todos los datos para asi mandarlo a Inspeccion
+          fetch(`${host}/validarTecnico`, {
+            headers: { "content-type": "application/json" },
+            method: "POST",
+            body: JSON.stringify({ validarT }),
+          })
+            .then((data) => data.json())
+            .then((data) => {
+              if (data.estado === "ok") {
+                alert(data.msg);
+                setTecnicoEncontrado(true);
+              } else if (data.estado === "error") {
+                alert(data.msg);
+              }
+            })
+            .catch((error) => {
+              console.log("error en el servidor");
+              alert(error);
+            });
 
         }
+      }
+    }
 
+
+    const inspeccionar = (event) => { //Usuario genera inspeccion (envia formulario)
+       
+      event.preventDefault();
+
+      let tec = tecnicoInput.current.value;
+      // let errorTecnico = document.getElementById("errorTecnico-1");
+      // let errorT = "";
+
+      let fec = fechaInput.current.value;
+      let hor = horaInput.current.value;
+      
+      let errorFecha = document.getElementById("errorFecha-1");
+      let errorHora = document.getElementById("errorHora-1");
+      
+      let errorF = "";
+      let errorH = "";
+
+      let flag = false;
+
+      // if(tec === ""){
+      //     errorT = "Asigna un tecnico primero."
+      //     flag = true;
+      // }
+      if(fec === ""){
+          errorF = "Asigna una fecha primero."
+          flag = true;
+      }
+      if(hor === ""){
+          errorH = "Asigna una hora primero."
+          flag = true;
+      }
+      if(flag === true){
+          // errorTecnico.innerHTML = errorT;
+          errorFecha.innerHTML = errorF;
+          errorHora.innerHTML = errorH;
+      } else {
+          // errorT = "";
+          errorF = "";
+          errorH = "";
+          // errorTecnico.innerHTML = errorT;
+          errorFecha.innerHTML = errorF;
+          errorHora.innerHTML = errorH;
+
+          servicioRef.current.value = "";
+          // tecnicoInput.current.value = "";
+          fechaInput.current.value = "";
+          horaInput.current.value = "";
+
+          let inspeccionG = {
+              "servicio": noServicio,
+              "tecnico": tec,
+              "fecha": fec,
+              "hora": hor
+          }
+
+          fetch(`${host}/generacionInspeccion`, {
+            headers: { "content-type": "application/json" },
+            method: "POST",
+            body: JSON.stringify(inspeccionG),
+          })
+            .then((data) => data.json())
+            .then((data) => {
+              if (data.estado === "ok") {
+                alert(data.msg);         
+              } else if (data.estado === "error") {
+                alert(data.msg);
+              }
+            })
+            .catch((error) => {
+              console.log("error en el servidor");
+              alert(error);
+            });
+
+      }
+      
     }
 
     useEffect(()=>{ //Efectos visuales
@@ -170,6 +236,10 @@ export default function GeneracionInspeccion() {
         }
         
     }, [noServicio, formInspeccion, servicioEncontrado])
+  
+    useEffect(() =>{
+      
+    }, [tecnicoEncontrado])
 
     return (
       <React.Fragment>
@@ -434,6 +504,7 @@ export default function GeneracionInspeccion() {
                           <input
                             ref={tecnicoInput}
                             id="tecnico"
+                            onKeyDown={validar}
                             className="form-control form-control-sm"
                             type="text"
                             name="Tecnico"
@@ -447,87 +518,91 @@ export default function GeneracionInspeccion() {
                             style={{ color: "var(--bs-red)" }}
                           ></p>
                         </div>
-                        <div className="mb-3" style={{ fontSize: "12px" }}>
-                          <p
-                            style={{
-                              color: "#A1AEB7",
-                              marginBottom: "0px",
-                              paddingBottom: "4px",
-                            }}
-                          >
-                            Fecha de inspección
-                          </p>
-                          <input
-                            ref={fechaInput}
-                            id="fecha"
-                            className="form-control form-control-sm"
-                            name="Fecha"
-                            placeholder="Fecha inicio"
-                            style={{
-                              fontSize: "14px",
-                              marginBottom: "4px",
-                              color: "rgba(33,37,41,0.7)",
-                            }}
-                            type="date"
-                            required=""
-                          />
-                          <p
-                            id="errorFecha-1"
-                            value=""
-                            style={{ color: "var(--bs-red)" }}
-                          ></p>
-                        </div>
-                        <div className="mb-3" style={{ fontSize: "12px" }}>
-                          <p
-                            style={{
-                              color: "#A1AEB7",
-                              marginBottom: "0px",
-                              paddingBottom: "4px",
-                            }}
-                          >
-                            Hora de inspección
-                          </p>
-                          <input
-                            ref={horaInput}
-                            id="hora"
-                            className="form-control form-control-sm"
-                            name="Hora"
-                            placeholder="Hora"
-                            style={{
-                              fontSize: "14px",
-                              marginBottom: "4px",
-                              color: "rgba(33,37,41,0.7)",
-                            }}
-                            type="time"
-                            required=""
-                          />
-                          <p
-                            id="errorHora-1"
-                            value=""
-                            style={{ color: "var(--bs-red)" }}
-                          ></p>
-                        </div>
-                        <div
-                          className="d-xl-flex justify-content-xl-center mb-3"
-                          style={{
-                            width: "40%",
-                            marginLeft: "30%",
-                            fontSize: "14px",
-                          }}
-                        >
-                          <button
-                            onClick={inspeccionar}
-                            className="btn btn-primary d-block w-100"
-                            type="button"
-                            style={{
-                              background: "#424B5A",
-                              borderColor: "#424B5A",
-                              fontSize: "14px",
-                            }}
-                          >
-                            Generar
-                          </button>
-                        </div>
+                        {tecnicoEncontrado &&
+                          <div>
+                            <div className="mb-3" style={{ fontSize: "12px" }}>
+                              <p
+                                style={{
+                                  color: "#A1AEB7",
+                                  marginBottom: "0px",
+                                  paddingBottom: "4px",
+                                }}
+                              >
+                                Fecha de inspección
+                              </p>
+                              <input
+                                ref={fechaInput}
+                                id="fecha"
+                                className="form-control form-control-sm"
+                                name="Fecha"
+                                placeholder="Fecha inicio"
+                                style={{
+                                  fontSize: "14px",
+                                  marginBottom: "4px",
+                                  color: "rgba(33,37,41,0.7)",
+                                }}
+                                type="date"
+                                required=""
+                              />
+                              <p
+                                id="errorFecha-1"
+                                value=""
+                                style={{ color: "var(--bs-red)" }}
+                              ></p>
+                            </div>
+                            <div className="mb-3" style={{ fontSize: "12px" }}>
+                              <p
+                                style={{
+                                  color: "#A1AEB7",
+                                  marginBottom: "0px",
+                                  paddingBottom: "4px",
+                                }}
+                              >
+                                Hora de inspección
+                              </p>
+                              <input
+                                ref={horaInput}
+                                id="hora"
+                                className="form-control form-control-sm"
+                                name="Hora"
+                                placeholder="Hora"
+                                style={{
+                                  fontSize: "14px",
+                                  marginBottom: "4px",
+                                  color: "rgba(33,37,41,0.7)",
+                                }}
+                                type="time"
+                                required=""
+                              />
+                              <p
+                                id="errorHora-1"
+                                value=""
+                                style={{ color: "var(--bs-red)" }}
+                              ></p>
+                            </div>
+                            <div
+                              className="d-xl-flex justify-content-xl-center mb-3"
+                              style={{
+                                width: "40%",
+                                marginLeft: "30%",
+                                fontSize: "14px",
+                              }}
+                            >
+                              <button
+                                onClick={inspeccionar}
+                                className="btn btn-primary d-block w-100"
+                                type="button"
+                                style={{
+                                  background: "#424B5A",
+                                  borderColor: "#424B5A",
+                                  fontSize: "14px",
+                                }}
+                              >
+                                Generar
+                              </button>
+                            </div>
+                          </div>
+                        }
                       </form>
                     </div>
                   </div>

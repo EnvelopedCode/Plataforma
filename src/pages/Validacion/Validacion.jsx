@@ -59,6 +59,7 @@ export default function Validacion() {
                     cedulaLogin = data.cedula;
                     cedulaRegistro = data.cedula;
                 } else {
+                    errorCedula.innerHTML = "Cedula no encontrada"
                 }
               }).catch((error) => console.log(error));
                     
