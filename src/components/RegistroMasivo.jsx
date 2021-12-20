@@ -3,7 +3,9 @@ import React from 'react'
 export default function RegistroMasivo({subtitulo, subtitulo2, descarga=false}) {
     return (
         <React.Fragment>
-        <div className="d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-center justify-content-sm-center justify-content-md-center justify-content-lg-center justify-content-xl-center" style={{marginBottom: "36px"}}>
+            <div>
+            </div>
+        {/* <div className="d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-center justify-content-sm-center justify-content-md-center justify-content-lg-center justify-content-xl-center" style={{marginBottom: "36px"}}>
             <div style={{background: "#FFFFFF",width: "386px",borderTopLeftRadius: "8px",borderTopRightRadius: "8px",borderBottomRightRadius: "8px",borderBottomLeftRadius: "8px"}}>
                 <h2 className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{fontSize: "20px",textAlign: "center",fontWeight: "bold",marginBottom: "12px",marginTop: "32px"}}>Gestión masiva</h2>
                 <p className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{textAlign: "center",fontSize: "12px",color: "#A1AEB7",marginBottom: "0px",paddingRight: "32px",paddingLeft: "32px"}}>{subtitulo}<br /></p>
@@ -24,7 +26,7 @@ export default function RegistroMasivo({subtitulo, subtitulo2, descarga=false}) 
                     </form>
                 </div>
             </div>
-        </div>
+        </div> */}
         </React.Fragment>
     )
 }
