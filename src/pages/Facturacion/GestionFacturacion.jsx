@@ -481,7 +481,7 @@ export default function GestionFacturacion() {
                           <td>{lectura[2]}</td>
                           <td>{lectura[3]}</td>
                           <td>{lectura[1]}</td>
-                          <td>$0.00</td>
+                          <td>{lectura[7]}</td>
                           <td>{lectura[6]}</td>
                         </tr>
                         )}

@@ -118,7 +118,7 @@ export default function GestionMedidas() {
         } else if(isNaN(medicion) === true){
             errorM="digite solo numeros"
             flag=true;
-        } else if (parseInt(medicion) > 10000) {
+        } else if (parseInt(medicion) > 999999) {
             errorM = "Ingrese una medición de longitud adecuada";
             flag = true;
         }
@@ -170,6 +170,13 @@ export default function GestionMedidas() {
 
                           console.log(fechaHoy)
 
+                          //CONVERSION
+                          if(unidades === "cc"){
+                            let conversion = parseInt(medicion)*1
+                            medicion = conversion/100**3
+                          }
+                          //CONVERSION
+
                           let Medida = {
                             "servicio": servicio,
                             "lectura": medicion,
@@ -178,6 +185,9 @@ export default function GestionMedidas() {
                             "unidad": unidades,
                             "anomalia": anomalia,
                           }
+
+                          console.log(Medida)
+
                           fetch(`${host}/medidasServicio`, { //Validar que la medicion no sea anomala
                             headers: { "content-type": "application/json" },
                             method: "POST",
@@ -185,6 +195,7 @@ export default function GestionMedidas() {
                           })
                             .then((data) => data.json())
                             .then((data) => {
+                              alert(data.msg)
                               setFormulario(false)
                             })
                             .catch((data) => {

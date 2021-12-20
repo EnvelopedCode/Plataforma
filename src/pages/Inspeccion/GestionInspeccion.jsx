@@ -2,12 +2,46 @@ import React from "react";
 import NavbarTecnico from "../../components/NavbarTecnico";
 import Titulo from "../../components/Titulo";
 import tareas from "../../mocks/Inspeccion/tareas";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import jwt_decode from "jwt-decode";
 import { authTecnico } from "../../auth/authTecnico";
 
 export default function GestionInspeccion() {
 
     const inspecciones = []
+    const [inspeccion, setInspeccion] = useState([]); 
+    // const [tecnico, setTecnico] = useState("");
+    var host = "http://localhost:8080";
+
+    useEffect(() => {
+
+        var token = localStorage.getItem("token");
+        var decode = jwt_decode(token);
+        console.log(decode.cedula)
+
+        const cedula = {
+            "cedula": decode.cedula
+        }
+
+        fetch(`${host}/tablaInspeccion`, {
+          headers: { "content-type": "application/json" },
+          method: "POST",
+          body: JSON.stringify(cedula),
+        })
+          .then((data) => data.json())
+          .then((data) => {
+            if(data.inspeccion){
+                console.log(data.inspeccion);
+                setInspeccion(data.inspeccion)
+            }
+          })
+          .catch((error) => {
+            console.log("error en el servidor");
+            alert(error);
+          });
+
+
+    }, [])
 
     for(let indice in tareas){
 
