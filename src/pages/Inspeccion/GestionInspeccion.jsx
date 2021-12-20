@@ -43,19 +43,19 @@ export default function GestionInspeccion() {
 
     }, [])
 
-    for(let indice in tareas){
+    // for(let indice in tareas){
 
-        let inspeccion = []
-        inspeccion.push(tareas[indice].servicio)
-        inspeccion.push(tareas[indice].cedula)
-        inspeccion.push(tareas[indice].nombre)
-        inspeccion.push(tareas[indice].direccion)
-        inspeccion.push(tareas[indice].fecha)
+    //     let inspeccion = []
+    //     inspeccion.push(tareas[indice].servicio)
+    //     inspeccion.push(tareas[indice].cedula)
+    //     inspeccion.push(tareas[indice].nombre)
+    //     inspeccion.push(tareas[indice].direccion)
+    //     inspeccion.push(tareas[indice].fecha)
 
-        inspecciones.push(inspeccion);
-      }
+    //     inspecciones.push(inspeccion);
+    //   }
     
-    const [inspeccionesTabla, setInspeccionesTabla] = useState(inspecciones)
+    // const [inspeccionesTabla, setInspeccionesTabla] = useState(inspecciones)
     
     return (
         <React.Fragment>
@@ -89,13 +89,13 @@ export default function GestionInspeccion() {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {inspeccionesTabla.map((inspeccion) =>
+                                            {inspeccion.map((i) =>
                                             <tr className="text-nowrap">
-                                                <td>{inspeccion[0]}</td> {/*servicio*/}
-                                                <td>{inspeccion[1]}</td> {/*cedula*/}
-                                                <td>{inspeccion[2]}</td> {/*nombre*/}
-                                                <td>{inspeccion[3]}</td> {/*direccion*/}
-                                                <td>{inspeccion[4]}</td> {/*fecha*/}
+                                                <td>{i[0]}</td> {/*servicio*/}
+                                                <td>{i[1]}</td> {/*cedula*/}
+                                                <td>{i[3]}</td> {/*nombre*/}
+                                                <td>{i[4]}</td> {/*direccion*/}
+                                                <td>{i[2]}</td> {/*fecha*/}                                           
                                             </tr>
                                             )}
                                         </tbody>

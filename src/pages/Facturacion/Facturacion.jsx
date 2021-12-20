@@ -130,6 +130,8 @@ export default function Facturacion() {
 
       })
 
+    ////////////////////////////////////////////////////////////////////////////////////
+
 
 
   }, [])
@@ -310,7 +312,7 @@ export default function Facturacion() {
                   </div>
                 </div>
               </div>
-            </div> {/*ESTADOS DE PAGO*/}
+              </div> {/*ESTADOS DE PAGO*/}
             <div
               className="d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-center justify-content-sm-center justify-content-md-center justify-content-lg-center justify-content-xl-center"
               style={{ marginBottom: "36px" }}
@@ -400,14 +402,14 @@ export default function Facturacion() {
                               <tbody>
                               {facturasItinerario.map((factura, index) => (
                                   <tr className="text-nowrap">
-                                    <td>{factura[0]}</td> {/*servicio*/}
-                                    <td>{factura[1]}</td> {/*cedula*/}
-                                    <td>{factura[2]}</td> {/*nombre*/}
-                                    <td>{factura[3]}</td>
+                                    <td>1000403193-1</td> {/*servicio*/}
+                                    <td></td> {/*cedula*/}
+                                    <td></td> {/*nombre*/}
+                                    <td></td>
                                     {/*direccion*/}
-                                    <td>{factura[4]}</td> {/*fecha*/}
-                                    <td>{factura[5]}</td> {/*consumo*/}
-                                    <td>{factura[6]}</td> {/*coste*/}
+                                    <td></td> {/*fecha*/}
+                                    <td></td> {/*consumo*/}
+                                    <td></td> {/*coste*/}
                                     <td>
                                       <input
                                         type="checkbox"
@@ -488,11 +490,11 @@ export default function Facturacion() {
                               </thead>
                               <tbody>
                                 <tr className="text-nowrap">
-                                  <td>1140123567-1</td>
+                                  <td>1140123567-2</td>
                                   <td>1140123567</td>
-                                  <td>Juan Ariza</td>
-                                  <td>Cra. 52# 78-15</td>
-                                  <td>3/11/2021</td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
                                   <td></td>
                                   <td></td>
                                   <td>Sin consumo para facturar.</td>

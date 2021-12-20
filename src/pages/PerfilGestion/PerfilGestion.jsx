@@ -12,6 +12,7 @@ import NavbarAdmin from '../../components/NavbarAdmin';
 
 export default function PerfilGestion() {
 
+    var host = "http://localhost:8080";
 
     // let cedulaRef = useRef("");
     let nombreRef = useRef("");
@@ -20,7 +21,6 @@ export default function PerfilGestion() {
     let cNuevaRef = useRef("");
     let cConfirmarRef=useRef("");
     let cedula = "1000403193" //Aqui reemplazar por la cedula de la sesion actual
-
 
     const actualizar = (event) => {
 
