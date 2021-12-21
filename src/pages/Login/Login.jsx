@@ -1,12 +1,12 @@
 import React, {useRef} from 'react'
-import { cedulaLogin } from '../Validacion/Validacion'
+// import { cedulaLogin } from '../Validacion/Validacion'
 import { useState, useEffect } from 'react';
 import jwt_decode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
 
-    const [cedula, setCedula] = useState(cedulaLogin);
+    const [cedula, setCedula] = useState(localStorage.getItem("cedula"));
     
     const navigate = useNavigate();
     const contrasenaRef= useRef("");
@@ -38,7 +38,7 @@ export default function Login() {
             errorContrasena = errorC;
 
             contrasenaRef.current.value = "";
-            cedulaRef.current.value="";
+            // cedulaRef.current.value="";
         }
 
         let ingreso={
@@ -79,12 +79,19 @@ export default function Login() {
             
         }).catch((error)=>{
             console.log("error en el servidor")
-            alert(error)
+            let cedula = localStorage.getItem("cedula")
+            console.log(cedula)
+            setCedula(cedula)
+            let errorContrasena = document.getElementById("errorPass-1");
+            errorContrasena.innerHTML = "Contraseña incorrecta, ingrese nuevamente."
         })
     }
 
 
     useEffect(() => {
+        console.log("Recarga")
+        const cedulaLogin = localStorage.getItem("cedula");
+        console.log(cedulaLogin)
         setCedula(cedulaLogin);
     }, [])
 

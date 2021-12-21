@@ -13,6 +13,9 @@ export default function Facturacion() {
   {/*DATOS TABLAS*/}
   const [facturasItinerario, setFacturasItinerario] = useState([])
   const [facturasProximas, setFacturasProximas] = useState([])
+  const [sinPagar, setSinPagar] = useState([])
+  const [pagadas, setPagadas] = useState([])
+
   {/*DATOS TABLAS*/}
 
   {/*PAGAR*/}
@@ -31,7 +34,7 @@ export default function Facturacion() {
 
     return values;
 }
-  const facturarItinerario = (event) =>{ //BUSCA LAS REFERENCIAS Y LAS AÑADE A UN ARREGLO DE FACTURAS SELECCIONADAS
+  const confirmarPago = (event) =>{ //BUSCA LAS REFERENCIAS Y LAS AÑADE A UN ARREGLO DE FACTURAS SELECCIONADAS
 
     let facturarReferencias = []  //Aqui guardamos las facturas seleccionadas que se eliminaran del estado
     let referencias = []
@@ -61,7 +64,7 @@ export default function Facturacion() {
   }
   {/*PAGAR*/}
 
-  useEffect(() => {
+  useEffect(() => { //Rellenar tablas
 
     console.log("GET 1")
 
@@ -76,7 +79,6 @@ export default function Facturacion() {
     })
       .then((data) => data.json())
       .then((data) => {
-        alert("Itinerario cargado")
         console.log(data.lecturas)
         var itinerarios = []
 
@@ -90,61 +92,127 @@ export default function Facturacion() {
           // servicio.push(data.lecturas[indice].consumo)
           // servicio.push(data.lecturas[indice].valor)
           itinerarios.push(servicio);
+
         }
 
         setFacturasItinerario(itinerarios)
 
-      })
+        ///////////////////////////////////////////////////////////////////////////////////////
 
-    ///////////////////////////////////////////////////////////////////////////////////////
+        console.log("GET 2")
 
-    console.log("GET 2")
-
-    let test2 = {
-      "test": "Testobject"
-    }
-
-    fetch(`${host}/facProximos`, { //Validar que la medicion no sea anomala
-      headers: { "content-type": "application/json" },
-      method: "POST",
-      body: JSON.stringify(test2)
-    })
-      .then((data) => data.json())
-      .then((data) => {
-        alert("Proximas cargadas")
-        var proximas = []
-
-        for(let indice in data.proximas){
-          let servicio = []
-          servicio.push(data.proximas[indice].servicio)
-          servicio.push(data.proximas[indice].cedula) //Servicio
-          servicio.push(data.proximas[indice].nombre) //Servicio
-          servicio.push(data.proximas[indice].direccion) //Servicio
-          // servicio.push(data.lecturas[indice].fechaLectura)
-          // servicio.push(data.lecturas[indice].consumo)
-          // servicio.push(data.lecturas[indice].valor)
-          proximas.push(servicio);
+        let test2 = {
+          "test": "Testobject"
         }
 
-        setFacturasProximas(proximas)
+        fetch(`${host}/facProximos`, { //Validar que la medicion no sea anomala
+          headers: { "content-type": "application/json" },
+          method: "POST",
+          body: JSON.stringify(test2)
+        })
+          .then((data) => data.json())
+          .then((data) => {
+            var proximas = []
+
+            for(let indice in data.proximas){
+              let servicio = []
+              servicio.push(data.proximas[indice].servicio)
+              servicio.push(data.proximas[indice].cedula) //Servicio
+              servicio.push(data.proximas[indice].nombre) //Servicio
+              servicio.push(data.proximas[indice].direccion) //Servicio
+              // servicio.push(data.lecturas[indice].fechaLectura)
+              // servicio.push(data.lecturas[indice].consumo)
+              // servicio.push(data.lecturas[indice].valor)
+              proximas.push(servicio);
+            }
+
+            setFacturasProximas(proximas)
+
+            //////////////////////////////////////////////////////////////////////////////
+
+            console.log("GET 3")
+
+            let test3 = {
+              "test": "Testobject"
+            }
+            
+            fetch(`${host}/facSinPagar`, {
+              headers: { "content-type": "application/json" },
+              method: "POST",
+              body: JSON.stringify(test3)
+            })
+              .then((data) => data.json())
+              .then((data) => {
+                console.log(data.sinPagar)
+                var sinPagos = []
+        
+                for(let indice in data.sinPagar){
+                  let servicio = []
+                  servicio.push(data.sinPagar[indice].servicio)
+                  servicio.push(data.sinPagar[indice].cedula) //Servicio
+                  servicio.push(data.sinPagar[indice].nombre) //Servicio
+                  servicio.push(data.sinPagar[indice].direccion) //Servicio
+                  servicio.push(data.sinPagar[indice].fechaLectura)
+                  servicio.push(data.sinPagar[indice].consumo)
+                  servicio.push(data.sinPagar[indice].valor)
+                  sinPagos.push(servicio);
+                }
+        
+                setSinPagar(sinPagos)
+
+                ///////////////////////////////////////////////////////////////////////////////
+
+                console.log("GET 4")
+
+                let test4 = {
+                  "test": "Testobject"
+                }
+                
+                fetch(`${host}/facPagadas`, {
+                  headers: { "content-type": "application/json" },
+                  method: "POST",
+                  body: JSON.stringify(test4)
+                })
+                  .then((data) => data.json())
+                  .then((data) => {
+                    console.log(data.pagadas)
+                    var conPagos = []
+            
+                    for(let indice in data.pagadas){
+                      let servicio = []
+                      servicio.push(data.pagadas[indice].servicio)
+                      servicio.push(data.pagadas[indice].cedula) //Servicio
+                      servicio.push(data.pagadas[indice].nombre) //Servicio
+                      servicio.push(data.pagadas[indice].direccion) //Servicio
+                      servicio.push(data.pagadas[indice].fechaLectura)
+                      servicio.push(data.pagadas[indice].consumo)
+                      servicio.push(data.pagadas[indice].valor)
+                      conPagos.unshift(servicio);
+                    }
+            
+                    setPagadas(conPagos)
+                  })
+                
+              })
+
+          })
 
       })
-
-    ////////////////////////////////////////////////////////////////////////////////////
-
-
 
   }, [])
 
-  useEffect(() => {
-    
-    console.log(facturasItinerario)
+  // useEffect(() => {    
+  //   console.log(facturasItinerario)
+  // }, [facturasItinerario])
 
-  }, [facturasItinerario])
+  // useEffect(() => {
+  //   console.log(facturasProximas)
+  // }, [facturasProximas])
 
-  useEffect(() => {
-    console.log(facturasProximas)
-  }, [facturasProximas])
+  // useEffect(() => {
+  //   console.log(sinPagar)
+  // }, [sinPagar])
+
 
   return (
     <React.Fragment>
@@ -219,7 +287,7 @@ export default function Facturacion() {
                           className="nav-link active"
                           role="tab"
                           data-bs-toggle="tab"
-                          href="#tab-3"
+                          href="#tab-2"
                         >
                           Próximos itinerarios
                         </a>
@@ -260,18 +328,12 @@ export default function Facturacion() {
                               </tbody>
                             </table>
                           </div>
-                          <p style={{ fontSize: "14px" }}>
-                            Selecciona los servicios disponibles que deseas
-                            facturar. Los servicios no seleccionados o que no
-                            superen las validaciones internas no serán
-                            facturados.
-                          </p>
                         </form>
                       </div>
                       <div
                         className="tab-pane active"
                         role="tabpanel"
-                        id="tab-3"
+                        id="tab-2"
                       >
                         <form style={{ marginTop: "12px" }}>
                           <div
@@ -312,7 +374,8 @@ export default function Facturacion() {
                   </div>
                 </div>
               </div>
-              </div> {/*ESTADOS DE PAGO*/}
+            </div>
+            {/*ESTADOS DE PAGO*/}
             <div
               className="d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-center justify-content-sm-center justify-content-md-center justify-content-lg-center justify-content-xl-center"
               style={{ marginBottom: "36px" }}
@@ -337,7 +400,7 @@ export default function Facturacion() {
                     marginTop: "32px",
                   }}
                 >
-                  Estado de pago
+                  Estado de Pago
                 </h2>
                 <p
                   className="d-xl-flex justify-content-xl-center align-items-xl-center"
@@ -350,9 +413,10 @@ export default function Facturacion() {
                     paddingLeft: "32px",
                   }}
                 >
-                  Listado del estado de pago de servicios facturados.
+                  Listado de servicios en proceso o tránsito de pago.
                   <br />
                 </p>
+
                 <div
                   className="d-flex d-xl-flex justify-content-center justify-content-xl-center"
                   style={{ marginTop: "24px", marginBottom: "24px" }}
@@ -364,7 +428,7 @@ export default function Facturacion() {
                           className="nav-link"
                           role="tab"
                           data-bs-toggle="tab"
-                          href="#tab-1"
+                          href="#tab-3"
                         >
                           Servicios sin pago
                         </a>
@@ -374,14 +438,14 @@ export default function Facturacion() {
                           className="nav-link active"
                           role="tab"
                           data-bs-toggle="tab"
-                          href="#tab-2"
+                          href="#tab-4"
                         >
                           Servicios pagados
                         </a>
                       </li>
                     </ul>
                     <div className="tab-content">
-                      <div className="tab-pane" role="tabpanel" id="tab-1">
+                      <div className="tab-pane" role="tabpanel" id="tab-3">
                         <form style={{ marginTop: "12px" }}>
                           <div
                             className="table-responsive table-wrapper-scroll-y"
@@ -400,20 +464,20 @@ export default function Facturacion() {
                                 </tr>
                               </thead>
                               <tbody>
-                              {facturasItinerario.map((factura, index) => (
+                                {sinPagar.map((factura, index) => (
                                   <tr className="text-nowrap">
-                                    <td>1000403193-1</td> {/*servicio*/}
-                                    <td></td> {/*cedula*/}
-                                    <td></td> {/*nombre*/}
-                                    <td></td>
+                                    <td>{factura[0]}</td> {/*servicio*/}
+                                    <td>{factura[1]}</td> {/*cedula*/}
+                                    <td>{factura[2]}</td> {/*nombre*/}
+                                    <td>{factura[3]}</td>
                                     {/*direccion*/}
-                                    <td></td> {/*fecha*/}
-                                    <td></td> {/*consumo*/}
-                                    <td></td> {/*coste*/}
+                                    <td>{factura[4]}</td> {/*fecha*/}
+                                    <td>{factura[5]}</td> {/*consumo*/}
+                                    <td>{factura[6]}</td> {/*coste*/}
                                     <td>
                                       <input
                                         type="checkbox"
-                                        name="tab-1"
+                                        name="tab-3"
                                         value={`${index}`} //Por cada iteracion se le asigna un indice unico
                                       />
                                     </td>
@@ -423,14 +487,17 @@ export default function Facturacion() {
                             </table>
                           </div>
                           <p style={{ fontSize: "14px" }}>
-                            Selecciona los servicios facturados para actualizar
-                            su estado a "pagado".
+                            Selecciona los servicios disponibles que deseas
+                            pagar. Los servicios no seleccionados o que no
+                            superen las validaciones internas no serán
+                            pagados.
                           </p>
                           <div
                             className="d-xl-flex justify-content-xl-center mb-3"
                             style={{ width: "20%", fontSize: "14px" }}
                           >
                             <button
+                              onClick={confirmarPago}
                               className="btn btn-primary d-block w-100"
                               type="button"
                               style={{
@@ -439,28 +506,7 @@ export default function Facturacion() {
                                 fontSize: "12px",
                               }}
                             >
-                              Actualizar
-                            </button>
-                          </div>
-                          <p style={{ fontSize: "14px" }}>
-                            Descarga el listado completo de servicios facturados
-                            sin pago.
-                          </p>
-                          <div
-                            className="d-xl-flex justify-content-xl-center mb-3"
-                            style={{ width: "20%", fontSize: "14px" }}
-                          >
-                            <button
-                              className="btn btn-primary d-block w-100"
-                              type="button"
-                              style={{
-                                background: "#F2F5F7",
-                                fontSize: "14px",
-                                borderColor: "#F2F5F7",
-                                color: "#505D68",
-                              }}
-                            >
-                              Descagar
+                              Confirmar Pago
                             </button>
                           </div>
                         </form>
@@ -468,7 +514,7 @@ export default function Facturacion() {
                       <div
                         className="tab-pane active"
                         role="tabpanel"
-                        id="tab-2"
+                        id="tab-4"
                       >
                         <form style={{ marginTop: "12px" }}>
                           <div
@@ -485,41 +531,23 @@ export default function Facturacion() {
                                   <th>Fecha</th>
                                   <th>Consumo</th>
                                   <th>Valor</th>
-                                  <th>Observación</th>
                                 </tr>
                               </thead>
                               <tbody>
-                                <tr className="text-nowrap">
-                                  <td>1140123567-2</td>
-                                  <td>1140123567</td>
-                                  <td></td>
-                                  <td></td>
-                                  <td></td>
-                                  <td></td>
-                                  <td></td>
-                                  <td>Sin consumo para facturar.</td>
-                                </tr>
+                              {pagadas.map((factura) => (
+                                  <tr className="text-nowrap">
+                                    <td>{factura[0]}</td> {/*servicio*/}
+                                    <td>{factura[1]}</td> {/*cedula*/}
+                                    <td>{factura[2]}</td> {/*nombre*/}
+                                    <td>{factura[3]}</td>
+                                    {/*direccion*/}
+                                    <td>{factura[4]}</td> {/*fecha*/}
+                                    <td>{factura[5]}</td> {/*consumo*/}
+                                    <td>{factura[6]}</td> {/*coste*/}
+                                  </tr>
+                                ))}
                               </tbody>
                             </table>
-                          </div>
-                          <p style={{ fontSize: "14px" }}>
-                            Servicios pagados durante la fecha actual.
-                          </p>
-                          <div
-                            className="d-xl-flex justify-content-xl-center mb-3"
-                            style={{ width: "20%", fontSize: "14px" }}
-                          >
-                            <button
-                              className="btn btn-primary d-block w-100"
-                              type="button"
-                              style={{
-                                background: "#424B5A",
-                                borderColor: "#424B5A",
-                                fontSize: "12px",
-                              }}
-                            >
-                              Confirmar pago
-                            </button>
                           </div>
                         </form>
                       </div>
@@ -528,7 +556,7 @@ export default function Facturacion() {
                 </div>
               </div>
             </div>
-          </div>
+        </div>
         </div>
       ) : (
         (window.location.href = "/Validacion")

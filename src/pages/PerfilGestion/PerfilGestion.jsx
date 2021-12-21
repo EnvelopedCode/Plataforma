@@ -1,6 +1,7 @@
 import React from 'react'
 import Titulo from '../../components/Titulo';
-import { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
+import jwt_decode from "jwt-decode";
 import NavbarAnalista from '../../components/NavbarAnalista';
 import { authAdmin } from '../../auth/authAdmin';
 import { authAnalista } from '../../auth/authAnalista';
@@ -14,13 +15,16 @@ export default function PerfilGestion() {
 
     var host = "http://localhost:8080";
 
+    const [Nombre, setNombre] = useState("")
+    const [Apellido, setApellido] = useState("")
+    const [cedula, setCedula] = useState("")
+
     // let cedulaRef = useRef("");
     let nombreRef = useRef("");
     let apellidoRef = useRef("");
     let cActualRef = useRef("");
     let cNuevaRef = useRef("");
     let cConfirmarRef=useRef("");
-    let cedula = "1000403193" //Aqui reemplazar por la cedula de la sesion actual
 
     const actualizar = (event) => {
 
@@ -78,14 +82,31 @@ export default function PerfilGestion() {
             errorNombre.innerHTML = errorN;
             errorApellido.innerHTML = errorA;
 
+            var token = localStorage.getItem("token");
+            var decode = jwt_decode(token);
+            console.log(decode.cedula)
+    
+
             let perfil = {
+                "cedula": decode.cedula,
                 "nombre": nombre,
                 "apellido": apellido
             }
 
-            perfil = JSON.stringify(perfil)
             console.log(perfil)
             //HACER POST A LA RUTA
+            fetch(`${host}/perfilNombre`, { //Validar que la medicion no sea anomala
+                headers: { "content-type": "application/json" },
+                method: "POST",
+                body: JSON.stringify(perfil)
+              })
+                .then((data) => data.json())
+                .then((data) => {
+                    alert(data.estado)
+                })
+                .catch((data) => {
+                    alert(data.estado)
+                })
 
         }
 
@@ -126,6 +147,9 @@ export default function PerfilGestion() {
         if(confirmar === ""){
             errorPnc = "Confirma tu contraseña antes de hacer los cambios";
             flag = true;
+        } else if(confirmar.length < 5 || confirmar.length > 25){
+            errorPnc = "Ingrese una contraseña de longitud adecuada (Mayor a 5 menor a 25)"
+            flag = true;
         } else if(confirmar !== nueva){
             errorPnc = "Contraseñas no coinciden";
             flag = true;
@@ -143,21 +167,59 @@ export default function PerfilGestion() {
             errorPassnew.innerHTML = errorPn;
             errorPassnewconf.innerHTML = errorPnc;
 
-            cActualRef.current.value = "";
-            cNuevaRef.current.value = "";
-            cConfirmarRef.current.value = "";
+            let token = localStorage.getItem("token");
+            let decode = jwt_decode(token);
+            console.log(decode.cedula)
+
+            let confirmacion = {
+                "cedula": decode.cedula,
+                "confirmar": actual
+            }
 
             let contraseña = {
+
                 //Añadir usuario de la sesion activa, de esta forma sabemos a quien pertenece esta contraseña
+                "cedula": decode.cedula,
                 "actual": actual,
                 "nueva": nueva,
-                "confirmar": confirmar
+                
               }
 
-              contraseña = JSON.stringify(contraseña)
-              console.log(typeof contraseña)
-              console.log(contraseña)
+              console.log(confirmacion)
               //HACER POST A LA RUTA
+
+              fetch(`${host}/perfilConfirmar`, {
+                headers: { "content-type": "application/json" },
+                method: "POST",
+                body: JSON.stringify(confirmacion)
+              })
+                .then((data) => data.json())
+                .then((data) => {
+                    if(data.estado === "OK"){
+                        //Hacer fetch a perfilGestionar y enviar JSON contraseña
+                        alert("Contraseña aceptada")
+                        cActualRef.current.value = "";
+                        cNuevaRef.current.value = "";
+                        cConfirmarRef.current.value = "";
+
+                        fetch(`${host}/perfilPass`, {
+                            headers: { "content-type": "application/json" },
+                            method: "POST",
+                            body: JSON.stringify(contraseña)
+                          })
+                            .then((data) => data.json())
+                            .then((data) => {
+                                alert(data.estado)
+                            })
+
+                    }else{
+                        //Setear error
+                        let errorPass = document.getElementById("errorPass");
+                        errorPass.innerHTML = "Contraseña incorrecta, ingrese nuevamente."
+                        cActualRef.current.value = "";
+
+                    }
+                })
 
         }
     }
@@ -165,6 +227,28 @@ export default function PerfilGestion() {
     const eliminar = () => {
         //ELIMINAR USUARIO DE LA PLATAFORMA CON BACKEND
     }  
+
+    useEffect(() => {
+        console.log("Recargo la pagina")
+
+        var token = localStorage.getItem("token");
+        var decode = jwt_decode(token);
+        console.log(decode.cedula)
+
+        const cedula = {
+            "cedula": decode.cedula
+        }
+
+        //Reemplazar decode.cedula por consulta fetch
+
+        console.log(decode)
+        console.log(decode.nombre)
+        
+        setCedula(decode.cedula)
+        setNombre(decode.nombre)
+        setApellido(decode.apellido)
+
+    }, [])
 
     return (
         <React.Fragment>
@@ -190,27 +274,32 @@ export default function PerfilGestion() {
                     />
                     <div className="d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-center justify-content-sm-center justify-content-md-center justify-content-lg-center justify-content-xl-center" style={{ marginBottom: "36px" }}>
                         <div style={{ background: "#FFFFFF", width: "386px", borderTopLeftRadius: "8px", borderTopRightRadius: "8px", borderBottomRightRadius: "8px", borderBottomLeftRadius: "8px" }}>
-                            <h2 className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{ fontSize: "20px", textAlign: "center", fontWeight: "bold", marginBottom: "12px", marginTop: "32px" }}>Jorge Pérez</h2>
+                            <h2 className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{ fontSize: "20px", textAlign: "center", fontWeight: "bold", marginBottom: "12px", marginTop: "32px" }}>{Nombre} {Apellido}</h2>
                             <div className="d-flex d-xl-flex justify-content-center justify-content-xl-center" style={{ marginTop: "24px", marginBottom: "24px" }}>
                                 <form method="post" style={{ width: "260px" }}>
                                     <div className="mb-3" style={{ fontSize: "12px" }}>
                                         <p style={{ color: "#A1AEB7", marginBottom: "0px", paddingBottom: "4px" }}>Cédula</p>
-                                        <input value={cedula} className="form-control form-control-sm" type="text" name="Cedula" placeholder="1140123567" style={{ fontSize: "14px", marginBottom: "4px", textAlign: "center" }} required="" readonly="" />
+                                        <input value={cedula} className="form-control form-control-sm" type="text" name="Cedula" placeholder={cedula} style={{ fontSize: "14px", marginBottom: "4px", textAlign: "center" }} required="" readonly="" />
                                     </div>
                                     <p className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{ textAlign: "center", fontSize: "12px", color: "#A1AEB7", marginBottom: "24px", paddingRight: "32px", paddingLeft: "32px", borderColor: "#A1AEB7" }}>Campos habilitados para actualización.<br /></p>
                                     <div className="mb-3" style={{ fontSize: "12px" }}>
                                         <p style={{ color: "#A1AEB7", marginBottom: "0px", paddingBottom: "4px" }}>Nombre</p>
-                                        <input ref={nombreRef} className="form-control form-control-sm" type="text" name="Nombre" placeholder="Nombre" style={{ fontSize: "14px", marginBottom: "4px" }} required="" />
+                                        <input ref={nombreRef} className="form-control form-control-sm" type="text" name="Nombre" placeholder={Nombre} style={{ fontSize: "14px", marginBottom: "4px" }} required="" />
                                         <p id="errorNombre" style={{ color: 'var(--bs-red)' }}></p>
                                     </div>
                                     <div className="mb-3" style={{ fontSize: "12px" }}>
                                         <p style={{ color: "#A1AEB7", marginBottom: "0px", paddingBottom: "4px" }}>Apellido</p>
-                                        <input ref={apellidoRef} className="form-control form-control-sm" type="text" name="Apellido" placeholder="Apellido" style={{ fontSize: "14px", marginBottom: "4px" }} required="" />
+                                        <input ref={apellidoRef} className="form-control form-control-sm" type="text" name="Apellido" placeholder={Apellido} style={{ fontSize: "14px", marginBottom: "4px" }} required="" />
                                         <p id="errorApellido" style={{ color: 'var(--bs-red)' }}></p>
                                     </div>
                                     <div className="d-xl-flex justify-content-xl-center mb-3" style={{ width: "40%", marginLeft: "30%", fontSize: "14px" }}>
                                         <button onClick={actualizar} className="btn btn-primary d-block w-100" type="button" style={{ background: "#424B5A", borderColor: "#424B5A", fontSize: "14px" }}>Actualizar</button>
                                     </div>
+                                </form>
+                            </div>
+                            {/*NUEVO*/}
+                            <div className="d-flex d-xl-flex justify-content-center justify-content-xl-center" style={{ marginTop: "24px", marginBottom: "24px" }}>
+                                <form method="post" style={{ width: "260px" }}>
                                     <p className="d-xl-flex justify-content-xl-center align-items-xl-center" style={{ textAlign: "center", fontSize: "12px", color: "#A1AEB7", marginBottom: "24px", paddingRight: "32px", paddingLeft: "32px", borderColor: "#A1AEB7" }}>Acá puedes hacer el cambio de tu contraseña para inicio de sesión en la plataforma.<br /></p>
                                     <div className="mb-3" style={{ fontSize: "12px" }}>
                                         <p style={{ color: "#A1AEB7", marginBottom: "0px", paddingBottom: "4px" }}>Contraseña actual</p>
@@ -236,6 +325,7 @@ export default function PerfilGestion() {
                                     </div>
                                 </form>
                             </div>
+                            {/*NUEVO*/}
                         </div>
                     </div>
                 </div>

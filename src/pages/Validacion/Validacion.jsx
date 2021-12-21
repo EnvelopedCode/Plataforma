@@ -2,12 +2,12 @@ import React, { Fragment } from 'react'
 import { useRef } from 'react';
 import { useNavigate } from "react-router-dom";
 
-export var cedulaLogin = "";
 export var cedulaRegistro = "";
 
 export default function Validacion() {
 
     localStorage.removeItem("token");
+    localStorage.removeItem("cedula");
 
     const validarRef = useRef("");
     const navigate = useNavigate();
@@ -56,7 +56,7 @@ export default function Validacion() {
               .then((data) => {
                 if(data.url){
                     navegar(data.url);
-                    cedulaLogin = data.cedula;
+                    localStorage.setItem("cedula", data.cedula);
                     cedulaRegistro = data.cedula;
                 } else {
                     errorCedula.innerHTML = "Cedula no encontrada"

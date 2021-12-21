@@ -6,7 +6,6 @@ export function authAnalista() {
         if (localStorage.getItem("token")) {
             const token = localStorage.getItem("token");
             const payload = jwtDecode(token);
-            console.log(payload)
             if (payload.rol === "Analista")
                 flag = true;
         }

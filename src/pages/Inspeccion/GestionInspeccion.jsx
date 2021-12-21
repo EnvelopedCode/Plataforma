@@ -1,7 +1,6 @@
 import React from "react";
 import NavbarTecnico from "../../components/NavbarTecnico";
 import Titulo from "../../components/Titulo";
-import tareas from "../../mocks/Inspeccion/tareas";
 import { useState, useEffect } from "react";
 import jwt_decode from "jwt-decode";
 import { authTecnico } from "../../auth/authTecnico";
