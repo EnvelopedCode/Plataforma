@@ -3,6 +3,7 @@ import Titulo from '../../components/Titulo';
 import {useRef} from 'react';
 import NavbarAdmin from '../../components/NavbarAdmin';
 import { authAdmin } from '../../auth/authAdmin';
+import jwt_decode from "jwt-decode";
 
 
 export default function UsuariosGestion() {
@@ -202,7 +203,11 @@ export default function UsuariosGestion() {
               
         }
 
+        var token = localStorage.getItem("token");
+        var decode = jwt_decode(token);
+
         let eliminar = {
+            "validar": decode.cedula,
             "cedula" : cedulaEliminar
         }
 
@@ -214,11 +219,14 @@ export default function UsuariosGestion() {
           .then((data) => data.json())
           .then((data) => {
             if (data.estado == "ok") {
-              alert(data.msg);
-              console.log("usuario Eliminado satisfactoriamente");
+                alert("Usuario eliminado satisfactoriamente.")
+                cedulaEliminarRef.current.value = "";          
+            } else if (data.estado == "igual") {
+                let errorCedulaEliminar = document.getElementById("errorCedulaEliminar");
+                errorCedulaEliminar.innerHTML = "No puedes eliminarte a ti mismo desde esta vista, dirigete a tu perfil para realizar el respectivo proceso."
             } else if (data.estado == "error") {
-              alert(data.msg);
-              console.log("error en eliminar");
+                let errorCedulaEliminar = document.getElementById("errorCedulaEliminar");
+                errorCedulaEliminar.innerHTML = "No se encontro la cedula ingresada."
             }
           })
           .catch((error) => {
@@ -275,12 +283,12 @@ export default function UsuariosGestion() {
                                         </div>
                                         <div className="mb-3" style={{fontSize: "12PX"}}>
                                             <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4PX"}}>Contraseña</p>
-                                            <input ref={contraseñaRef} className="form-control form-control-sm" type="text" name="pass" style={{fontSize: "14px",marginBottom: "4PX"}} required="" />
+                                            <input ref={contraseñaRef} className="form-control form-control-sm" type="password" name="pass" style={{fontSize: "14px",marginBottom: "4PX"}} required="" />
                                             <p id="errorPass" style={{color: 'var(--bs-red)'}}></p>
                                         </div>
                                         <div className="mb-3" style={{fontSize: "12PX"}}>
                                             <p style={{color: "#A1AEB7",marginBottom: "0px",paddingBottom: "4PX"}}>Confirmar contraseña</p>
-                                            <input ref={contraseña2Ref} className="form-control form-control-sm" type="text" name="passnew" style={{fontSize: "14px",marginBottom: "4PX"}} required="" />
+                                            <input ref={contraseña2Ref} className="form-control form-control-sm" type="password" name="passnew" style={{fontSize: "14px",marginBottom: "4PX"}} required="" />
                                             <p id="errorPass2" style={{color: 'var(--bs-red)'}}></p>
                                         </div>
                                         <div className="d-xl-flex justify-content-xl-center mb-3" style={{width: "40%",marginLeft: "30%",fontSize: "4PX"}}>

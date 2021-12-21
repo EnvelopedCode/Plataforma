@@ -21,13 +21,13 @@ export default function Facturacion() {
   {/*PAGAR*/}
   function getSelectedCheckboxValues1() { //SE TRAE LAS REFERENCIAS DE TODOS LOS CHECKBOX QUE ESTEN SELECCIONADOS
     console.log("ENTRO A LA FUNCION")
-    const checkboxes = document.querySelectorAll(`input[name="tab-1"]:checked`); //crea arreglo con los input del nombre especificado que esten seleccionados
+    const checkboxes = document.querySelectorAll(`input[name="tab-3"]:checked`); //crea arreglo con los input del nombre especificado que esten seleccionados
     let values = [];
     checkboxes.forEach((checkbox) => { //añade a una lista los value(referencia) de todos los input seleccionados
 
-      if(facturasItinerario[checkbox.value][5] === ""){
+      if(sinPagar[checkbox.value][5] === ""){
         alert(`No se pudo facturar el servicio ${facturasItinerario[checkbox.value][0]}`)
-      } else {      
+      } else {    
         values.push(checkbox.value);
       }
     });
@@ -40,26 +40,78 @@ export default function Facturacion() {
     let referencias = []
 
     event.preventDefault()
-    referencias = getSelectedCheckboxValues1(); //trae las referencias(indices) de los input seleccionados
+    referencias = getSelectedCheckboxValues1(); //trae las referencias(indices) de los input seleccionados //Esto deberian ser indices
 
     for(let referencia in referencias){
-      
-        facturarReferencias.push(facturasItinerario[referencias[parseInt(referencia)]]); //añade a una lista las facturas referenciadas
-    
+
+
+      facturarReferencias.unshift(sinPagar[referencias[referencia]]); //añade a una lista las facturas referenciadas
     }
 
+    console.log("FACTURAS SELECCIONADAS:")
+    console.log(facturarReferencias) //Estas son las que mando para el backEND a cambiarles su estado
 
-    let facturasNuevas = facturasItinerario;
+    let facturasNuevas = sinPagar;
 
     //BORRAR FACTURAS SELECCIONADAS
-    for (var i = referencias.length -1; i >= 0; i--)
+    for (var i = referencias.length -1; i >= 0; i--){
+
       facturasNuevas.splice(referencias[i], 1, "");
+
+    }
+
 
     var filtered = facturasNuevas.filter(function (el) {
       return el != '';
     });
 
-    // setFacturasItinerario(filtered) //Aqui actualiza la tabla de lecturas pagadas a las que falten por pagar
+    setSinPagar(filtered) //Aqui actualiza la tabla de lecturas pagadas a las que falten por pagar
+    alert(`Servicios cobrados con exito`)
+
+    const cobrar = {
+      "servicios": facturarReferencias
+    }
+
+    //Enviar a backend
+    fetch(`${host}/facPagar`, { //Validar que la medicion no sea anomala
+      headers: { "content-type": "application/json" },
+      method: "POST",
+      body: JSON.stringify(cobrar)
+    })
+      .then((data) => data.json())
+      .then((data) => {       
+        ///////////////////////////////////////////////////////////////////////////////
+
+        console.log("GET 4")
+
+        let test4 = {
+          "test": "Testobject"
+        }
+        
+        fetch(`${host}/facPagadas`, {
+          headers: { "content-type": "application/json" },
+          method: "POST",
+          body: JSON.stringify(test4)
+        })
+          .then((data) => data.json())
+          .then((data) => {
+            var conPagos = []
+    
+            for(let indice in data.pagadas){
+              let servicio = []
+              servicio.push(data.pagadas[indice].servicio)
+              servicio.push(data.pagadas[indice].cedula) //Servicio
+              servicio.push(data.pagadas[indice].nombre) //Servicio
+              servicio.push(data.pagadas[indice].direccion) //Servicio
+              servicio.push(data.pagadas[indice].fechaLectura)
+              servicio.push(data.pagadas[indice].consumo)
+              servicio.push(data.pagadas[indice].valor)
+              conPagos.unshift(servicio);
+            }
+    
+            setPagadas(conPagos)
+          })
+      })
     
   }
   {/*PAGAR*/}

@@ -1,8 +1,15 @@
 import React from 'react';
 import { useRef, useState, useEffect } from 'react';
 import { cedulaRegistro } from '../Validacion/Validacion';
+import { useNavigate } from "react-router-dom";
 
 export default function Signup() {
+
+    const navigate = useNavigate();
+
+    const navegar = (url) => {
+        navigate(url);
+    }
 
     const [cedula, setCedula] = useState(cedulaRegistro);
     const [nombre, setNombre] = useState("")
@@ -97,7 +104,8 @@ export default function Signup() {
             }).then((data) => data.json())
             .then((data) =>{
                 if(data.estado == "ok"){
-                    alert(data.msg);
+                    alert("Usuario registrado correctamente")
+                    navegar("/Validacion")
                 } else if(data.estado =="error") {
                     alert(data.msg)
                 }

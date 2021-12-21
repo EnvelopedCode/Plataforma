@@ -4,7 +4,6 @@ import RegistroMasivo from '../../components/RegistroMasivo';
 import { useRef, useState, useEffect } from 'react';
 import NavbarAnalista from '../../components/NavbarAnalista';
 import { authAnalista } from "../../auth/authAnalista";
-import { Link } from 'react-router-dom';
 import { authAdmin } from '../../auth/authAdmin';
 import NavbarAdmin from '../../components/NavbarAdmin';
 

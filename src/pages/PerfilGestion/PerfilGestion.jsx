@@ -10,8 +10,15 @@ import { authCliente } from '../../auth/authCliente';
 import NavbarUsuario from '../../components/NavbarUsuario';
 import NavbarTecnico from '../../components/NavbarTecnico';
 import NavbarAdmin from '../../components/NavbarAdmin';
+import { useNavigate } from "react-router-dom";
 
 export default function PerfilGestion() {
+
+    const navigate = useNavigate();
+
+    const navegar = (url) => {
+        navigate(url);
+    }
 
     var host = "http://localhost:8080";
 
@@ -102,7 +109,28 @@ export default function PerfilGestion() {
               })
                 .then((data) => data.json())
                 .then((data) => {
-                    alert(data.estado)
+ 
+                    ///////////////////
+                    var token = localStorage.getItem("token");
+                    var decode = jwt_decode(token);
+            
+                    const cedula = {
+                        "cedula": decode.cedula
+                    }
+            
+                    fetch(`${host}/perfilData`, {
+                        headers: { "content-type": "application/json" },
+                        method: "POST",
+                        body: JSON.stringify(cedula)
+                      })
+                        .then((data) => data.json())
+                        .then((data) => {              
+                            setCedula(decode.cedula)
+                            setNombre(data.datos.nombre)
+                            setApellido(data.datos.apellido)
+                            alert("Datos actualizados correctamente")
+                        })
+                    /////////////////
                 })
                 .catch((data) => {
                     alert(data.estado)
@@ -225,7 +253,37 @@ export default function PerfilGestion() {
     }
 
     const eliminar = () => {
-        //ELIMINAR USUARIO DE LA PLATAFORMA CON BACKEND
+
+        console.log("Entro a eliminar")
+        //Aqui hacer un confirm
+        var result = window.confirm("Estas seguro que deseas darte de baja?");
+        
+
+        if (result == true){
+
+            console.log("Eliminar = OK")
+            var token = localStorage.getItem("token");
+            var decode = jwt_decode(token);
+            console.log(decode.cedula)
+
+
+            let perfil = {
+                "cedula": decode.cedula,
+            }
+
+            console.log(perfil)
+            //HACER POST A LA RUTA
+            fetch(`${host}/perfilEliminar`, { //Validar que la medicion no sea anomala
+                headers: { "content-type": "application/json" },
+                method: "POST",
+                body: JSON.stringify(perfil)
+            })
+                .then((data) => data.json())
+                .then((data) => {
+                    alert("Cuenta dada de baja, enviando a inicio...")
+                    navegar("/Validacion") 
+                })
+        }
     }  
 
     useEffect(() => {
@@ -243,11 +301,19 @@ export default function PerfilGestion() {
 
         console.log(decode)
         console.log(decode.nombre)
-        
-        setCedula(decode.cedula)
-        setNombre(decode.nombre)
-        setApellido(decode.apellido)
 
+        fetch(`${host}/perfilData`, {
+            headers: { "content-type": "application/json" },
+            method: "POST",
+            body: JSON.stringify(cedula)
+          })
+            .then((data) => data.json())
+            .then((data) => {
+                setCedula(decode.cedula)
+                setNombre(data.datos.nombre)
+                setApellido(data.datos.apellido)
+            })
+        
     }, [])
 
     return (
